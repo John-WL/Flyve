@@ -9,6 +9,7 @@ public class PidController {
     private double previousError;
     private double largeTotalError;
     private double smallTotalError;
+    private double integralMaxValue;
 
     public PidController(double kp, double ki, double kd) {
         this.kp = kp;
@@ -16,6 +17,16 @@ public class PidController {
         this.kd = kd;
         this.largeTotalError = 0;
         this.smallTotalError = 0;
+        this.integralMaxValue = Double.MAX_VALUE;
+    }
+
+    public PidController(double kp, double ki, double kd, double integralMaxValue) {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+        this.largeTotalError = 0;
+        this.smallTotalError = 0;
+        this.integralMaxValue = integralMaxValue;
     }
 
     public double process(double actualValue, double desiredValue) {
@@ -29,10 +40,21 @@ public class PidController {
             largeTotalError += smallTotalError;
             smallTotalError = 0;
         }
+
+        largeTotalError = Math.max(largeTotalError, -integralMaxValue);
+        smallTotalError = Math.max(smallTotalError, -integralMaxValue);
+        largeTotalError = Math.min(largeTotalError, integralMaxValue);
+        smallTotalError = Math.min(smallTotalError, integralMaxValue);
+
         // updating the derivative part
         previousError = currentError;
         currentError = error;
 
         return kp*error + ki*(largeTotalError + smallTotalError) - kd*(previousError - currentError);
+    }
+
+    public void resetIntegralValue() {
+        largeTotalError = 0;
+        smallTotalError = 0;
     }
 }
