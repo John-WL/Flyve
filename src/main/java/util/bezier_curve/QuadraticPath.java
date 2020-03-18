@@ -62,10 +62,14 @@ public class QuadraticPath extends BezierCurve implements PathComposite {
         }
     }
 
+    @Override
+    public CurveSegment getComponent(int i) {
+        return fragmentedPath.get(i);
+    }
+
     private void buildPath() {
         // making sure parameters are valid before proceeding to the construction of the path
         if(this.getPoints().size() < 2) throw new IllegalArgumentException("Cannot construct a path with less than 2 control points!");
-        if(startingDirection.isZero()) throw new IllegalArgumentException("Cannot construct a path with no initial direction!");
 
         fragmentedPath = new ArrayList<>();
 

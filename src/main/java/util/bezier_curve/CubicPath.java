@@ -61,6 +61,11 @@ public class CubicPath extends BezierCurve implements PathComposite {
         return segmentLength(0, 1, resolution);
     }
 
+    @Override
+    public CurveSegment getComponent(int i) {
+        return fragmentedPath.get(i);
+    }
+
     private CubicBezier createBezierCurve(Vector3 startingDirection, int i, int j) {
         Vector3 p0 = controlPoints.get(i);
         Vector3 p1 = controlPoints.get(j);

@@ -2,6 +2,9 @@ package rlbotexample;
 
 import rlbot.Bot;
 import rlbot.ControllerState;
+import rlbot.cppinterop.RLBotDll;
+import rlbot.cppinterop.RLBotInterfaceException;
+import rlbot.flat.BallPrediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
@@ -11,6 +14,8 @@ import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
+
+import java.awt.*;
 
 public class SampleBot implements Bot {
 
