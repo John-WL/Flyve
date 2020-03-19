@@ -5,7 +5,7 @@ import util.vector.Vector3;
 
 public class PathIterator {
 
-    public static final int SEGMENT_LENGTH_RESOLUTION = 10;
+    public static final int SEGMENT_LENGTH_RESOLUTION = 100;
 
     private double lengthIncrement;
     private CurveSegment path;
@@ -41,6 +41,11 @@ public class PathIterator {
         currentT = newT;
 
         return path.interpolate(currentT);
+    }
+
+    public void pathLengthIncreased(int numberOfAddedPaths, int numberOfPaths) {
+        // updating the t variable in the path composite
+        currentT = (currentT * numberOfPaths) / (numberOfPaths + numberOfAddedPaths);
     }
 
     public boolean hasNext() {

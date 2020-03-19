@@ -1,7 +1,5 @@
 package rlbotexample.bot_behaviour;
 
-import rlbot.cppinterop.RLBotDll;
-import rlbot.flat.BallPrediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.bot_movements.MovementOutputHandler;
@@ -9,83 +7,26 @@ import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.path.PathGenerator;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.bezier_curve.*;
-import util.pid_controller.PidController;
-import util.timer.Timer;
 import util.debug.BezierDebugger;
-import util.vector.Vector2;
 import util.vector.Vector3;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 // Pan is an abbreviation for PATCHES ARE NEEDED!
 public class PanBot extends BotBehaviour {
 
-    /*private static final double REFRESH_RATE_OF_DESTINATION_ACTUALIZATION = 0.0333;
-    private static final double BEZIER_ITERATOR_SPEED = 2000;
-    private static final double BEZIER_ITERATOR_LENGTH_INCREMENT = BEZIER_ITERATOR_SPEED * REFRESH_RATE_OF_DESTINATION_ACTUALIZATION;
-    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 1;*/
-
     private CarDestination desiredDestination;
     private MovementOutputHandler movementOutputHandler;
-
-    /*private Vector3 myDestination;
-    private Vector3 myLocalDestination;
-    private Vector3 myPreviousLocalDestination;
-
-    private Vector3 mySteeringDestination;
-    private Vector3 myLocalSteeringDestination;
-    private Vector3 myPreviousLocalSteeringDestination;
-
-    private Vector3 myAerialDestination;
-    private Vector3 myLocalAerialDestination;
-    private Vector3 myPreviousLocalAerialDestination;
-
-    private PathComposite myPath;
-    private PathIterator myPathIterator;
-    private PathIterator steeringIterator;
-    private PidController throttlePid;
-    private PidController steerPid;
-    private PidController pitchPid;
-    private PidController yawPid;
-    private PidController rollPid;
-    private PidController aerialOrientationXPid;
-    private PidController aerialOrientationYPid;
-    private PidController aerialBoostPid;
-    private boolean isAerialing;
-    private boolean isFlipping;*/
 
     public PanBot() {
         desiredDestination = new CarDestination();
         movementOutputHandler = new MovementOutputHandler(desiredDestination, this);
-
-        /*generateDummyPath();
-
-        // pid settings for a 30 fps refresh rate
-        throttlePid = new PidController(50, 0, 20);
-        steerPid = new PidController(3, 0, 1.2);
-
-        aerialOrientationXPid = new PidController(20, 0, 0.1);
-        aerialOrientationYPid = new PidController(20, 0, 0.1);
-        aerialBoostPid = new PidController(1, 0, 20);
-
-        pitchPid = new PidController(10, 0, 100);
-        yawPid = new PidController(10, 0, 100);
-        rollPid = new PidController(10, 0, 100);
-
-        myPreviousLocalDestination = new Vector3();
-        myPreviousLocalSteeringDestination = new Vector3();
-        myPreviousLocalAerialDestination = new Vector3();
-
-        isFlipping = false;*/
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         // make sure the path is always up to date with the data packet
-        PathGenerator.randomGroundPath(desiredDestination, input);
+        PathGenerator.ballChasePredictionPath(desiredDestination, input);
 
         // bot's desired position advances one step
         desiredDestination.step(input);
@@ -95,67 +36,9 @@ public class PanBot extends BotBehaviour {
 
         // return the calculated bot output
         return super.output();
-        /*
-        updateDestination(input);
-        driveToDestination(input);
-
-        return output();*/
-    }
-
-    private void updateDestination(DataPacket input) {
-
-        /*
-        // generate the next path to take if it reached the endpoint
-        if(!myPathIterator.hasNext()) {
-            generateRandomGroundPath(input);
-        }
-
-        // update where the car needs to throttle (go forward or backward?)
-        updateThrottleDestination(input);
-
-        // update the direction in which the car needs to go (left or right?)
-        updateSteeringDestination(input);
-
-        // update the aerial orientation to reach any given destination (pitch and what yaw angles?)
-        updateAerialDestination(input);
-        */
     }
 
     /*
-    private void updateThrottleDestination(DataPacket input) {
-        // calculate the next intended destination on the curve if there is any
-        if(myPathIterator.hasNext()) {
-            myDestination = myPathIterator.next();
-        }
-        // update the local destination
-        myLocalDestination = getLocal(myDestination, input);
-    }
-
-    private void updateSteeringDestination(DataPacket input) {
-        // calculate the direction in which the car is going to try to go
-        steeringIterator.setT(myPathIterator.getT());
-        steeringIterator.setLengthIncrement(getSteeringLengthIncrement(input));
-        if(steeringIterator.hasNext()) {
-            mySteeringDestination = steeringIterator.next();
-        }
-        else {
-            mySteeringDestination = myPath.interpolate(1);
-        }
-        // update the local steering
-        myLocalSteeringDestination = getLocal(mySteeringDestination, input);
-    }
-
-    private void updateAerialDestination(DataPacket input) {
-        Vector3 myPosition = input.car.position;
-        Vector3 mySpeed = input.car.velocity;
-
-        // update the direction when aerialing and the local direction when aerialing
-        double myAerialDestinationX = -aerialOrientationXPid.process(mySpeed.x, myDestination.minus(myPosition).x);
-        double myAerialDestinationY = -aerialOrientationYPid.process(mySpeed.y, myDestination.minus(myPosition).y);
-        myAerialDestination = myDestination.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myDestination.minus(myPosition).magnitude()*10 + 100));
-        myLocalAerialDestination = getLocal(myAerialDestination, input);
-    }
-
     private void stupidBallChasePathGenerator(DataPacket input) {
         Vector3 ballPosition = input.ball.position;
 
@@ -165,29 +48,6 @@ public class PanBot extends BotBehaviour {
         double t = myPathIterator.getT();
         double numberOfPaths = myPath.getNumberOfComponents();
         myPathIterator.setT((t * numberOfPaths) / (numberOfPaths + 1));
-    }
-
-    private void stupidPlayerChasePathGenerator(DataPacket input) {
-        Vector3 opponentPosition = input.allCars.get(1-input.playerIndex).position;
-
-        // adding the next position
-        myPath.addPoints(opponentPosition);
-        // updating the t variable in the path composite
-        double t = myPathIterator.getT();
-        double numberOfPaths = myPath.getNumberOfComponents();
-        myPathIterator.setT((t * numberOfPaths) / (numberOfPaths + 1));
-    }
-
-    private void simpleAerialPath1Generator(DataPacket input) {
-        Vector3 initialDirection = new Vector3(0, -1, 0);
-        List<Vector3> controlPoints = new ArrayList<>();
-        controlPoints.add(new Vector3(1000, 0, 50));
-        controlPoints.add(new Vector3(0, 1000, 50));
-        controlPoints.add(new Vector3(-500, 500, 50));
-        controlPoints.add(new Vector3(-1000, 0, 1000));
-        controlPoints.add(new Vector3(-1000, 0, 10000));
-
-        initiateNewPath(controlPoints, initialDirection);
     }
 
     private void simpleAerialPath2Generator(DataPacket input) {
@@ -397,10 +257,10 @@ public class PanBot extends BotBehaviour {
         renderer.drawLine3d(Color.LIGHT_GRAY, myPosition, throttleDestination);
         renderer.drawLine3d(Color.MAGENTA, myPosition, steeringDestination);
         if(isAerialing) {
-            renderer.drawLine3d(Color.green, myPosition, aerialDestination);
+            renderer.drawLine3d(Color.green, myPosition, aerialDestination.minus(myPosition).scaledToMagnitude(300).plus(myPosition));
         }
         else {
-            renderer.drawLine3d(Color.ORANGE, myPosition, aerialDestination);
+            renderer.drawLine3d(Color.ORANGE, myPosition, aerialDestination.minus(myPosition).scaledToMagnitude(300).plus(myPosition));
         }
         BezierDebugger.renderPath(desiredDestination.getPath(), Color.blue, renderer);
     }

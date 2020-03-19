@@ -24,26 +24,17 @@ public class CarDestination {
         destinationUpdater = new CarDestinationUpdater(this);
 
         throttleDestination = new Vector3();
+        previousThrottleDestination = new Vector3();
         steeringDestination = new Vector3();
+        previousSteeringDestination = new Vector3();
         aerialDestination = new Vector3();
+        previousAerialDestination = new Vector3();
 
         PathGenerator.dummyPath(this);
     }
 
-    public static Vector3 getLocal(Vector3 globalPosition, DataPacket input) {
-        Vector3 myPosition = input.car.position;
-        Vector3 myNoseVector = input.car.orientation.noseVector;
-        Vector3 myRoofVector = input.car.orientation.roofVector;
-
-        return globalPosition.minus(myPosition).toFrameOfReference(myNoseVector, myRoofVector);
-    }
-
-    public void setPath(PathComposite path) {
-        destinationUpdater.setPath(path);
-    }
-
-    public CurveSegment getPath() {
-        return destinationUpdater.getPath();
+    public double getSpeed() {
+        return destinationUpdater.getSpeed();
     }
 
     public void step(DataPacket input) {
@@ -58,6 +49,18 @@ public class CarDestination {
 
     private void next(DataPacket input) {
         destinationUpdater.nextDestination(input);
+    }
+
+    public void pathLengthIncreased(int numberOfAddedPaths, int numberOfPaths) {
+        destinationUpdater.pathLengthIncreased(numberOfAddedPaths, numberOfPaths);
+    }
+
+    public void setPath(PathComposite path) {
+        destinationUpdater.setPath(path);
+    }
+
+    public CurveSegment getPath() {
+        return destinationUpdater.getPath();
     }
 
     public Vector3 getThrottleDestination() {
@@ -97,5 +100,13 @@ public class CarDestination {
 
     public Vector3 getPreviousAerialDestination() {
         return previousAerialDestination;
+    }
+
+    public static Vector3 getLocal(Vector3 globalPosition, DataPacket input) {
+        Vector3 myPosition = input.car.position;
+        Vector3 myNoseVector = input.car.orientation.noseVector;
+        Vector3 myRoofVector = input.car.orientation.roofVector;
+
+        return globalPosition.minus(myPosition).toFrameOfReference(myNoseVector, myRoofVector);
     }
 }

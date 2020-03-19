@@ -32,16 +32,16 @@ public class MovementOutputHandler {
         this.isAerialing = false;
 
         // pid presets for a 30 fps refresh rate
-        throttlePid = new PidController(50, 0, 20);
+        throttlePid = new PidController(50, 0, -50);
         steerPid = new PidController(3, 0, 1.2);
 
         aerialOrientationXPid = new PidController(2, 0, 0.1);
         aerialOrientationYPid = new PidController(2, 0, 0.1);
-        aerialBoostPid = new PidController(1, 0, 20);
+        aerialBoostPid = new PidController(100000, 0, 0);
 
-        pitchPid = new PidController(10, 0, 100);
-        yawPid = new PidController(10, 0, 100);
-        rollPid = new PidController(10, 0, 100);
+        pitchPid = new PidController(30, 0, 800);
+        yawPid = new PidController(30, 0, 800);
+        rollPid = new PidController(30, 0, 800);
     }
 
     public void actualizeBotOutput(DataPacket input) {
@@ -60,9 +60,10 @@ public class MovementOutputHandler {
         Vector3 myPreviousLocalSteeringDestination = CarDestination.getLocal(desiredDestination.getPreviousThrottleDestination(), input);
         Vector3 myAerialDestination = desiredDestination.getAerialDestination();
         Vector3 myLocalAerialDestination = CarDestination.getLocal(myAerialDestination, input);
-        Vector3 myPreviousLocalAerialDestination = desiredDestination.getPreviousAerialDestination();
+        Vector3 myPreviousLocalAerialDestination = CarDestination.getLocal(desiredDestination.getPreviousAerialDestination(), input);
 
-        double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
+        //double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
+        double throttleAmount = throttlePid.process(myPreviousLocalDestination.x - myLocalDestination.x, -myLocalDestination.x);
         if(myLocalSteeringDestination.x < 0) throttleAmount = -throttleAmount;
 
         double steerAmount = -steerPid.process(myLocalSteeringDestination.minusAngle(myPreviousLocalSteeringDestination).flatten().correctionAngle(new Vector2(1, 0)), myLocalSteeringDestination.flatten().correctionAngle(new Vector2(1, 0)));
@@ -76,7 +77,7 @@ public class MovementOutputHandler {
         // update the direction when aerialing
         double myAerialDestinationX = -aerialOrientationXPid.process(mySpeed.x, myDestination.minus(myPosition).x);
         double myAerialDestinationY = -aerialOrientationYPid.process(mySpeed.y, myDestination.minus(myPosition).y);
-        double myAerialDestinationZ = myDestination.minus(myPosition).magnitude() + 100;
+        double myAerialDestinationZ = myDestination.minus(myPosition).magnitude()*2 + 100;
         desiredDestination.setAerialDestination(myDestination.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myAerialDestinationZ)));
 
         if(myLocalDestination.z > 200) {
@@ -94,17 +95,10 @@ public class MovementOutputHandler {
                 output.jump(!output.jump());
             }
 
-
-            /*double pitchAmount = pitchPid.process(myLocalAerialDestination.z, 0);
+            double pitchAmount = pitchPid.process(myLocalAerialDestination.z, 0);
             double yawAmount = yawPid.process(-myLocalAerialDestination.y, 0);
             double rollAmount = rollPid.process(myLocalAerialDestination.x, 0);
-            boolean aerialBoostState = aerialBoostPid.process(myPosition.minus(myDestination).z, 0) < 0;*/
-
-            double pitchAmount = pitchPid.process(myPreviousLocalAerialDestination.z - myLocalAerialDestination.z, -myLocalAerialDestination.z);
-            double yawAmount = yawPid.process(myPreviousLocalAerialDestination.y - myLocalAerialDestination.y, myLocalAerialDestination.y);
-            double rollAmount = rollPid.process(myLocalAerialDestination.x, 0);
-            boolean aerialBoostState = aerialBoostPid.process(myPosition.minus(myDestination).z, 0) < 0;
-            myPreviousLocalAerialDestination = myLocalAerialDestination;
+            boolean aerialBoostState = aerialBoostPid.process(myDestination.minus(myPosition).z, mySpeed.z) > 0;
 
             output.pitch(pitchAmount);
             output.yaw(yawAmount);
