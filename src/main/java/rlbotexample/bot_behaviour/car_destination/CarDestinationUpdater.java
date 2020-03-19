@@ -7,8 +7,8 @@ import util.bezier_curve.PathIterator;
 
 class CarDestinationUpdater {
 
-    private static final double DEFAULT_CAR_SPEED_VALUE = 500;
-    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 0.1;
+    private static final double DEFAULT_CAR_SPEED_VALUE = 1000;
+    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 1;
     private static final double BOT_REFRESH_RATE = 30;
 
     private CarDestination desiredDestination;
@@ -43,7 +43,7 @@ class CarDestinationUpdater {
         throttleIterator.pathLengthIncreased(numberOfAddedPaths, numberOfPaths);
     }
 
-    private double getSteeringLengthIncrement(DataPacket input) {
+    double getSteeringLengthIncrement(DataPacket input) {
         return CarDestination.getLocal(desiredDestination.getThrottleDestination(), input).magnitude()*0.2 +  input.car.velocity.magnitude()/4 + 200;
     }
 

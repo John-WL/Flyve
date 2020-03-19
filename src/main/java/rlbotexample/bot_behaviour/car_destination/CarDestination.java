@@ -76,8 +76,8 @@ public class CarDestination {
         return previousThrottleDestination;
     }
 
-    public Vector3 getSteeringDestination() {
-        return steeringDestination;
+    public Vector3 getSteeringDestination(DataPacket input) {
+       return steeringDestination;
     }
 
     void setSteeringDestination(Vector3 steeringDestination) {

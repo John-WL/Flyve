@@ -32,7 +32,7 @@ public class MovementOutputHandler {
         this.isAerialing = false;
 
         // pid presets for a 30 fps refresh rate
-        throttlePid = new PidController(50, 0, -50);
+        throttlePid = new PidController(10, 0, 100);
         steerPid = new PidController(3, 0, 1.2);
 
         aerialOrientationXPid = new PidController(2, 0, 0.1);
@@ -55,7 +55,7 @@ public class MovementOutputHandler {
         Vector3 myDestination = desiredDestination.getThrottleDestination();
         Vector3 myLocalDestination = CarDestination.getLocal(myDestination, input);
         Vector3 myPreviousLocalDestination = CarDestination.getLocal(desiredDestination.getPreviousThrottleDestination(), input);
-        Vector3 mySteeringDestination = desiredDestination.getSteeringDestination();
+        Vector3 mySteeringDestination = desiredDestination.getSteeringDestination(input);
         Vector3 myLocalSteeringDestination = CarDestination.getLocal(mySteeringDestination, input);
         Vector3 myPreviousLocalSteeringDestination = CarDestination.getLocal(desiredDestination.getPreviousThrottleDestination(), input);
         Vector3 myAerialDestination = desiredDestination.getAerialDestination();

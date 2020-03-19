@@ -5,7 +5,7 @@ import util.vector.Vector3;
 
 public class PathIterator {
 
-    public static final int SEGMENT_LENGTH_RESOLUTION = 100;
+    public static final int SEGMENT_LENGTH_RESOLUTION = 10;
 
     private double lengthIncrement;
     private CurveSegment path;

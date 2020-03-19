@@ -250,7 +250,7 @@ public class PanBot extends BotBehaviour {
     public void displayDebugLines(Renderer renderer, DataPacket input) {
         Vector3 myPosition = input.car.position;
         Vector3 throttleDestination = desiredDestination.getThrottleDestination();
-        Vector3 steeringDestination = desiredDestination.getSteeringDestination();
+        Vector3 steeringDestination = desiredDestination.getSteeringDestination(input);
         Vector3 aerialDestination = desiredDestination.getAerialDestination();
         boolean isAerialing = movementOutputHandler.isAerialing();
 

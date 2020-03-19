@@ -91,7 +91,7 @@ public class PathGenerator {
         // get the future expected ball position
         Vector3 futureBallPosition = getFutureExpectedBallPosition(desiredCarPosition, input);
         Vector3 destination = desiredCarPosition.getThrottleDestination();
-        Vector3 steeringDestination = desiredCarPosition.getSteeringDestination();
+        Vector3 steeringDestination = desiredCarPosition.getSteeringDestination(input);
 
         // creating the next path. Here, we do a little trick so we can generate
         // a new end point that goes to the ball prediction every frame.
