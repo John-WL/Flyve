@@ -29,12 +29,14 @@ public class CarDestination {
         previousSteeringDestination = new Vector3();
         aerialDestination = new Vector3();
         previousAerialDestination = new Vector3();
-
-        PathGenerator.dummyPath(this);
     }
 
-    public double getSpeed() {
+    public double getDesiredSpeed() {
         return destinationUpdater.getSpeed();
+    }
+
+    public void setDesiredSpeed(double speed) {
+        destinationUpdater.setSpeed(speed);
     }
 
     public void step(DataPacket input) {
@@ -108,5 +110,9 @@ public class CarDestination {
         Vector3 myRoofVector = input.car.orientation.roofVector;
 
         return globalPosition.minus(myPosition).toFrameOfReference(myNoseVector, myRoofVector);
+    }
+
+    public double getSteeringLengthIncrement(DataPacket input) {
+        return destinationUpdater.getSteeringLengthIncrement(input);
     }
 }

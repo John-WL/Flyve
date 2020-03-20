@@ -12,7 +12,7 @@ public class BezierDebugger {
     private static final double CURVE_LENGTH_INCREMENT = 1;
 
     public static void renderPath(CurveSegment myPath, Color color, Renderer renderer) {
-        PathIterator bezierIterator = new PathIterator(myPath, myPath.curveLength(50)/300, 10);
+        PathIterator bezierIterator = new PathIterator(myPath, myPath.curveLength()/300, 10);
         Vector3 testLastPosition;
         Vector3 testCurrentPosition = myPath.interpolate(0);
 

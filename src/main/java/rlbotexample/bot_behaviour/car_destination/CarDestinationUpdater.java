@@ -5,21 +5,21 @@ import util.bezier_curve.CurveSegment;
 import util.bezier_curve.PathComposite;
 import util.bezier_curve.PathIterator;
 
-class CarDestinationUpdater {
+public class CarDestinationUpdater {
 
-    private static final double DEFAULT_CAR_SPEED_VALUE = 1000;
-    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 1;
+    public static final double DEFAULT_CAR_SPEED_VALUE = 800;
+    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 5;
     private static final double BOT_REFRESH_RATE = 30;
 
     private CarDestination desiredDestination;
     private PathComposite path;
     private PathIterator throttleIterator;
     private PathIterator steeringIterator;
-    private double carSpeed;
+    private double wantedCarSpeed;
 
     CarDestinationUpdater(CarDestination carDestination) {
         this.desiredDestination = carDestination;
-        carSpeed = DEFAULT_CAR_SPEED_VALUE;
+        wantedCarSpeed = DEFAULT_CAR_SPEED_VALUE;
     }
 
     boolean hasNextThrottleDestination() {
@@ -49,7 +49,7 @@ class CarDestinationUpdater {
 
     void setPath(PathComposite path) {
         this.path = path;
-        throttleIterator = new PathIterator(path, carSpeed/BOT_REFRESH_RATE, BEZIER_ITERATOR_INTERPOLATION_PRECISION);
+        throttleIterator = new PathIterator(path, wantedCarSpeed/BOT_REFRESH_RATE, BEZIER_ITERATOR_INTERPOLATION_PRECISION);
         steeringIterator = new PathIterator(path, 0, BEZIER_ITERATOR_INTERPOLATION_PRECISION);
         desiredDestination.setThrottleDestination(this.path.interpolate(0));
         desiredDestination.setSteeringDestination(this.path.interpolate(0));
@@ -60,10 +60,10 @@ class CarDestinationUpdater {
     }
 
     void setSpeed(double carSpeed) {
-        this.carSpeed = carSpeed;
+        this.wantedCarSpeed = carSpeed;
     }
 
     double getSpeed() {
-        return this.carSpeed;
+        return this.wantedCarSpeed;
     }
 }

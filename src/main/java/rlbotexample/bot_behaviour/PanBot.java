@@ -8,31 +8,52 @@ import rlbotexample.bot_behaviour.path.PathGenerator;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.debug.BezierDebugger;
+import util.timer.Clock;
+import util.timer.Timer;
 import util.vector.Vector3;
 import java.awt.Color;
 
 // Pan is an abbreviation for PATCHES ARE NEEDED!
 public class PanBot extends BotBehaviour {
 
+    private PathGenerator pathGenerator;
     private CarDestination desiredDestination;
     private MovementOutputHandler movementOutputHandler;
 
+    private Timer timer;
+
     public PanBot() {
         desiredDestination = new CarDestination();
+        pathGenerator = new PathGenerator(desiredDestination);
+        pathGenerator.dummyPath();
         movementOutputHandler = new MovementOutputHandler(desiredDestination, this);
+
+        timer = new Timer(0.2);
+        timer.start();
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
+
+        Clock clock = new Clock();
+        clock.start();
+
         // make sure the path is always up to date with the data packet
-        PathGenerator.ballChasePredictionPath(desiredDestination, input);
+        pathGenerator.randomGroundPath(input);
 
         // bot's desired position advances one step
         desiredDestination.step(input);
 
         // calculate what output the bot needs to have to reach the just advanced step
         movementOutputHandler.actualizeBotOutput(input);
+
+        clock.stop();
+
+        if(timer.isTimeElapsed()) {
+            timer.start();
+            System.out.println(clock.getElapsedSeconds());
+        }
 
         // return the calculated bot output
         return super.output();

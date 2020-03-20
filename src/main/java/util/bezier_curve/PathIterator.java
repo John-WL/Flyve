@@ -5,8 +5,6 @@ import util.vector.Vector3;
 
 public class PathIterator {
 
-    public static final int SEGMENT_LENGTH_RESOLUTION = 10;
-
     private double lengthIncrement;
     private CurveSegment path;
     private double currentT;
@@ -28,7 +26,7 @@ public class PathIterator {
 
         while(Math.abs(currentSegmentLength - lengthIncrement) > precision/2) {
             divisor /= 2;
-            currentSegmentLength = path.segmentLength(currentT, newT, SEGMENT_LENGTH_RESOLUTION);
+            currentSegmentLength = path.segmentLength(currentT, newT);
 
             if(currentSegmentLength < lengthIncrement) {
                 newT += divisor;
@@ -49,7 +47,7 @@ public class PathIterator {
     }
 
     public boolean hasNext() {
-        return path.segmentLength(currentT, 1, SEGMENT_LENGTH_RESOLUTION) > lengthIncrement;
+        return path.segmentLength(currentT, 1) > lengthIncrement;
     }
 
     public void setLengthIncrement(double lengthIncrement) {

@@ -40,32 +40,6 @@ public class CubicPath extends BezierCurve implements PathComposite {
         return fragmentedPath.get(i).interpolate(resizedT - (double)i);
     }
 
-    @Override
-    public double segmentLength(double t0, double t1, int resolution) {
-        Vector3 currentInterpolation = interpolate(t0);
-        Vector3 lastInterpolation;
-        double totalLength = 0;
-
-        for(int i = 1; i < resolution; i++)
-        {
-            lastInterpolation = currentInterpolation;
-            currentInterpolation = interpolate(t0 + (t1-t0)*(i/(double)resolution));
-            totalLength += currentInterpolation.minus(lastInterpolation).magnitude();
-        }
-
-        return totalLength;
-    }
-
-    @Override
-    public double curveLength(int resolution) {
-        return segmentLength(0, 1, resolution);
-    }
-
-    @Override
-    public CurveSegment getComponent(int i) {
-        return fragmentedPath.get(i);
-    }
-
     private CubicBezier createBezierCurve(Vector3 startingDirection, int i, int j) {
         Vector3 p0 = controlPoints.get(i);
         Vector3 p1 = controlPoints.get(j);
@@ -91,10 +65,5 @@ public class CubicPath extends BezierCurve implements PathComposite {
                 p0.plus(controlPoint0),
                 p1.plus(controlPoint1),
                 p1);
-    }
-
-    @Override
-    public int getNumberOfComponents() {
-        return fragmentedPath.size();
     }
 }

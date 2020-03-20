@@ -46,11 +46,6 @@ public class QuadraticPath extends BezierCurve implements PathComposite {
     }
 
     @Override
-    public int getNumberOfComponents() {
-        return fragmentedPath.size();
-    }
-
-    @Override
     public void addPoints(Vector3... newPoints) {
         for(Vector3 newPoint: newPoints) {
             super.addPoints(newPoint);
@@ -60,11 +55,6 @@ public class QuadraticPath extends BezierCurve implements PathComposite {
             getPoints().remove(0);
             fragmentedPath.remove(0);
         }
-    }
-
-    @Override
-    public CurveSegment getComponent(int i) {
-        return fragmentedPath.get(i);
     }
 
     private void buildPath() {
