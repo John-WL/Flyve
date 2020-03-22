@@ -1,6 +1,5 @@
 package rlbotexample.bot_behaviour.car_destination;
 
-import rlbotexample.bot_behaviour.path.PathGenerator;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.bezier_curve.CurveSegment;
 import util.bezier_curve.PathComposite;

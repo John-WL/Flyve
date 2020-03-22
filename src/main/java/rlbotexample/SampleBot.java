@@ -2,9 +2,6 @@ package rlbotexample;
 
 import rlbot.Bot;
 import rlbot.ControllerState;
-import rlbot.cppinterop.RLBotDll;
-import rlbot.cppinterop.RLBotInterfaceException;
-import rlbot.flat.BallPrediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
@@ -14,20 +11,27 @@ import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
-
-import java.awt.*;
+import util.timer.Timer;
 
 public class SampleBot implements Bot {
 
     private final int playerIndex;
     private BotOutput myBotOutput;
     private PanBot myBotBehaviour;
+    private Timer timer;
+    private Timer debuggerTimer;
+    private Renderer renderer;
 
 
     public SampleBot(int playerIndex) {
         this.playerIndex = playerIndex;
         myBotOutput = new BotOutput();
         myBotBehaviour = new PanBot();
+        timer = new Timer(1);
+        timer.start();
+        debuggerTimer = new Timer(2);
+        debuggerTimer.start();
+        renderer = getRenderer();
     }
 
     /**
@@ -36,12 +40,25 @@ public class SampleBot implements Bot {
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
 
+        long time1 = System.currentTimeMillis();
+
         // Bot behaviour
         myBotOutput = myBotBehaviour.processInput(input, packet);
 
         // debug
-        Renderer renderer = getRenderer();
+        if(debuggerTimer.isTimeElapsed()) {
+            debuggerTimer.start();
+        }
         myBotBehaviour.displayDebugLines(renderer, input);
+
+        long time2 = System.currentTimeMillis();
+
+        if(timer.isTimeElapsed()) {
+            timer.start();
+            System.out.println(input.allCars.get(input.allCars.size()-1-input.playerIndex).position);
+        }
+
+        myBotBehaviour.displayFpsCounter(renderer, time2 - time1);
 
         // Output the calculated states
         return myBotOutput.getOutput();
@@ -114,5 +131,6 @@ public class SampleBot implements Bot {
 
     public void retire() {
         System.out.println("Retiring pan bot " + playerIndex);
+        renderer.eraseFromScreen();
     }
 }

@@ -2,7 +2,7 @@ package util.timer;
 
 public class Clock {
 
-    private long timeOfStartNanos;
+    private long timeOfStartMillis;
     private double deltaTimeSecs;
     private boolean hasStopped;
 
@@ -10,19 +10,19 @@ public class Clock {
 
     public void start()
     {
-        timeOfStartNanos = System.nanoTime();
+        timeOfStartMillis = System.currentTimeMillis();
         hasStopped = false;
     }
 
     public void stop() {
-        double lastNanoRead = System.nanoTime();
-        deltaTimeSecs = (lastNanoRead - timeOfStartNanos)/1000000.0;
+        double lastMillisRead = System.currentTimeMillis();
+        deltaTimeSecs = (lastMillisRead - timeOfStartMillis)/1000.0;
         hasStopped = true;
     }
 
     public double getElapsedSeconds() {
         if(!hasStopped) {
-            return (System.nanoTime() - timeOfStartNanos)/1000000.0;
+            return (System.currentTimeMillis() - timeOfStartMillis)/1000.0;
         }
         else {
             return deltaTimeSecs;
@@ -30,6 +30,6 @@ public class Clock {
     }
 
     private double timeSinceStartSecs() {
-        return (System.nanoTime() - timeOfStartNanos)/1000000.0;
+        return (System.currentTimeMillis() - timeOfStartMillis)/1000.0;
     }
 }

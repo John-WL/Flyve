@@ -1,20 +1,11 @@
 package util.bezier_curve;
 
-import util.math.CalculusApproximation;
-import util.math.Function;
 import util.vector.Vector3;
-
 import java.util.*;
 
 public class BezierCurve implements CurveSegment {
 
-    private static final double DERIVATIVE_PRECISION = 0.0001;
-
     private List<Vector3> points;
-
-    private Function selfDerivativeX;
-    private Function selfDerivativeY;
-    private Function selfDerivativeZ;
 
     public BezierCurve(Vector3... points)
     {
@@ -24,10 +15,6 @@ public class BezierCurve implements CurveSegment {
     public BezierCurve(List<Vector3> points) {
         this.points = new ArrayList<>();
         this.points.addAll(points);
-
-        selfDerivativeX = CalculusApproximation.derivative((double t) -> interpolate(t).x, DERIVATIVE_PRECISION);
-        selfDerivativeY = CalculusApproximation.derivative((double t) -> interpolate(t).y, DERIVATIVE_PRECISION);
-        selfDerivativeZ = CalculusApproximation.derivative((double t) -> interpolate(t).z, DERIVATIVE_PRECISION);
     }
 
     @Override
@@ -42,29 +29,24 @@ public class BezierCurve implements CurveSegment {
     }
 
     @Override
-    public double curveLength() {
-        return segmentLength(0, 1);
+    public double curveLength(int resolution) {
+        return segmentLength(0, 1, resolution);
     }
 
     @Override
-    public double segmentLength(double t0, double t1) {
-        Vector3 segmentLength = integral(t0, t1);
+    public double segmentLength(double t0, double t1, int resolution) {
+        Vector3 currentInterpolation = interpolate(t0);
+        Vector3 lastInterpolation;
+        double totalLength = 0;
 
-        return segmentLength.magnitude();
-    }
+        for(int i = 1; i < resolution; i++)
+        {
+            lastInterpolation = currentInterpolation;
+            currentInterpolation = interpolate(t0 + (t1-t0)*(i/(double)resolution));
+            totalLength += currentInterpolation.minus(lastInterpolation).magnitude();
+        }
 
-    public Vector3 integral(double a, double b) {
-        double selfIntegralX = CalculusApproximation.integral((double t) -> Math.sqrt(1 + square(selfDerivativeX.evaluate(t))), a, b);
-        double selfIntegralY = CalculusApproximation.integral((double t) -> Math.sqrt(1 + square(selfDerivativeY.evaluate(t))), a, b);
-        double selfIntegralZ = CalculusApproximation.integral((double t) -> Math.sqrt(1 + square(selfDerivativeZ.evaluate(t))), a, b);
-
-        return new Vector3(selfIntegralX, selfIntegralY, selfIntegralZ);
-    }
-
-    public Vector3 derivative(double t) {
-        return new Vector3(selfDerivativeX.evaluate(t),
-                selfDerivativeY.evaluate(t),
-                selfDerivativeZ.evaluate(t));
+        return totalLength;
     }
 
     private double square(double d) {

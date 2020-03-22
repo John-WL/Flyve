@@ -31,7 +31,7 @@ public class JavaExample {
         SamplePythonInterface pythonInterface = new SamplePythonInterface(port, botManager);
         new Thread(pythonInterface::start).start();
 
-        JFrame frame = new JFrame("Java Bot");
+        JFrame frame = new JFrame("Java Bot Handler");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();

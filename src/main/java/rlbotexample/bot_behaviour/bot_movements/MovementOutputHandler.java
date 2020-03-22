@@ -24,8 +24,6 @@ public class MovementOutputHandler {
     private boolean isFlipping;
     private boolean isAerialing;
 
-    private Vector3 myPreviousSpeed;
-
     public MovementOutputHandler(CarDestination desiredDestination, BotBehaviour bot) {
         this.desiredDestination = desiredDestination;
         this.bot = bot;
@@ -41,11 +39,9 @@ public class MovementOutputHandler {
         aerialOrientationYPid = new PidController(2, 0, 0.1);
         aerialBoostPid = new PidController(100000, 0, 0);
 
-        pitchPid = new PidController(30, 0, 800);
-        yawPid = new PidController(30, 0, 800);
-        rollPid = new PidController(30, 0, 800);
-
-        myPreviousSpeed = new Vector3();
+        pitchPid = new PidController(200, 0, 5000);
+        yawPid = new PidController(200, 0, 5000);
+        rollPid = new PidController(200, 0, 5000);
     }
 
     public void actualizeBotOutput(DataPacket input) {
@@ -73,7 +69,6 @@ public class MovementOutputHandler {
         // double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
         double throttleAmount = throttlePid.process(myDestination.minus(myPosition).minusAngle(myNoseVector).x, mySpeed.minusAngle(myNoseVector).x / 50);
         if(myLocalSteeringDestination.x < 0) throttleAmount = -throttleAmount;
-        myPreviousSpeed = mySpeed;
 
         // steering
         double steeringDistanceFactor = 1;
@@ -83,7 +78,7 @@ public class MovementOutputHandler {
         double steerAmount = -steerPid.process(myProlongedLocalSteering.minusAngle(myPreviousProlongedLocalSteering).flatten().correctionAngle(new Vector2(1, 0)), myProlongedLocalSteering.flatten().correctionAngle(new Vector2(1, 0)));
 
         output.throttle(throttleAmount);
-        output.boost(throttleAmount > 100000);
+        output.boost(throttleAmount > 10000);
 
         output.steer(steerAmount);
         output.drift(Math.abs(steerAmount) > 5);
@@ -95,18 +90,18 @@ public class MovementOutputHandler {
         desiredDestination.setAerialDestination(myDestination.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myAerialDestinationZ)));
 
         isAerialing = false;
-        if(ballSpeed.z + ballPosition.z > 1000) {
+        //if(ballSpeed.z + ballPosition.z > 1000) {
             isAerialing = true;
-        }
+        //}
 
         if(!isAerialing) {
             double speedDivisor = Math.abs(myLocalSteeringDestination.angle(myNoseVector)) + 1;
             desiredDestination.setDesiredSpeed(CarDestinationUpdater.DEFAULT_CAR_SPEED_VALUE / speedDivisor);
         }
 
-        double pitchAmount = pitchPid.process(myLocalSteeringDestination.z, 0);
-        double yawAmount = yawPid.process(-myLocalSteeringDestination.y, 0);
-        double rollAmount = rollPid.process(myLocalSteeringDestination.x, 0);
+        double pitchAmount;
+        double yawAmount;
+        double rollAmount;
 
         if(isAerialing) {
             if(input.car.hasWheelContact) {
@@ -116,13 +111,17 @@ public class MovementOutputHandler {
             yawAmount = yawPid.process(-myLocalAerialDestination.y, 0);
             rollAmount = rollPid.process(myLocalAerialDestination.x, 0);
             boolean aerialBoostState = aerialBoostPid.process(myDestination.minus(myPosition).z, mySpeed.z) > 0;
-
             output.boost(aerialBoostState);
+        }
+        else {
+            pitchAmount = pitchPid.process(myLocalSteeringDestination.z, 0);
+            yawAmount = yawPid.process(-myLocalSteeringDestination.y, 0);
+            rollAmount = rollPid.process(myLocalSteeringDestination.x, 0);
         }
 
         output.pitch(pitchAmount);
         output.yaw(yawAmount);
-        //output.roll(rollAmount);
+        output.roll(1);
     }
 
     public boolean isAerialing() {

@@ -11,36 +11,31 @@ import util.debug.BezierDebugger;
 import util.timer.Clock;
 import util.timer.Timer;
 import util.vector.Vector3;
-import java.awt.Color;
+
+import java.awt.*;
 
 // Pan is an abbreviation for PATCHES ARE NEEDED!
 public class PanBot extends BotBehaviour {
 
-    private PathGenerator pathGenerator;
     private CarDestination desiredDestination;
     private MovementOutputHandler movementOutputHandler;
 
-    private Timer timer;
 
     public PanBot() {
         desiredDestination = new CarDestination();
-        pathGenerator = new PathGenerator(desiredDestination);
-        pathGenerator.dummyPath();
+        PathGenerator.dummyPath(desiredDestination);
         movementOutputHandler = new MovementOutputHandler(desiredDestination, this);
 
-        timer = new Timer(0.2);
-        timer.start();
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
 
-        Clock clock = new Clock();
-        clock.start();
 
         // make sure the path is always up to date with the data packet
-        pathGenerator.randomGroundPath(input);
+        PathGenerator.lethamyrAerialIcyMapThing(desiredDestination, input);
+
 
         // bot's desired position advances one step
         desiredDestination.step(input);
@@ -48,12 +43,6 @@ public class PanBot extends BotBehaviour {
         // calculate what output the bot needs to have to reach the just advanced step
         movementOutputHandler.actualizeBotOutput(input);
 
-        clock.stop();
-
-        if(timer.isTimeElapsed()) {
-            timer.start();
-            System.out.println(clock.getElapsedSeconds());
-        }
 
         // return the calculated bot output
         return super.output();
@@ -278,11 +267,25 @@ public class PanBot extends BotBehaviour {
         renderer.drawLine3d(Color.LIGHT_GRAY, myPosition, throttleDestination);
         renderer.drawLine3d(Color.MAGENTA, myPosition, steeringDestination);
         if(isAerialing) {
-            renderer.drawLine3d(Color.green, myPosition, aerialDestination.minus(myPosition).scaledToMagnitude(300).plus(myPosition));
+            renderer.drawLine3d(Color.green, myPosition, aerialDestination);
         }
         else {
-            renderer.drawLine3d(Color.ORANGE, myPosition, aerialDestination.minus(myPosition).scaledToMagnitude(300).plus(myPosition));
+            renderer.drawLine3d(Color.ORANGE, myPosition, aerialDestination);
+
         }
         BezierDebugger.renderPath(desiredDestination.getPath(), Color.blue, renderer);
+        //BezierDebugger.renderPositionControlledByCar(input, Color.PINK, renderer);
+    }
+
+    public void displayFpsCounter(Renderer renderer, long fps) {
+        if(fps < 15) {
+            renderer.drawString2d(fps + "", Color.green, new Point(10, 10), 2, 2);
+        }
+        else if(fps < 33) {
+            renderer.drawString2d(fps + "", Color.yellow, new Point(10, 10), 2, 2);
+        }
+        else {
+            renderer.drawString2d(fps + "", Color.red, new Point(10, 10), 2, 2);
+        }
     }
 }

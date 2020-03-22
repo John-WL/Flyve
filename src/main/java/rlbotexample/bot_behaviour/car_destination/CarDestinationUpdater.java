@@ -7,8 +7,8 @@ import util.bezier_curve.PathIterator;
 
 public class CarDestinationUpdater {
 
-    public static final double DEFAULT_CAR_SPEED_VALUE = 800;
-    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 5;
+    public static final double DEFAULT_CAR_SPEED_VALUE = 700;
+    private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 0.01;
     private static final double BOT_REFRESH_RATE = 30;
 
     private CarDestination desiredDestination;
@@ -61,6 +61,9 @@ public class CarDestinationUpdater {
 
     void setSpeed(double carSpeed) {
         this.wantedCarSpeed = carSpeed;
+        double previousT = throttleIterator.getT();
+        throttleIterator = new PathIterator(path, wantedCarSpeed/BOT_REFRESH_RATE, BEZIER_ITERATOR_INTERPOLATION_PRECISION);
+        throttleIterator.setT(previousT);
     }
 
     double getSpeed() {
