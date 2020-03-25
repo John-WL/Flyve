@@ -5,33 +5,41 @@ import rlbot.ControllerState;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.PanBot;
+import rlbotexample.bot_behaviour.BotBehaviour;
 import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
-import util.timer.Timer;
+import util.timer.AutoCorrectingLapse;
 
 public class SampleBot implements Bot {
 
     private final int playerIndex;
     private BotOutput myBotOutput;
-    private PanBot myBotBehaviour;
-    private Timer timer;
-    private Timer debuggerTimer;
+    private BotBehaviour botBehaviour;
+    private AutoCorrectingLapse fpsCap;
     private Renderer renderer;
+    private double averageFps;
+    private long currentFpsTime;
+    private long previousFpsTime;
+    private long time1;
+    private long time2;
+    private double currentFps;
 
 
-    public SampleBot(int playerIndex) {
+    public SampleBot(int playerIndex, BotBehaviour botBehaviour) {
         this.playerIndex = playerIndex;
         myBotOutput = new BotOutput();
-        myBotBehaviour = new PanBot();
-        timer = new Timer(1);
-        timer.start();
-        debuggerTimer = new Timer(2);
-        debuggerTimer.start();
+        this.botBehaviour = botBehaviour;
+        fpsCap = new AutoCorrectingLapse(0.033333333333333333333333333333333);
         renderer = getRenderer();
+        averageFps = 0;
+        currentFpsTime = 0;
+        previousFpsTime = 0;
+        time1 = 0;
+        time2 = 0;
+        currentFps = 0;
+
     }
 
     /**
@@ -40,64 +48,37 @@ public class SampleBot implements Bot {
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
 
-        long time1 = System.currentTimeMillis();
+        time1 = System.currentTimeMillis();
 
-        // Bot behaviour
-        myBotOutput = myBotBehaviour.processInput(input, packet);
+        fpsCap.update();
+        if(fpsCap.isTimeElapsed()) {
+            fpsCap.lapse();
 
-        // debug
-        if(debuggerTimer.isTimeElapsed()) {
-            debuggerTimer.start();
-        }
-        myBotBehaviour.displayDebugLines(renderer, input);
+            // Bot behaviour
+            myBotOutput = botBehaviour.processInput(input, packet);
 
-        long time2 = System.currentTimeMillis();
-
-        if(timer.isTimeElapsed()) {
-            timer.start();
-            System.out.println(input.allCars.get(input.allCars.size()-1-input.playerIndex).position);
+            // just some debug calculations all the way down to the return...
+            previousFpsTime = currentFpsTime;
+            currentFpsTime = System.currentTimeMillis();
         }
 
-        myBotBehaviour.displayFpsCounter(renderer, time2 - time1);
+        time2 = System.currentTimeMillis();
+
+        if(currentFpsTime - previousFpsTime == 0) {
+            currentFpsTime++;
+        }
+        currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
+        averageFps = (averageFps * 299 + (currentFps)) / 300.0;
+
+        botBehaviour.updateGui(renderer, input, currentFps, averageFps, time2 - time1);
 
         // Output the calculated states
-        return myBotOutput.getOutput();
-    }
-
-    /**
-     * This is a nice example of using the rendering feature.
-     */
-    private void drawDebugLines(DataPacket input, CarData myCar, boolean goLeft) {
-
-        // Here's an example of rendering debug data on the screen.
-        Renderer renderer = BotLoopRenderer.forBotLoop(this);
-
-        /*
-        // Draw a line from the car to the ball
-        renderer.drawLine3d(Color.LIGHT_GRAY, myCar.position, input.ball.position);
-
-        // Draw a line that points out from the nose of the car.
-        renderer.drawLine3d(goLeft ? Color.BLUE : Color.RED,
-                myCar.position.plus(myCar.orientation.noseVector.scaled(150)),
-                myCar.position.plus(myCar.orientation.noseVector.scaled(300)));
-
-        renderer.drawString3d(goLeft ? "left" : "right", Color.WHITE, myCar.position, 2, 2);
-
-
-        try {
-            // Draw 3 seconds of ball prediction
-            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
-            BallPredictionHelper.drawTillMoment(ballPrediction, myCar.elapsedSeconds + 3, Color.CYAN, renderer);
-        } catch (RLBotInterfaceException e) {
-            e.printStackTrace();
-        }
-        */
+        return myBotOutput.getForwardedOutput();
     }
 
     private Renderer getRenderer() {
         return BotLoopRenderer.forBotLoop(this);
     }
-
 
     @Override
     public int getIndex() {

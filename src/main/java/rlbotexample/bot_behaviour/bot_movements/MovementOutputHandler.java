@@ -1,15 +1,22 @@
 package rlbotexample.bot_behaviour.bot_movements;
 
 import rlbotexample.bot_behaviour.BotBehaviour;
+import rlbotexample.bot_behaviour.bot_movements.jump.*;
 import rlbotexample.bot_behaviour.car_destination.*;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
+import util.parameter_configuration.ArbitraryValueSerializer;
+import util.parameter_configuration.PidSerializer;
 import util.pid_controller.PidController;
+import util.timer.Clock;
+import util.timer.Timer;
 import util.vector.Vector2;
 import util.vector.Vector3;
 
 
 public class MovementOutputHandler {
+
+    private static final double TIME_BEFORE_RELOADING_PIDS = 1;
 
     private BotBehaviour bot;
     private CarDestination desiredDestination;
@@ -21,19 +28,26 @@ public class MovementOutputHandler {
     private PidController yawPid;
     private PidController rollPid;
     private PidController aerialBoostPid;
-    private boolean isFlipping;
+
+    private JumpHandler jumpHandler;
+
     private boolean isAerialing;
+
+    private Timer pidParamReloadTime;
+    private double boostForThrottleThreshold = 1;
+    private double driftForSteerThreshold = 1;
+
+    private Clock accelerationClock;
 
     public MovementOutputHandler(CarDestination desiredDestination, BotBehaviour bot) {
         this.desiredDestination = desiredDestination;
         this.bot = bot;
 
-        this.isFlipping = false;
         this.isAerialing = false;
 
         // pid presets for a 30 fps refresh rate
-        throttlePid = new PidController(1, 0, 0);
-        steerPid = new PidController(3, 0, 1.2);
+        throttlePid = new PidController(5, 0, 10);
+        steerPid = new PidController(0.02, 0, 0.04);
 
         aerialOrientationXPid = new PidController(2, 0, 0.1);
         aerialOrientationYPid = new PidController(2, 0, 0.1);
@@ -42,9 +56,33 @@ public class MovementOutputHandler {
         pitchPid = new PidController(200, 0, 5000);
         yawPid = new PidController(200, 0, 5000);
         rollPid = new PidController(200, 0, 5000);
+
+        jumpHandler = new JumpHandler();
+
+        pidParamReloadTime = new Timer(TIME_BEFORE_RELOADING_PIDS);
+        pidParamReloadTime.start();
+
+        accelerationClock = new Clock();
+        accelerationClock.start();
     }
 
     public void actualizeBotOutput(DataPacket input) {
+        // actualize the pid values
+        if(pidParamReloadTime.isTimeElapsed()) {
+            pidParamReloadTime.start();
+            throttlePid = PidSerializer.serialize(PidSerializer.THROTTLE_FILENAME);
+            steerPid = PidSerializer.serialize(PidSerializer.STEERING_FILENAME);
+            pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME);
+            yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME);
+            rollPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME);
+            aerialOrientationXPid = PidSerializer.serialize(PidSerializer.AERIAL_ANGLE_FILENAME);
+            aerialOrientationYPid = PidSerializer.serialize(PidSerializer.AERIAL_ANGLE_FILENAME);
+            aerialBoostPid = PidSerializer.serialize(PidSerializer.AERIAL_BOOST_FILENAME);
+
+            boostForThrottleThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_THRESHOLD_FILENAME);
+            driftForSteerThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.DRIFT_FOR_STEERING_THRESHOLD_FILENAME);
+        }
+
         BotOutput output = bot.output();
 
         Vector3 myPosition = input.car.position;
@@ -65,48 +103,69 @@ public class MovementOutputHandler {
         Vector3 myLocalAerialDestination = CarDestination.getLocal(myAerialDestination, input);
         Vector3 myPreviousLocalAerialDestination = CarDestination.getLocal(desiredDestination.getPreviousAerialDestination(), input);
 
+
+
         // throttling
         // double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
-        double throttleAmount = throttlePid.process(myDestination.minus(myPosition).minusAngle(myNoseVector).x, mySpeed.minusAngle(myNoseVector).x / 50);
-        if(myLocalSteeringDestination.x < 0) throttleAmount = -throttleAmount;
+        //double throttleAmount = throttlePid.process(myDestination.minus(myPosition).minusAngle(myNoseVector).x, mySpeed.minusAngle(myNoseVector).x / 50);
+        //if(myLocalSteeringDestination.x < 0) throttleAmount = -throttleAmount;
+
+        double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
 
         // steering
-        double steeringDistanceFactor = 1;
-        Vector3 myProlongedLocalSteering = CarDestination.getLocal(mySteeringDestination.minus(myDestination).scaled(steeringDistanceFactor).plus(myDestination), input);
-        Vector3 myPreviousProlongedLocalSteering = CarDestination.getLocal(myPreviousSteeringDestination.minus(myDestination).scaledToMagnitude(steeringDistanceFactor).plus(myDestination), input);
-
-        double steerAmount = -steerPid.process(myProlongedLocalSteering.minusAngle(myPreviousProlongedLocalSteering).flatten().correctionAngle(new Vector2(1, 0)), myProlongedLocalSteering.flatten().correctionAngle(new Vector2(1, 0)));
+        Vector2 myLocalSteeringDestination2D = myLocalSteeringDestination.flatten();
+        Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
+        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
+        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
 
         output.throttle(throttleAmount);
-        output.boost(throttleAmount > 10000);
+        output.boost(throttleAmount > boostForThrottleThreshold);
 
         output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > 5);
+        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
 
-        // update the direction when on ground
+
+        // aerialing
+        /*
         double myAerialDestinationX = -aerialOrientationXPid.process(mySpeed.x, myDestination.minus(myPosition).x);
         double myAerialDestinationY = -aerialOrientationYPid.process(mySpeed.y, myDestination.minus(myPosition).y);
         double myAerialDestinationZ = myDestination.minus(myPosition).magnitude()*2 + 100;
         desiredDestination.setAerialDestination(myDestination.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myAerialDestinationZ)));
+        */
+        /*
+        double myAerialDestinationX = aerialOrientationXPid.process(myDestination.x, myPosition.x); // X
+        double myAerialDestinationY = aerialOrientationYPid.process(myDestination.y, myPosition.y); // Y
+        Vector2 myAerialDestinationXY = new Vector2(myAerialDestinationX, myAerialDestinationY);
+        double myAerialDestinationLengthXY = myAerialDestinationXY.magnitude();
+        double myAerialDestinationZ = Math.max(1000, myAerialDestinationLengthXY);                  // Z
+        // note: the "1000" here in the max function arbitrary. Actually, this value is being tweaked by the proportional
+        // parameter in the pid controllers x and y. Scale the proportional factor up and the 1000 now seem to be closer.
+        // Scale it down and it seem farther away.
+        desiredDestination.setAerialDestination(myPosition.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myAerialDestinationZ)));
+        */
+
+        // aerial desired direction
+        double myAerialDestinationX = aerialOrientationXPid.process(myDestination.minus(myPosition).x, mySpeed.x); // X
+        double myAerialDestinationY = aerialOrientationYPid.process(myDestination.minus(myPosition).y, mySpeed.y); // Y
+        Vector2 myAerialDestinationXY = new Vector2(myAerialDestinationX, myAerialDestinationY);
+        double myAerialDestinationLengthXY = myAerialDestinationXY.magnitude();
+        double myAerialDestinationZ = Math.max(1000, myAerialDestinationLengthXY);                  // Z
+        // note: the "1000" here in the max function arbitrary. Actually, this value is being tweaked by the proportional
+        // parameter in the pid controllers x and y. Scale the proportional factor up and the 1000 now seem to be closer.
+        // Scale it down and it seem farther away.
+        desiredDestination.setAerialDestination(myPosition.plus(new Vector3(myAerialDestinationX, myAerialDestinationY, myAerialDestinationZ)));
 
         isAerialing = false;
-        //if(ballSpeed.z + ballPosition.z > 1000) {
+        if(ballSpeed.z + ballPosition.z > 800) {
             isAerialing = true;
-        //}
-
-        if(!isAerialing) {
-            double speedDivisor = Math.abs(myLocalSteeringDestination.angle(myNoseVector)) + 1;
-            desiredDestination.setDesiredSpeed(CarDestinationUpdater.DEFAULT_CAR_SPEED_VALUE / speedDivisor);
         }
 
+
+        // pitch yaw and roll orientations...
         double pitchAmount;
         double yawAmount;
         double rollAmount;
-
         if(isAerialing) {
-            if(input.car.hasWheelContact) {
-                output.jump(!output.jump());
-            }
             pitchAmount = pitchPid.process(myLocalAerialDestination.z, 0);
             yawAmount = yawPid.process(-myLocalAerialDestination.y, 0);
             rollAmount = rollPid.process(myLocalAerialDestination.x, 0);
@@ -121,7 +180,21 @@ public class MovementOutputHandler {
 
         output.pitch(pitchAmount);
         output.yaw(yawAmount);
-        output.roll(1);
+        //output.roll(rollAmount);
+        // jumping
+        if (jumpHandler.isJumpFinished()) {
+            jumpHandler.setJumpType(new SimpleJump());
+        }
+        jumpHandler.updateJumpState(
+                input,
+                output,
+                CarDestination.getLocal(
+                        desiredDestination.getThrottleDestination(),
+                        input
+                ),
+                myRoofVector.minusAngle(new Vector3(0, 0, 1))
+        );
+        output.jump(jumpHandler.getJumpState());
     }
 
     public boolean isAerialing() {

@@ -5,9 +5,9 @@ import util.bezier_curve.CurveSegment;
 import util.bezier_curve.PathComposite;
 import util.bezier_curve.PathIterator;
 
-public class CarDestinationUpdater {
+class CarDestinationUpdater {
 
-    public static final double DEFAULT_CAR_SPEED_VALUE = 700;
+    static final double DEFAULT_CAR_SPEED_VALUE = 800;
     private static final double BEZIER_ITERATOR_INTERPOLATION_PRECISION = 0.01;
     private static final double BOT_REFRESH_RATE = 30;
 

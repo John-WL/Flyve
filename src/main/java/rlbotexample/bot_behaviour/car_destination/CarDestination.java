@@ -38,7 +38,7 @@ public class CarDestination {
         destinationUpdater.setSpeed(speed);
     }
 
-    public void step(DataPacket input) {
+    public void advanceOneStep(DataPacket input) {
         if(hasNext()) {
             next(input);
         }

@@ -16,7 +16,7 @@ public class BotOutput {
                 .withYaw(0);
     }
 
-    public ControlsOutput getOutput() {
+    public ControlsOutput getForwardedOutput() {
         return output;
     }
 

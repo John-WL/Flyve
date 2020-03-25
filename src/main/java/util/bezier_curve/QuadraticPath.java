@@ -81,7 +81,7 @@ public class QuadraticPath extends BezierCurve implements PathComposite {
 
     private void addPath(int i) {
         // finding the next control point
-        nextControlPoint = this.getPoints().get(i-1).minus(fragmentedPath.get(i-2).getPoints().get(1)).scaledToMagnitude(this.getPoints().get(i-1).minus(this.getPoints().get(i)).magnitude()/4);
+        nextControlPoint = this.getPoints().get(i-1).minus(fragmentedPath.get(i-2).getPoints().get(1)).scaledToMagnitude(this.getPoints().get(i-1).minus(this.getPoints().get(i)).magnitude()/2);
         // generating a bezier curve that matches smoothly the end of the previous one
         QuadraticBezier bezier = createBezierCurve(nextControlPoint, i-1, i);
         fragmentedPath.add(bezier);
