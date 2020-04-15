@@ -1,4 +1,4 @@
-package util.pid_controller;
+package util.controllers;
 
 public class PidController {
 
@@ -32,6 +32,7 @@ public class PidController {
     public double process(double actualValue, double desiredValue) {
         // getting the error
         double error = actualValue - desiredValue;
+
         // updating the integral part
         // there are 2 total error variables because adding doubles
         // on a too large scale of magnitude difference does nothing at all
@@ -56,5 +57,17 @@ public class PidController {
     public void resetIntegralValue() {
         largeTotalError = 0;
         smallTotalError = 0;
+    }
+
+    public double getDerivativeValue() {
+        return - kd*(previousError - currentError);
+    }
+
+    public void transferInternalMemoryTo(PidController valuesToTransfer) {
+        valuesToTransfer.currentError = this.currentError;
+        valuesToTransfer.previousError = this.previousError;
+        valuesToTransfer.largeTotalError = this.largeTotalError;
+        valuesToTransfer.smallTotalError = this.smallTotalError;
+        valuesToTransfer.integralMaxValue = this.integralMaxValue;
     }
 }

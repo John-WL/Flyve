@@ -1,8 +1,7 @@
-package rlbotexample.bot_behaviour.bot_movements.jump;
+package rlbotexample.bot_behaviour.bot_controllers.jump;
 
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import rlbotexample.output.ControlsOutput;
 import util.vector.Vector3;
 
 public abstract class JumpType {
@@ -20,17 +19,17 @@ public abstract class JumpType {
         jumpState = false;
     }
 
-    abstract void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation);
+    public abstract void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation);
 
-    boolean getLastJumpState() {
+    public boolean getLastJumpState() {
         return lastJumpState;
     }
 
-    boolean getJumpState() {
+    public boolean getJumpState() {
         return jumpState;
     }
 
-    void setJumpState(boolean jumpState) {
+    public void setJumpState(boolean jumpState) {
         this.lastJumpState = this.jumpState;
         this.jumpState = jumpState;
     }
@@ -39,19 +38,19 @@ public abstract class JumpType {
         return jumpDuration;
     }
 
-    int[] getKeyTimeFrames() {
+    public int[] getKeyTimeFrames() {
         return jumpKeyTimeFrames;
     }
 
-    void updateCurrentJumpCallCounter() {
+    public void updateCurrentJumpCallCounter() {
         currentJumpCallCounter++;
     }
 
-    int getCurrentJumpCallCounter() {
+    public int getCurrentJumpCallCounter() {
         return currentJumpCallCounter;
     }
 
-    boolean isJumpFinished() {
+    public boolean isJumpFinished() {
         return currentJumpCallCounter >= jumpDuration;
     }
 }

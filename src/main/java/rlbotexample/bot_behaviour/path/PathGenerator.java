@@ -43,11 +43,31 @@ public class PathGenerator {
             List<Vector3> controlPoints = new ArrayList<>();
             controlPoints.add(myPosition);
 
-            double x = 0;
-            double y = 0;
+            double x;
+            double y;
             for(int i = 0; i < 10; i++) {
                 x = ((Math.random()-0.5)*2)*3000;
                 y = ((Math.random()-0.5)*2)*4000;
+                controlPoints.add(new Vector3(x, y, 50));
+            }
+
+            initiateNewPath(controlPoints, myNoseVector, desiredCarPosition);
+        }
+    }
+
+    public static void randomGroundPath2(CarDestination desiredCarPosition, DataPacket input) {
+        if(!desiredCarPosition.hasNext()) {
+            Vector3 myPosition = input.car.position;
+            Vector3 myNoseVector = input.car.orientation.noseVector;
+
+            List<Vector3> controlPoints = new ArrayList<>();
+            controlPoints.add(myPosition);
+
+            double x;
+            double y;
+            for(int i = 0; i < 10; i++) {
+                x = ((Math.random()-0.5)*2)*2500;
+                y = ((Math.random()-0.5)*2)*3500;
                 controlPoints.add(new Vector3(x, y, 50));
             }
 
@@ -164,6 +184,23 @@ public class PathGenerator {
         }
     }
 
+    public static void netPositionPathGenerator(CarDestination desiredCarPosition, DataPacket input) {
+        if(!desiredCarPosition.hasNext()) {
+            Vector3 initialDirection = new Vector3(0, -1, 0);
+            List<Vector3> controlPoints = new ArrayList<>();
+            if(input.car.team == 1) {
+                controlPoints.add(new Vector3(0, 5500, 50));
+                controlPoints.add(new Vector3(0, 5501, 50));
+            }
+            else {
+                controlPoints.add(new Vector3(0, -5500, 50));
+                controlPoints.add(new Vector3(0, -5501, 50));
+            }
+
+            initiateNewPath(controlPoints, initialDirection, desiredCarPosition);
+        }
+    }
+
     public static void ballChasePredictionPath(CarDestination desiredCarPosition, DataPacket input) {
         // get the future expected ball position
         Vector3 futureBallPosition = getFutureExpectedBallPosition(desiredCarPosition, input);
@@ -178,6 +215,18 @@ public class PathGenerator {
         List<Vector3> controlPoints = new ArrayList<>();
         controlPoints.add(destination);
         controlPoints.add(futureBallPosition.minus(new Vector3(0, 0, 50)));
+
+        // generating the next path
+        initiateNewPath(controlPoints, steeringDestination.minus(destination), desiredCarPosition);
+    }
+
+    public static void stupidBallChasePath(CarDestination desiredCarPosition, DataPacket input) {
+        Vector3 destination = desiredCarPosition.getThrottleDestination();
+        Vector3 steeringDestination = desiredCarPosition.getSteeringDestination(input);
+
+        List<Vector3> controlPoints = new ArrayList<>();
+        controlPoints.add(input.ball.position);
+        controlPoints.add(input.ball.position.minus(new Vector3(0, 0, 1)));
 
         // generating the next path
         initiateNewPath(controlPoints, steeringDestination.minus(destination), desiredCarPosition);
@@ -212,7 +261,7 @@ public class PathGenerator {
                 futureBallPosition = new Vector3(ballPrediction.slices(currentBallPositionIndex).physics().location());
                 initialBallTime = ballPrediction.slices(0).gameSeconds();
                 futureBallTime = ballPrediction.slices(currentBallPositionIndex).gameSeconds();
-                timeToGo = myPosition.minus(currentBallPosition).magnitude()/desiredCarPosition.getDesiredSpeed();
+                timeToGo = myPosition.minus(currentBallPosition).magnitude()/input.car.velocity.magnitude();
 
                 if(timeToGo > futureBallTime - initialBallTime) {
                     currentBallPositionIndex += divisor;

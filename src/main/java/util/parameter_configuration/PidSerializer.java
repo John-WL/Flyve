@@ -1,6 +1,6 @@
 package util.parameter_configuration;
 
-import util.pid_controller.PidController;
+import util.controllers.PidController;
 
 import java.util.List;
 
@@ -14,13 +14,16 @@ public class PidSerializer {
     public static final String AERIAL_ANGLE_FILENAME = PID_CFG_PATH + "pid_aerial_angle_val.pcg";
     public static final String AERIAL_BOOST_FILENAME = PID_CFG_PATH + "pid_aerial_boost_val.pcg";
 
-    public static PidController serialize(String fileName) {
+    public static PidController serialize(String fileName, PidController previousPid) {
         List<String> parameters = FileReader.fileContent(fileName);
 
         double kp = Double.valueOf(parameters.get(0));
         double ki = Double.valueOf(parameters.get(1));
         double kd = Double.valueOf(parameters.get(2));
 
-        return new PidController(kp, ki, kd);
+        PidController newPid = new PidController(kp, ki, kd);
+        previousPid.transferInternalMemoryTo(newPid);
+
+        return newPid;
     }
 }
