@@ -21,14 +21,17 @@ import java.awt.*;
 public class Dribble extends OutputUpdater  {
 
     private static final double MAXIMUM_TARGET_BALL_SPEED = 1500;
-    private static final double MINIMUM_TARGET_BALL_SPEED = 50;
-    private static final double MAXIMUM_BALL_OFFSET = 65;
+    private static final double MINIMUM_TARGET_BALL_SPEED = 100;
+    private static final double MAXIMUM_BALL_OFFSET = 40;
 
     private CarDestination desiredDestination;
     private BotBehaviour bot;
 
-    private PidController ballDirectionXPid;
-    private PidController ballDirectionYPid;
+    private PidController ballDirectionOffsetXPid;
+    private PidController ballDirectionOffsetYPid;
+
+    private PidController ballSteeringDirectionOffsetXPid;
+    private PidController ballSteeringDirectionOffsetYPid;
 
     private PidController throttlePid;
     private PidController steerPid;
@@ -50,8 +53,11 @@ public class Dribble extends OutputUpdater  {
         this.desiredDestination = desiredDestination;
         this.bot = bot;
 
-        ballDirectionXPid = new PidController(0.03, 0, 0.005);
-        ballDirectionYPid = new PidController(0.03, 0, 0.005);
+        ballDirectionOffsetXPid = new PidController(0.08, 0, 0.08);
+        ballDirectionOffsetYPid = new PidController(0.08, 0, 0.08);
+
+        ballSteeringDirectionOffsetXPid = new PidController(0.08, 0, 0.08);
+        ballSteeringDirectionOffsetYPid = new PidController(0.08, 0, 0.08);
 
         throttlePid = new PidController(1, 0, 0);
         steerPid = new PidController(1, 0, 0);
@@ -65,135 +71,106 @@ public class Dribble extends OutputUpdater  {
 
     @Override
     void updateOutput(DataPacket input) {
-
-        // get useful values
-        BotOutput output = bot.output();
-        Vector3 playerSpeed = input.car.velocity;
-        Vector3 playerNoseOrientation = input.car.orientation.noseVector;
-        Vector3 ballPosition = input.ball.position;
-        Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getThrottleDestination();
-        Vector3 ballSteeringDestination = desiredDestination.getSteeringDestination();
-
-        Vector2 cappedTargetBallSpeed = new Vector2(
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
-        );
-
-        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
-        double desiredPlayerOffsetX = ballDirectionXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
-        double desiredPlayerOffsetY = ballDirectionYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
-
-        desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
-        desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
-
-        // compute the actual player destination
-        Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
-        Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
-        dribblingDestination = playerDestination;
-
-        // transform it into the player's local coordinate system
-        Vector3 localDestination = CarDestination.getLocal(playerDestination, input);
-
-        // compute the throttle value
-        double throttleAmount = -throttlePid.process(playerSpeed.minus(ballSpeed).minusAngle(playerNoseOrientation).x, localDestination.x*10);
-        throttleAmount = ThrottleController.process(throttleAmount);
-        // compute the steering destination from ball speed and throttle destination
-        // here, we steer in the direction of the ball's velocity.
-        Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaledToMagnitude(180));
-        dribblingSteeringDestination = steeringDestination;
-
-        // transform it into the player's local coordinate system
-        Vector3 localSteeringDestination = CarDestination.getLocal(steeringDestination, input);
-
-        // transform the destination into an angle so it's easier to handle with the pid
-        Vector2 myLocalSteeringDestination2D = localSteeringDestination.flatten();
-        Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
-        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
-
-        // compute the steer value
-        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
-
-        output.throttle(throttleAmount);
-        output.boost(throttleAmount > boostForThrottleThreshold);
-        if(playerSpeed.magnitude() == 2300) {
-            output.boost(false);
-        }
-        output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
-
-        /*
-        // get useful values
-        BotOutput output = bot.output();
-        Vector3 playerSpeed = input.car.velocity;
-        Vector3 playerNoseOrientation = input.car.orientation.noseVector;
-        Vector3 ballPosition = input.ball.position;
-        Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getThrottleDestination();
-        Vector3 ballSteeringDestination = desiredDestination.getSteeringDestination();
-
-        Vector2 cappedTargetBallSpeed = new Vector2(
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
-        );
-
-        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
-        double desiredPlayerOffsetX = ballDirectionXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
-        double desiredPlayerOffsetY = ballDirectionYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
-
-        desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
-        desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
-
-        // compute the actual player destination
-        Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
-        Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
-        dribblingDestination = playerDestination;
-
-        // transform it into the player's local coordinate system
-        Vector3 localDestination = CarDestination.getLocal(playerDestination, input);
-
-        // compute the throttle value
-        double throttleAmount = -throttlePid.process(playerSpeed.minus(ballSpeed).minusAngle(playerNoseOrientation).x, localDestination.x*10);
-        throttleAmount = ThrottleController.process(throttleAmount);
-        // compute the steering destination from ball speed and throttle destination
-        // here, we steer in the direction of the ball's velocity.
-        Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaledToMagnitude(180));
-        dribblingSteeringDestination = steeringDestination;
-
-        // transform it into the player's local coordinate system
-        Vector3 localSteeringDestination = CarDestination.getLocal(steeringDestination, input);
-
-        // transform the destination into an angle so it's easier to handle with the pid
-        Vector2 myLocalSteeringDestination2D = localSteeringDestination.flatten();
-        Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
-        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
-
-        // compute the steer value
-        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
-
-        output.throttle(throttleAmount);
-        output.boost(throttleAmount > boostForThrottleThreshold);
-        if(playerSpeed.magnitude() == 2300) {
-            output.boost(false);
-        }
-        output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
-        */
-
+        throttle(input);
+        steer(input);
         pitchYawRoll(input);
         updateJumpBehaviour(input);
+    }
+
+    private void throttle(DataPacket input) {
+        // get useful values
+        BotOutput output = bot.output();
+        Vector3 playerSpeed = input.car.velocity;
+        Vector3 playerNoseOrientation = input.car.orientation.noseVector;
+        Vector3 ballPosition = input.ball.position;
+        Vector3 ballSpeed = input.ball.velocity;
+        Vector3 ballDestination = desiredDestination.getThrottleDestination();
+
+        Vector2 cappedTargetBallSpeed = new Vector2(
+                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
+                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
+        );
+
+        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
+        double desiredPlayerOffsetX = ballDirectionOffsetXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
+        double desiredPlayerOffsetY = ballDirectionOffsetYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
+
+        desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
+        desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
+
+        // compute the actual player destination
+        Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
+        Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
+        dribblingDestination = playerDestination;
+
+        // transform it into the player's local coordinate system
+        Vector3 localDestination = CarDestination.getLocal(playerDestination, input);
+
+        // compute the throttle value
+        double throttleAmount = -throttlePid.process(playerSpeed.minus(ballSpeed).minusAngle(playerNoseOrientation).x, localDestination.x*10);
+        throttleAmount = ThrottleController.process(throttleAmount);
+
+        output.throttle(throttleAmount);
+        output.boost(throttleAmount > boostForThrottleThreshold);
+    }
+
+    private void steer(DataPacket input) {
+        // get useful values
+        BotOutput output = bot.output();
+        Vector3 playerSpeed = input.car.velocity;
+        Vector3 playerNoseOrientation = input.car.orientation.noseVector;
+        Vector3 ballPosition = input.ball.position;
+        Vector3 ballSpeed = input.ball.velocity;
+        Vector3 ballDestination = desiredDestination.getSteeringDestination(input);
+
+        Vector2 cappedTargetBallSpeed = new Vector2(
+                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
+                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
+        );
+
+        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
+        double desiredPlayerOffsetX = ballSteeringDirectionOffsetXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
+        double desiredPlayerOffsetY = ballSteeringDirectionOffsetYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
+
+        desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
+        desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
+
+        // compute the steering destination from ball speed and throttle destination
+        // here, we steer in the direction of the ball's velocity.
+        Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
+        Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
+        Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaledToMagnitude(150));
+        dribblingSteeringDestination = steeringDestination;
+
+        // transform it into the player's local coordinate system
+        Vector3 localSteeringDestination = CarDestination.getLocal(steeringDestination, input);
+
+        // transform the destination into an angle so it's easier to handle with the pid
+        Vector2 myLocalSteeringDestination2D = localSteeringDestination.flatten();
+        Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
+        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
+
+        // compute the steer value
+        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
+
+        if(playerSpeed.magnitude() >= 2200) {
+            output.boost(false);
+        }
+        output.steer(steerAmount);
+        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
+
     }
 
     private void pitchYawRoll(DataPacket input) {
         // get useful variables
         BotOutput output = bot.output();
         Vector3 ballPosition = input.ball.position;
-        Vector3 localballPosition = CarDestination.getLocal(ballPosition, input);
+        Vector3 localBallPosition = CarDestination.getLocal(ballPosition, input);
 
         // compute the pitch, roll, and yaw pid values
-        double pitchAmount = pitchPid.process(localballPosition.z, 0);
-        double yawAmount = yawPid.process(-localballPosition.y, 0);
-        double rollAmount = rollPid.process(localballPosition.x, 0);
+        double pitchAmount = pitchPid.process(localBallPosition.z, 0);
+        double yawAmount = yawPid.process(-localBallPosition.y, 0);
+        double rollAmount = rollPid.process(localBallPosition.x, 0);
 
         // send the result to the botOutput controller
         output.pitch(pitchAmount);
@@ -208,7 +185,7 @@ public class Dribble extends OutputUpdater  {
         Vector3 myRoofVector = input.car.orientation.roofVector;
 
         if (jumpHandler.isJumpFinished()) {
-            if(mySpeed.minusAngle(myNoseVector).x < -200) {
+            if(mySpeed.minusAngle(myNoseVector).x < -400) {
                 if(input.car.hasWheelContact) {
                     jumpHandler.setJumpType(new SimpleJump());
                 }
