@@ -9,10 +9,12 @@ import rlbotexample.bot_behaviour.bot_controllers.jump.implementations.Wait;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
+import util.debug.ShapeDrawer;
 import util.parameter_configuration.ArbitraryValueSerializer;
 import util.parameter_configuration.PidSerializer;
 import util.controllers.PidController;
 import util.controllers.ThrottleController;
+import util.shapes.Circle;
 import util.vector.Vector2;
 import util.vector.Vector3;
 
@@ -22,7 +24,7 @@ public class Dribble extends OutputUpdater  {
 
     private static final double MAXIMUM_TARGET_BALL_SPEED = 1500;
     private static final double MINIMUM_TARGET_BALL_SPEED = 100;
-    private static final double MAXIMUM_BALL_OFFSET = 40;
+    private static final double MAXIMUM_BALL_OFFSET = 50;
 
     private CarDestination desiredDestination;
     private BotBehaviour bot;
@@ -53,11 +55,11 @@ public class Dribble extends OutputUpdater  {
         this.desiredDestination = desiredDestination;
         this.bot = bot;
 
-        ballDirectionOffsetXPid = new PidController(0.08, 0, 0.08);
-        ballDirectionOffsetYPid = new PidController(0.08, 0, 0.08);
+        ballDirectionOffsetXPid = new PidController(0.04, 0, 0.01);
+        ballDirectionOffsetYPid = new PidController(0.04, 0, 0.01);
 
-        ballSteeringDirectionOffsetXPid = new PidController(0.08, 0, 0.08);
-        ballSteeringDirectionOffsetYPid = new PidController(0.08, 0, 0.08);
+        ballSteeringDirectionOffsetXPid = new PidController(0.04, 0, 0.01);
+        ballSteeringDirectionOffsetYPid = new PidController(0.04, 0, 0.01);
 
         throttlePid = new PidController(1, 0, 0);
         steerPid = new PidController(1, 0, 0);
@@ -73,6 +75,7 @@ public class Dribble extends OutputUpdater  {
     void updateOutput(DataPacket input) {
         throttle(input);
         steer(input);
+        preventUselessBoost(input);
         pitchYawRoll(input);
         updateJumpBehaviour(input);
     }
@@ -117,7 +120,6 @@ public class Dribble extends OutputUpdater  {
     private void steer(DataPacket input) {
         // get useful values
         BotOutput output = bot.output();
-        Vector3 playerSpeed = input.car.velocity;
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
@@ -135,11 +137,11 @@ public class Dribble extends OutputUpdater  {
         desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
         desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
 
-        // compute the steering destination from ball speed and throttle destination
+        // compute the player steering destination from ball speed and ball steering destination
         // here, we steer in the direction of the ball's velocity.
         Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
         Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
-        Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaledToMagnitude(150));
+        Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaled(0.28));
         dribblingSteeringDestination = steeringDestination;
 
         // transform it into the player's local coordinate system
@@ -153,12 +155,20 @@ public class Dribble extends OutputUpdater  {
         // compute the steer value
         double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
 
-        if(playerSpeed.magnitude() >= 2200) {
-            output.boost(false);
-        }
         output.steer(steerAmount);
         output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
+    }
 
+    private void preventUselessBoost(DataPacket input) {
+        // get useful values
+        BotOutput output = bot.output();
+        Vector3 playerPosition = input.car.position;
+        Vector3 playerSpeed = input.car.velocity;
+        Vector3 ballPosition = input.ball.position;
+
+        if(playerSpeed.magnitude() >= 2200 || playerPosition.minus(ballPosition).flatten().magnitude() > 300) {
+            output.boost(false);
+        }
     }
 
     private void pitchYawRoll(DataPacket input) {
@@ -211,6 +221,11 @@ public class Dribble extends OutputUpdater  {
 
     @Override
     void updatePidValuesAndArbitraries() {
+
+        ballDirectionOffsetXPid = PidSerializer.serialize(PidSerializer.DRIBBLE_FILENAME, ballDirectionOffsetXPid);
+        ballDirectionOffsetYPid = PidSerializer.serialize(PidSerializer.DRIBBLE_FILENAME, ballDirectionOffsetYPid);
+        ballSteeringDirectionOffsetXPid = PidSerializer.serialize(PidSerializer.DRIBBLE_FILENAME, ballSteeringDirectionOffsetXPid);
+        ballSteeringDirectionOffsetYPid = PidSerializer.serialize(PidSerializer.DRIBBLE_FILENAME, ballSteeringDirectionOffsetYPid);
         throttlePid = PidSerializer.serialize(PidSerializer.THROTTLE_FILENAME, throttlePid);
         steerPid = PidSerializer.serialize(PidSerializer.STEERING_FILENAME, steerPid);
         pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, pitchPid);
