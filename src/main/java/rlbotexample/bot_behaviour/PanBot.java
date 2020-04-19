@@ -2,15 +2,10 @@ package rlbotexample.bot_behaviour;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.bot_controllers.basic_skills.Dribble;
-import rlbotexample.bot_behaviour.bot_controllers.basic_skills.DriveToDestination;
-import rlbotexample.bot_behaviour.bot_controllers.basic_skills.FlyToDestination;
-import rlbotexample.bot_behaviour.bot_controllers.basic_skills.OutputUpdater;
+import rlbotexample.bot_behaviour.bot_controllers.basic_skills.*;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.path.PathGenerator;
-import rlbotexample.game_situation.GameSituation;
-import rlbotexample.game_situation.GroundDribbleSetup1;
-import rlbotexample.game_situation.UnhandledGameState;
+import rlbotexample.game_situation.*;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
@@ -30,7 +25,7 @@ public class PanBot extends BotBehaviour {
         PathGenerator.dummyPath(desiredDestination);
         //driveToDestination = new DriveToDestination(desiredDestination, this);
         //flyToDestination = new FlyToDestination(desiredDestination, this);
-        outputUpdater = new Dribble(desiredDestination, this);
+        outputUpdater = new AirDribble(desiredDestination, this);
         botFpsLogger = new PanBotFpsLogger(outputUpdater, desiredDestination);
     }
 
@@ -42,7 +37,7 @@ public class PanBot extends BotBehaviour {
         // It helps to setup the game state so we can tweak specific bot behaviours
         // before implementing the meta game strats.
         if(gameSituation.isGameStateElapsed()) {
-            //gameSituation = new GroundDribbleSetup1();
+            gameSituation = new AirDribbleSetup1();
         }
 
         /*
@@ -57,7 +52,7 @@ public class PanBot extends BotBehaviour {
             PathGenerator.netPositionPathGenerator(desiredDestination, input);
         }
         */
-        PathGenerator.randomGroundPath2(desiredDestination, input);
+        PathGenerator.randomAerialPath(desiredDestination, input);
 
         // bot's desired position advances one step
         desiredDestination.advanceOneStep(input);

@@ -27,7 +27,7 @@ public class PanBotFpsLogger {
 
         renderer.drawLine3d(Color.LIGHT_GRAY, myPosition, throttleDestination);
         renderer.drawLine3d(Color.MAGENTA, myPosition, steeringDestination);
-        renderer.drawLine3d(Color.green, myPosition, aerialDestination);
+        //renderer.drawLine3d(Color.green, myPosition, aerialDestination);
         BezierDebugger.renderPath(desiredDestination.getPath(), Color.blue, renderer);
         //BezierDebugger.renderPositionControlledByCar(input, Color.PINK, renderer);
     }

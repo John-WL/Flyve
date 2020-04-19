@@ -10,7 +10,8 @@ public class PidSerializer {
     public static final String PID_CFG_PATH = LOCAL_CLASS_PATH + "pid_cfg\\";
     public static final String THROTTLE_FILENAME = PID_CFG_PATH + "pid_throttle_val.pcg";
     public static final String STEERING_FILENAME = PID_CFG_PATH + "pid_steering_val.pcg";
-    public static final String PITCH_YAW_ROLL_FILENAME = PID_CFG_PATH + "pid_pitch_yaw_roll_val.pcg";
+    public static final String PITCH_YAW_FILENAME = PID_CFG_PATH + "pid_pitch_yaw_val.pcg";
+    public static final String ROLL_FILENAME = PID_CFG_PATH + "pid_roll_val.pcg";
     public static final String AERIAL_ANGLE_FILENAME = PID_CFG_PATH + "pid_aerial_angle_val.pcg";
     public static final String AERIAL_BOOST_FILENAME = PID_CFG_PATH + "pid_aerial_boost_val.pcg";
     public static final String DRIBBLE_FILENAME = PID_CFG_PATH + "pid_dribble_val.pcg";

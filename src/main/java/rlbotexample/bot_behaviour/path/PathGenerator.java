@@ -35,6 +35,18 @@ public class PathGenerator {
         desiredCarPosition.pathLengthIncreased(1, desiredCarPosition.getPath().getPoints().size());
     }
 
+    public static void opponentChasePathGenerator(CarDestination desiredCarPosition, DataPacket input) {
+        Vector3 opponentPosition = input.allCars.get(1-input.playerIndex).position;
+        Vector3 myNoseVector = input.car.orientation.noseVector;
+
+        // adding the next position
+        List<Vector3> controlPoints = new ArrayList<>();
+        controlPoints.add(opponentPosition);
+        controlPoints.add(opponentPosition.plus(new Vector3(0, 0, 1)));
+
+        initiateNewPath(controlPoints, myNoseVector, desiredCarPosition);
+    }
+
     public static void randomGroundPath(CarDestination desiredCarPosition, DataPacket input) {
         if(!desiredCarPosition.hasNext()) {
             Vector3 myPosition = input.car.position;
@@ -184,7 +196,7 @@ public class PathGenerator {
         }
     }
 
-    public static void netPositionPathGenerator(CarDestination desiredCarPosition, DataPacket input) {
+    public static void playerNetPositionPathGenerator(CarDestination desiredCarPosition, DataPacket input) {
         if(!desiredCarPosition.hasNext()) {
             Vector3 initialDirection = new Vector3(0, -1, 0);
             List<Vector3> controlPoints = new ArrayList<>();
@@ -195,6 +207,25 @@ public class PathGenerator {
             else {
                 controlPoints.add(new Vector3(0, -5500, 50));
                 controlPoints.add(new Vector3(0, -5501, 50));
+            }
+
+            initiateNewPath(controlPoints, initialDirection, desiredCarPosition);
+        }
+    }
+
+    public static void ennemyNetPositionPathGenerator(CarDestination desiredCarPosition, DataPacket input) {
+        if(!desiredCarPosition.hasNext()) {
+            Vector3 initialDirection = new Vector3(0, -1, 0);
+            List<Vector3> controlPoints = new ArrayList<>();
+            if(input.car.team == 0) {
+                double playerDistanceFromGoal = input.car.position.minus(new Vector3(0, 5500, 50)).magnitude();
+                controlPoints.add(new Vector3(0, 5500 - Math.min(playerDistanceFromGoal/2, 2000), 50));
+                controlPoints.add(new Vector3(0, 5501 - Math.min(playerDistanceFromGoal/2, 2000), 50));
+            }
+            else {
+                double playerDistanceFromGoal = input.car.position.minus(new Vector3(0, -5500, 50)).magnitude();
+                controlPoints.add(new Vector3(0, -5500 + Math.min(playerDistanceFromGoal/2, 2000), 50));
+                controlPoints.add(new Vector3(0, -5501 + Math.min(playerDistanceFromGoal/2, 2000), 50));
             }
 
             initiateNewPath(controlPoints, initialDirection, desiredCarPosition);

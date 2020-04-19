@@ -129,9 +129,9 @@ public class FlyToDestination extends OutputUpdater {
 
     @Override
     void updatePidValuesAndArbitraries() {
-        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, pitchPid);
-        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, yawPid);
-        rollPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, rollPid);
+        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
+        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, yawPid);
+        rollPid = PidSerializer.serialize(PidSerializer.ROLL_FILENAME, rollPid);
         aerialOrientationXPid = PidSerializer.serialize(PidSerializer.AERIAL_ANGLE_FILENAME, aerialOrientationXPid);
         aerialOrientationYPid = PidSerializer.serialize(PidSerializer.AERIAL_ANGLE_FILENAME, aerialOrientationYPid);
         aerialBoostPid = PidSerializer.serialize(PidSerializer.AERIAL_BOOST_FILENAME, aerialBoostPid);

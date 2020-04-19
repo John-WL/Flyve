@@ -9,12 +9,10 @@ import rlbotexample.bot_behaviour.bot_controllers.jump.implementations.Wait;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.debug.ShapeDrawer;
 import util.parameter_configuration.ArbitraryValueSerializer;
 import util.parameter_configuration.PidSerializer;
 import util.controllers.PidController;
 import util.controllers.ThrottleController;
-import util.shapes.Circle;
 import util.vector.Vector2;
 import util.vector.Vector3;
 
@@ -22,9 +20,12 @@ import java.awt.*;
 
 public class Dribble extends OutputUpdater  {
 
-    private static final double MAXIMUM_TARGET_BALL_SPEED = 1500;
-    private static final double MINIMUM_TARGET_BALL_SPEED = 100;
+    private static final double MAXIMUM_TARGET_BALL_SPEED = 2200;
+    private static final double MINIMUM_TARGET_BALL_SPEED_FACTOR = 600;
+    private static final double STRENGTH_OF_MINIMUM_TARGET_BALL_SPEED_FACTOR = 0.12;
     private static final double MAXIMUM_BALL_OFFSET = 50;
+    private static final double PLAYER_DISTANCE_FROM_BALL_WHEN_CONSIDERED_DRIBBLING = 183;
+    private static final double PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST = 120;
 
     private CarDestination desiredDestination;
     private BotBehaviour bot;
@@ -103,7 +104,16 @@ public class Dribble extends OutputUpdater  {
 
         // compute the actual player destination
         Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
+        /* prevent too slow maneuvers */ {
+            double slowDownPreventingThresholdFactor = 0;
+            if (ballSpeed.magnitude() < MINIMUM_TARGET_BALL_SPEED_FACTOR) {
+                slowDownPreventingThresholdFactor = ballSpeed.magnitude() - MINIMUM_TARGET_BALL_SPEED_FACTOR;
+                slowDownPreventingThresholdFactor *= STRENGTH_OF_MINIMUM_TARGET_BALL_SPEED_FACTOR;
+            }
+            desiredPlayerOffset = desiredPlayerOffset.plus(playerNoseOrientation.scaled(slowDownPreventingThresholdFactor));
+        }
         Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
+
         dribblingDestination = playerDestination;
 
         // transform it into the player's local coordinate system
@@ -120,6 +130,7 @@ public class Dribble extends OutputUpdater  {
     private void steer(DataPacket input) {
         // get useful values
         BotOutput output = bot.output();
+        Vector3 playerPosition = input.car.position;
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
@@ -141,6 +152,21 @@ public class Dribble extends OutputUpdater  {
         // here, we steer in the direction of the ball's velocity.
         Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
         Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
+        /* handle loss of ball control. Regain that control damn it! (We consider loss of control if behind the ball and not close enough.)*/ {
+            if (playerPosition.minus(ballPosition).magnitude() > PLAYER_DISTANCE_FROM_BALL_WHEN_CONSIDERED_DRIBBLING
+                && playerPosition.minus(ballPosition).dotProduct(ballSpeed) < 0) {
+                Vector3 alternativeDesiredPlayerOffset;
+                // should the player go to the right or to the left of the ball's velocity vector?
+                if(playerPosition.minus(ballPosition).minusAngle(ballDestination.minus(ballPosition)).y < 0) {
+                    alternativeDesiredPlayerOffset = new Vector3(0, PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST, 0);
+                }
+                else {
+                    alternativeDesiredPlayerOffset = new Vector3(0, -PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST, 0);
+                }
+                playerDestination = ballPosition.plus(alternativeDesiredPlayerOffset.plusAngle(ballSpeed.plus(new Vector3(0.1, 0, 0))));
+            }
+        }
+
         Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaled(0.28));
         dribblingSteeringDestination = steeringDestination;
 
@@ -193,6 +219,7 @@ public class Dribble extends OutputUpdater  {
         Vector3 mySpeed = input.car.velocity;
         Vector3 myNoseVector = input.car.orientation.noseVector;
         Vector3 myRoofVector = input.car.orientation.roofVector;
+        Vector3 ballPosition = input.ball.position;
 
         if (jumpHandler.isJumpFinished()) {
             if(mySpeed.minusAngle(myNoseVector).x < -400) {
@@ -211,7 +238,7 @@ public class Dribble extends OutputUpdater  {
                 input,
                 output,
                 CarDestination.getLocal(
-                        desiredDestination.getThrottleDestination(),
+                        ballPosition,
                         input
                 ),
                 myRoofVector.minusAngle(new Vector3(0, 0, 1))
@@ -228,11 +255,11 @@ public class Dribble extends OutputUpdater  {
         ballSteeringDirectionOffsetYPid = PidSerializer.serialize(PidSerializer.DRIBBLE_FILENAME, ballSteeringDirectionOffsetYPid);
         throttlePid = PidSerializer.serialize(PidSerializer.THROTTLE_FILENAME, throttlePid);
         steerPid = PidSerializer.serialize(PidSerializer.STEERING_FILENAME, steerPid);
-        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, pitchPid);
-        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, yawPid);
-        rollPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, rollPid);
+        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
+        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, yawPid);
+        rollPid = PidSerializer.serialize(PidSerializer.ROLL_FILENAME, rollPid);
 
-        boostForThrottleThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_THRESHOLD_FILENAME);
+        boostForThrottleThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_DRIBBLE_THRESHOLD_FILENAME);
         driftForSteerThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.DRIFT_FOR_STEERING_THRESHOLD_FILENAME);
     }
 

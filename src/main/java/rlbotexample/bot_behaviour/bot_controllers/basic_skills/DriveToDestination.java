@@ -60,6 +60,9 @@ public class DriveToDestination extends OutputUpdater {
         // case that the car happens to be in mid-air when this class is used
         pitchYawRoll(input);
 
+        // stop boosting if supersonic
+        preventUselessBoost(input);
+
         // halfFlips and stuff
         updateJumpBehaviour(input);
     }
@@ -67,11 +70,15 @@ public class DriveToDestination extends OutputUpdater {
     private void throttle(DataPacket input) {
         // get useful variables
         BotOutput output = bot.output();
-        Vector3 myDestination = desiredDestination.getThrottleDestination();
-        Vector3 myLocalDestination = CarDestination.getLocal(myDestination, input);
+        Vector3 playerSpeed = input.car.velocity;
+        Vector3 playerDestination = desiredDestination.getThrottleDestination();
+        Vector3 lastPlayerDestination = desiredDestination.getThrottleDestination();
+        Vector3 playerLocalDestination = CarDestination.getLocal(playerDestination, input);
+        Vector3 lastPlayerLocalDestination = CarDestination.getLocal(lastPlayerDestination, input);
+        Vector3 playerDestinationSpeed = playerLocalDestination.minus(lastPlayerLocalDestination).scaled(30);
 
         // compute the pid value for throttle
-        double throttleAmount = throttlePid.process(myLocalDestination.x, 0);
+        double throttleAmount = -throttlePid.process(playerSpeed.minus(playerDestinationSpeed).x, playerLocalDestination.x*10);
 
         // send the result to the botOutput controller
         output.throttle(throttleAmount);
@@ -114,6 +121,18 @@ public class DriveToDestination extends OutputUpdater {
         //output.roll(rollAmount);
     }
 
+    private void preventUselessBoost(DataPacket input) {
+        // get useful values
+        BotOutput output = bot.output();
+        Vector3 playerPosition = input.car.position;
+        Vector3 playerSpeed = input.car.velocity;
+        Vector3 ballPosition = input.ball.position;
+
+        if(playerSpeed.magnitude() >= 2200) {
+            output.boost(false);
+        }
+    }
+
     private void updateJumpBehaviour(DataPacket input) {
         BotOutput output = bot.output();
         Vector3 mySpeed = input.car.velocity;
@@ -147,15 +166,12 @@ public class DriveToDestination extends OutputUpdater {
 
     @Override
     void updatePidValuesAndArbitraries() {
-        // instantiate new pid controllers based on the data files that corresponds...
-        // watch out, the integral value would be reset every time this function is called.
-        // We're still using those instantiation functions because we don't need the integral value at all
-        // in the whole project muahahahaha!
+        // instantiate new pid controllers based on the data files that corresponds
         throttlePid = PidSerializer.serialize(PidSerializer.THROTTLE_FILENAME, throttlePid);
         steerPid = PidSerializer.serialize(PidSerializer.STEERING_FILENAME, steerPid);
-        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, pitchPid);
-        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, yawPid);
-        rollPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_ROLL_FILENAME, rollPid);
+        pitchPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
+        yawPid = PidSerializer.serialize(PidSerializer.PITCH_YAW_FILENAME, yawPid);
+        rollPid = PidSerializer.serialize(PidSerializer.ROLL_FILENAME, rollPid);
 
         boostForThrottleThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_THRESHOLD_FILENAME);
         driftForSteerThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.DRIFT_FOR_STEERING_THRESHOLD_FILENAME);
