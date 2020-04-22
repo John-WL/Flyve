@@ -1,9 +1,8 @@
-package rlbotexample.bot_behaviour.bot_movements.jump;
+package rlbotexample.bot_behaviour.bot_controllers.jump;
 
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.bot_behaviour.bot_controllers.jump.implementations.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import rlbotexample.output.ControlsOutput;
 import util.vector.Vector3;
 
 public class JumpHandler {
@@ -33,7 +32,7 @@ public class JumpHandler {
         if(jumpType.getJumpState()) {
             if(!firstJumpOccurred) {
                 // If the first jump is from the ceiling, then it hasn't happened at all,
-                // but the second has, and so that's why the first must have happen at some point.
+                // but the second has, and so that's why the first must have happened at some point.
                 // This is just a convention though. We could have let the first jump un-occurred,
                 // but it's practical this way.
                 firstJumpOccurred = true;
@@ -47,14 +46,9 @@ public class JumpHandler {
 
         /*
         switch(jumpType) {
-            case FLIP_CANCEL:
-
-                break;
-            case HALF_FLIP:
-
-                break;
             case WAVE_DASH:
-
+                // I'M IMPLEMENTING IT IN THE FUTURE BUT NOT FOR NOW
+                // it's a little bit too advanced for my needs at the moment.
                 break;
         }*/
     }

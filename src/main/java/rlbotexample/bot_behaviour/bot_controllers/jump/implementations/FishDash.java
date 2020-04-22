@@ -1,8 +1,8 @@
-package rlbotexample.bot_behaviour.bot_movements.jump;
+package rlbotexample.bot_behaviour.bot_controllers.jump.implementations;
 
+import rlbotexample.bot_behaviour.bot_controllers.jump.JumpType;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import rlbotexample.output.ControlsOutput;
 import util.vector.Vector3;
 
 public class FishDash extends JumpType {
@@ -15,7 +15,7 @@ public class FishDash extends JumpType {
     }
 
     @Override
-    void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
+    public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
         updateCurrentJumpCallCounter();
         setJumpState(getCurrentJumpCallCounter() <= JUMP_DURATION);
 
