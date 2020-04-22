@@ -51,7 +51,7 @@ public class PidController {
         previousError = currentError;
         currentError = error;
 
-        return kp*error + ki*(largeTotalError + smallTotalError) - kd*(previousError - currentError);
+        return kp*currentError + ki*(largeTotalError + smallTotalError) - kd*(previousError - currentError);
     }
 
     public void resetIntegralValue() {
@@ -59,8 +59,16 @@ public class PidController {
         smallTotalError = 0;
     }
 
-    public double getDerivativeValue() {
-        return - kd*(previousError - currentError);
+    public double getProportionnalConstant() {
+        return kp;
+    }
+
+    public double getIntegralConstant() {
+        return ki;
+    }
+
+    public double getDerivativeConstant() {
+        return kd;
     }
 
     public void transferInternalMemoryTo(PidController valuesToTransfer) {

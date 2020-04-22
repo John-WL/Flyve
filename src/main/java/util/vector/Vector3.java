@@ -42,6 +42,10 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(x * scale, y * scale, z * scale);
     }
 
+    public Vector3 scaled(double scaleX, double scaleY, double scaleZ) {
+        return new Vector3(x * scaleX, y * scaleY, z * scaleZ);
+    }
+
     /**
      * If magnitude is negative, we will return a vector facing the opposite direction.
      */

@@ -14,10 +14,12 @@ public class AutoCorrectingLapse {
     }
 
     public void update() {
-        elapsedTime += (System.currentTimeMillis() - lastTime)/1000.0;
+        elapsedTime += (System.currentTimeMillis() - lastTime)*0.001;
         lastTime = System.currentTimeMillis();
-        numberOfLapseToDo += round((elapsedTime - (elapsedTime % secondsToLapse))/secondsToLapse);
-        elapsedTime %= secondsToLapse;
+        if(elapsedTime > secondsToLapse) {
+            elapsedTime -= secondsToLapse;
+            numberOfLapseToDo++;
+        }
     }
 
     public boolean isTimeElapsed() {
@@ -25,9 +27,6 @@ public class AutoCorrectingLapse {
     }
     public void lapse() {
         numberOfLapseToDo--;
-        if(numberOfLapseToDo > 10) {
-            numberOfLapseToDo = 10;
-        }
     }
 
     private long round(double x) {

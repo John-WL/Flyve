@@ -5,7 +5,7 @@ import rlbot.ControllerState;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.BotBehaviour;
+import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -31,7 +31,7 @@ public class SampleBot implements Bot {
         this.playerIndex = playerIndex;
         myBotOutput = new BotOutput();
         this.botBehaviour = botBehaviour;
-        fpsCap = new AutoCorrectingLapse(0.033333333333333333333333333333333);
+        fpsCap = new AutoCorrectingLapse(0.03333333333);
         renderer = getRenderer();
         averageFps = 0;
         currentFpsTime = 0;
@@ -47,28 +47,29 @@ public class SampleBot implements Bot {
      * Modify it to make your bot smarter!
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
-
-        time1 = System.currentTimeMillis();
-
         fpsCap.update();
         if(fpsCap.isTimeElapsed()) {
             fpsCap.lapse();
 
+            // timestamp before executing the bot
+            time1 = System.currentTimeMillis();
+
             // Bot behaviour
             myBotOutput = botBehaviour.processInput(input, packet);
+
+            // timestamp after executing the bot
+            time2 = System.currentTimeMillis();
 
             // just some debug calculations all the way down to the return...
             previousFpsTime = currentFpsTime;
             currentFpsTime = System.currentTimeMillis();
-        }
 
-        time2 = System.currentTimeMillis();
-
-        if(currentFpsTime - previousFpsTime == 0) {
-            currentFpsTime++;
+            if(currentFpsTime - previousFpsTime == 0) {
+                currentFpsTime++;
+            }
+            currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
+            averageFps = (averageFps*29 + (currentFps)) / 30.0;
         }
-        currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
-        averageFps = (averageFps * 299 + (currentFps)) / 300.0;
 
         botBehaviour.updateGui(renderer, input, currentFps, averageFps, time2 - time1);
 
