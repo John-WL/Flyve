@@ -1,4 +1,4 @@
-package util.parameter_configuration.data;
+package util.parameter_configuration;
 
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
@@ -45,5 +45,10 @@ public class IOFile {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+    }
+
+    public static void deleteFile(String fileName) {
+        File file = new File(fileName);
+        file.delete();
     }
 }

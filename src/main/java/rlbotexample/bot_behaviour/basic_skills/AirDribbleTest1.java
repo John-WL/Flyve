@@ -9,7 +9,7 @@ import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
-import util.parameter_configuration.data.PidSerializer;
+import util.parameter_configuration.PidSerializer;
 import util.controllers.PidController;
 import util.vector.Vector2;
 import util.vector.Vector3;

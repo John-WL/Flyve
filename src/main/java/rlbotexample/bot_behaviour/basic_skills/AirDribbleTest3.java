@@ -10,8 +10,8 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
 import util.game_constants.RlConstants;
-import util.parameter_configuration.data.ArbitraryValueSerializer;
-import util.parameter_configuration.data.PidSerializer;
+import util.parameter_configuration.ArbitraryValueSerializer;
+import util.parameter_configuration.PidSerializer;
 import util.vector.Vector2;
 import util.vector.Vector3;
 

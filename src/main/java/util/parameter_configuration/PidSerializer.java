@@ -1,14 +1,12 @@
-package util.parameter_configuration.data;
+package util.parameter_configuration;
 
 import util.controllers.PidController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static util.parameter_configuration.data.IOFile.LOCAL_CLASS_PATH;
-
 public class PidSerializer {
-    public static final String PID_CFG_PATH = LOCAL_CLASS_PATH + "pid_cfg\\";
+    public static final String PID_CFG_PATH = IOFile.LOCAL_CLASS_PATH + "pid_cfg\\";
     public static final String THROTTLE_FILENAME = PID_CFG_PATH + "pid_throttle_val.pcg";
     public static final String STEERING_FILENAME = PID_CFG_PATH + "pid_steering_val.pcg";
     public static final String PITCH_YAW_FILENAME = PID_CFG_PATH + "pid_pitch_yaw_val.pcg";

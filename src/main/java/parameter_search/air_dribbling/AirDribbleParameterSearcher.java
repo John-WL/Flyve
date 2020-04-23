@@ -8,12 +8,15 @@ import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.path.PathHandler;
 import rlbotexample.bot_behaviour.path.test_paths.RandomAerialPath;
+import util.evaluators.AirDribbleEvaluator;
+import util.evaluators.BotEvaluator;
 import util.game_situation.*;
 import util.game_situation.handlers.FiniteTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.parameter_configuration.binary_search.BinarySearchHandler;
+import util.binary_search.BinarySearchHandler;
+import util.parameter_configuration.data.representation.file_hierarchy.AirDribbleParameterSearcherFileData;
 
 public class AirDribbleParameterSearcher extends PanBot {
 
@@ -23,6 +26,7 @@ public class AirDribbleParameterSearcher extends PanBot {
     private PathHandler pathHandler;
     private BotEvaluator botEvaluator;
     private BinarySearchHandler binarySearchHandler;
+    private AirDribbleParameterSearcherFileData dataRepresentation;
 
     public AirDribbleParameterSearcher() {
         trainingPack = new FiniteTrainingPack();
@@ -34,10 +38,13 @@ public class AirDribbleParameterSearcher extends PanBot {
         trainingPack.add(new AirDribbleSetup3());
 
         desiredDestination = new CarDestination();
+
         pathHandler = new RandomAerialPath(desiredDestination);
         skillController = new AirDribbleTest3(desiredDestination, this);
+
         botEvaluator = new AirDribbleEvaluator(desiredDestination);
-        binarySearchHandler = new BinarySearchHandler();
+        dataRepresentation = new AirDribbleParameterSearcherFileData();
+        binarySearchHandler = new BinarySearchHandler(dataRepresentation);
     }
 
     // called every frame
@@ -46,22 +53,34 @@ public class AirDribbleParameterSearcher extends PanBot {
         // game situations handling
         trainingPack.update();
 
+        // update bot's evaluation so we can know how if the updated parameters
+        // are better or worse than the current best ones we have
         botEvaluator.updateEvaluation(input);
 
+        // if we completed the pack, then we need to modify the best parameters we have yet
+        // so we can restart the training pack with fresh new parameters to test.
         if(trainingPack.hasBeenCompleted()) {
             trainingPack.reset();
+
+            // send the result of the parameter change to the binary searchHandler,
+            // so it can know if the change was a great one or a bad one,
+            // and act accordingly to that matter.
             double currentEvaluation = botEvaluator.getEvaluation();
             botEvaluator.resetEvaluation();
             binarySearchHandler.sendSearchResult(currentEvaluation);
 
-            // if the search has concluded
-            if(binarySearchHandler.isDoneSearching()) {
-                binarySearchHandler.isolateBestResultsInAFolder();
-            }
-            else {
+            // if we searched as much as we wanted
+            if(!binarySearchHandler.isDoneSearching()) {
+                // modify slightly the parameters for the next training pack sequence
                 binarySearchHandler.nextHypothesis();
             }
+            else {
+                // isolate the best results so we can find them easily after all the file creation that happened
+                dataRepresentation.isolateBestResultsInFinalDataFolder();
+            }
         }
+
+
 
 
 
