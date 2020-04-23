@@ -1,9 +1,9 @@
 package rlbotexample;
 
+import parameter_search.air_dribbling.AirDribbleParameterSearcher;
 import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
-import rlbotexample.bot_behaviour.panbot.EarlyTestNormal1v1;
 
 public class SamplePythonInterface extends SocketServer {
 
@@ -12,6 +12,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new EarlyTestNormal1v1());
+        return new SampleBot(index, new AirDribbleParameterSearcher());
     }
 }

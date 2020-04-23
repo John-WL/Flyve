@@ -47,6 +47,7 @@ public class BinarySearcher {
         // test the right one.
 
         if(currentSearchPosition == SearchState.LEFT) {
+            System.out.println("Left in the binary searcher!");
             // yes, this is very bad the first time we call this function.
             // Why? Because it directly starts by applying the hypothesis, before even evaluating it.
 
@@ -76,6 +77,7 @@ public class BinarySearcher {
             currentSearchPosition = SearchState.RIGHT;
         }
         else {
+            System.out.println("Right in the binary searcher!");
             double nextHypothesis = bestHypothesis - searchRange;
             dataHandler.set(nextHypothesis);
             currentSearchPosition = SearchState.LEFT;

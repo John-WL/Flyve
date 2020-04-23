@@ -4,6 +4,7 @@ import util.parameter_configuration.data.handler.DataHandler;
 import util.parameter_configuration.data.handler.ImmutableFileParameter;
 import util.parameter_configuration.data.representation.DataRepresentation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class AirDribbleParameterSearcherFileData extends DataRepresentation<Immu
             FINAL_DATA_ROOT + "\\" + PLAYER_ORIENTATION_Z_FILE_NAME
     };
 
+    private static List<ImmutableFileParameter> immutableFileParameters;
+
     public AirDribbleParameterSearcherFileData() {
         super(generateDataHandlerList());
     }
@@ -50,16 +53,23 @@ public class AirDribbleParameterSearcherFileData extends DataRepresentation<Immu
         }
     }
 
+    public void resynchronizeParameters() {
+        immutableFileParameters.get(0).resynchronizeWith(immutableFileParameters.get(1));
+        immutableFileParameters.get(3).resynchronizeWith(immutableFileParameters.get(4));
+        immutableFileParameters.get(5).resynchronizeWith(immutableFileParameters.get(6));
+
+    }
+
     private static List<ImmutableFileParameter> generateDataHandlerList() {
-        ImmutableFileParameter[] immutableFileParameters = new ImmutableFileParameter[NUMBER_OF_PARAMETER];
+        immutableFileParameters = new ArrayList<>();
 
         // make sure the file tree has everything it needs
         inspectFileHierarchy();
         for(int i = 0; i < NUMBER_OF_PARAMETER; i++) {
-            immutableFileParameters[i] = new ImmutableFileParameter(ROOTED_FILE_NAME_OF_PARAMETERS[i], LINE_NUMBER_OF_PARAMETERS[i]);
+            immutableFileParameters.add(new ImmutableFileParameter(ROOTED_FILE_NAME_OF_PARAMETERS[i], LINE_NUMBER_OF_PARAMETERS[i]));
         }
 
-        return Arrays.asList(immutableFileParameters);
+        return immutableFileParameters;
     }
 
     private static void inspectFileHierarchy() {

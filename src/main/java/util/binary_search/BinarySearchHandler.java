@@ -8,8 +8,11 @@ import java.util.List;
 
 public class BinarySearchHandler {
 
+    private static final int DEFAULT_NUMBER_OF_FULL_SEARCH_TO_DO = 100;
+
     private List<BinarySearcher> searchers;
     private int indexOfActiveBinarySearcher;
+    private int numberOfFullSearchDone;
 
     private BinarySearcher activeBinarySearcher;
 
@@ -22,6 +25,7 @@ public class BinarySearchHandler {
             searchers.add(new BinarySearcher(parameter));
         }
 
+        numberOfFullSearchDone = 0;
         indexOfActiveBinarySearcher = 0;
         activeBinarySearcher = searchers.get(indexOfActiveBinarySearcher);
     }
@@ -34,11 +38,17 @@ public class BinarySearchHandler {
             if(!isDoneSearching()) {
                 // change the active binary searcher
                 indexOfActiveBinarySearcher++;
-                indexOfActiveBinarySearcher %= searchers.size();
+                if(indexOfActiveBinarySearcher == searchers.size()) {
+                    // if we reached the last one, reset its index to 0,
+                    // and count the number of full searched that we did up to now.
+                    indexOfActiveBinarySearcher = 0;
+                    numberOfFullSearchDone++;
+                }
                 activeBinarySearcher = searchers.get(indexOfActiveBinarySearcher);
 
                 // restart the search
                 activeBinarySearcher.resetSearchRange();
+                System.out.println("Starting a new search!");
             }
             // else, do nothing! There is nothing to search anymore!
         }
@@ -46,6 +56,7 @@ public class BinarySearchHandler {
         // update the current data with the results we got from the search
         else {
             activeBinarySearcher.nextHypothesis();
+            System.out.println("Narrowing down a parameter!");
         }
     }
 
@@ -65,6 +76,11 @@ public class BinarySearchHandler {
         // for every BinarySearcher N times, where N is the number of times
         // that we want to do a binary search for every parameter.
         boolean isDoneSearching = true;
+
+        // if we still need to refresh all the searchers for another search run
+        if(numberOfFullSearchDone < DEFAULT_NUMBER_OF_FULL_SEARCH_TO_DO) {
+            isDoneSearching = false;
+        }
 
         for(BinarySearcher binarySearcher: searchers) {
             if(!binarySearcher.isDoneSearching()) {

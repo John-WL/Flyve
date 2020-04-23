@@ -71,6 +71,12 @@ public class AirDribbleParameterSearcher extends PanBot {
 
             // if we searched as much as we wanted
             if(!binarySearchHandler.isDoneSearching()) {
+                // the last binarySearchHandler.nextHypothesis() call might have unlinked
+                // a same file containing 2 or more distinct parameters, thus this function
+                // makes sure that parameters that were originally contained in the same file
+                // stay synchronized with each other.
+                dataRepresentation.resynchronizeParameters();
+
                 // modify slightly the parameters for the next training pack sequence
                 binarySearchHandler.nextHypothesis();
             }
