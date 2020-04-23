@@ -6,7 +6,7 @@ import util.parameter_configuration.data.representation.DataRepresentation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BinarySearchHandler {
+public class BinarySearchHandler<D extends DataHandler> {
 
     private static final int DEFAULT_NUMBER_OF_FULL_SEARCH_TO_DO = 100;
 
@@ -16,11 +16,11 @@ public class BinarySearchHandler {
 
     private BinarySearcher activeBinarySearcher;
 
-    public BinarySearchHandler(DataRepresentation dataRepresentation) {
+    public BinarySearchHandler(DataRepresentation<D> dataRepresentation) {
         // build all the binary searchers from specified file hierarchy (parameter file hierarchy = dataFileRepresentation)
         // in which the parameters are situated.
         searchers = new ArrayList<>();
-        List<DataHandler> parametersToOptimize = dataRepresentation.getDataHandlerList();
+        List<D> parametersToOptimize = dataRepresentation.getDataHandlerList();
         for(DataHandler parameter: parametersToOptimize) {
             searchers.add(new BinarySearcher(parameter));
         }

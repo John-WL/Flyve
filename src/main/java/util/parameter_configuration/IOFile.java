@@ -12,7 +12,6 @@ import java.util.Scanner; // Import the Scanner class to read text files
 
 public class IOFile {
 
-    public static final String LOCAL_CLASS_PATH = "src\\main\\java\\util\\parameter_configuration\\data\\";
 
     public static List<String> getFileContent(String fileName) {
         List<String> fileContent = new ArrayList<>();

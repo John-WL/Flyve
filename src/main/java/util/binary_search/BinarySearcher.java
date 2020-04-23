@@ -4,11 +4,12 @@ import util.parameter_configuration.data.handler.DataHandler;
 
 public class BinarySearcher {
 
-    private static final double DEFAULT_SEARCH_RANGE = 1;
-    private static final double DEFAULT_PRECISION = 0.0001;
+    private static final double DEFAULT_SEARCH_RANGE = 1500;
+    private static final double DEFAULT_PRECISION = 0.01;
 
     private DataHandler dataHandler;
     private double searchRange;
+    private double searchRangeAtRestart;
     private double desiredPrecision;
     private double bestHypothesis;
     private double evaluationOfLeftSearch;
@@ -19,6 +20,7 @@ public class BinarySearcher {
         this.dataHandler = dataHandler;
         this.bestHypothesis = DEFAULT_SEARCH_RANGE/2;
         this.searchRange = DEFAULT_SEARCH_RANGE;
+        this.searchRangeAtRestart = DEFAULT_SEARCH_RANGE/2;
         this.desiredPrecision = DEFAULT_PRECISION;
         this.evaluationOfLeftSearch = 1;
         this.evaluationOfRightSearch = 0;
@@ -64,13 +66,13 @@ public class BinarySearcher {
 
             // And so, it is bad at first, but it lets us do the rest of the execution very beautifully.
             // If anyone has a better idea than what I had, I'm very open to discussion :).
-            searchRange /= 2;
             if(evaluationOfLeftSearch > evaluationOfRightSearch) {
                 bestHypothesis -= searchRange;
             }
             else {
                 bestHypothesis += searchRange;
             }
+            searchRange /= 2;
             // update
             double nextHypothesis = bestHypothesis + searchRange;
             dataHandler.set(nextHypothesis);
@@ -88,27 +90,15 @@ public class BinarySearcher {
         return searchRange < desiredPrecision;
     }
 
-    public void setStartingHypothesis(double startingValue) {
-        // the search range here is going to get removed from
-        // the best hypothesis when we'll start the search.
-        // It's the best way I found right now to make this work.
-        // don't worry too much about it.
-        bestHypothesis = startingValue;
-        bestHypothesis += searchRange/2;
-
-        // this is to actually solve the problem we just created.
-        // see "nextHypothesis()", in the first if, if you don't get what I mean.
-        evaluationOfLeftSearch = 1;
-        evaluationOfRightSearch = 0;
-
-    }
-
     public void setSearchRange(double newSearchRange) {
         searchRange = newSearchRange;
     }
 
     public void resetSearchRange() {
-        searchRange = DEFAULT_SEARCH_RANGE;
+        searchRange = searchRangeAtRestart;
+        // narrowing down the search range each time we restart
+        // so we can converge to some definitive value
+        searchRangeAtRestart /= 1.5;
     }
 
     public void setPrecision(double newDesiredPrecision) {

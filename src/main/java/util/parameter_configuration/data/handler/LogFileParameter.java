@@ -5,32 +5,33 @@ import util.parameter_configuration.IOFile;
 import java.io.File;
 import java.util.List;
 
-public class ImmutableFileParameter implements DataHandler {
+public class LogFileParameter implements DataHandler {
 
     private String originalRootedFileName;
     private String rootedFileName;
-    private String fileNameWithoutExtension;
+    private StringBuilder fileNameWithoutExtension;
     private String fileExtension;
-    private int numberOfTimeFileChanged;
+    private int numberOfTimesFileChanged;
     private double parsedData;
     private int lineNumberOfParameterInFile;
     private List<String> unparsedParameters;
 
-    public ImmutableFileParameter(String rootedFileName, int lineNumberOfParameterInFile) {
+    public LogFileParameter(String rootedFileName, int lineNumberOfParameterInFile) {
         this.originalRootedFileName = rootedFileName;
         this.rootedFileName = rootedFileName;
+        this.fileNameWithoutExtension = new StringBuilder();
         String[] fragmentedFileName = rootedFileName.split("\\.");
         if(fragmentedFileName.length < 2) {
-            this.fileNameWithoutExtension = fragmentedFileName[0];
+            this.fileNameWithoutExtension.append(fragmentedFileName[0]);
             this.fileExtension = "";
         }
         else {
             for(int i = 0; i < fragmentedFileName.length-1; i++) {
-                this.fileNameWithoutExtension += fragmentedFileName[i];
+                this.fileNameWithoutExtension.append(fragmentedFileName[i]);
             }
             this.fileExtension = fragmentedFileName[fragmentedFileName.length-1];
         }
-        this.numberOfTimeFileChanged = 0;
+        this.numberOfTimesFileChanged = 0;
         this.lineNumberOfParameterInFile = lineNumberOfParameterInFile;
         unparsedParameters = IOFile.getFileContent(rootedFileName);
         parsedData = Double.valueOf(unparsedParameters.get(this.lineNumberOfParameterInFile));
@@ -48,7 +49,10 @@ public class ImmutableFileParameter implements DataHandler {
         // modify the file with the new parameter (create a new file with slightly changed name and new parameter)
         changeSlightlyFileName();
         IOFile.createFileWithContent(rootedFileName, unparsedParameters);
-        System.out.println("Watch out! New file created! You should check it out.");
+
+        // update the real active files that the bot uses too
+        IOFile.deleteFile(originalRootedFileName);
+        IOFile.createFileWithContent(originalRootedFileName, unparsedParameters);
     }
 
     @Override
@@ -56,33 +60,35 @@ public class ImmutableFileParameter implements DataHandler {
         return parsedData;
     }
 
-    public DataHandler createCopyInFolder(String rootedCopyFolderName) {
+    public LogFileParameter createCopyInFolder(String rootedCopyFolderName) {
         File copy = new File(rootedCopyFolderName + "\\" + getNotRootedFileNameFromRootedFileName(rootedFileName));
-        String rootedCopyFileName = copy.getName();
+        String rootedCopyFileName = copy.getPath();
 
         if(copy.exists()) {
             IOFile.deleteFile(rootedCopyFileName);
         }
         IOFile.createFileWithContent(rootedCopyFileName, unparsedParameters);
 
-        return new ImmutableFileParameter(rootedCopyFileName, lineNumberOfParameterInFile);
+        return new LogFileParameter(rootedCopyFileName, lineNumberOfParameterInFile);
     }
 
-    public void resynchronizeWith(ImmutableFileParameter immutableFileParameter) {
+    public void resynchronizeWith(LogFileParameter immutableFileParameter) {
         if(immutableFileParameter.originalRootedFileName.equals(this.originalRootedFileName)) {
-            if(this.numberOfTimeFileChanged > immutableFileParameter.numberOfTimeFileChanged) {
+            if(this.numberOfTimesFileChanged > immutableFileParameter.numberOfTimesFileChanged) {
                 immutableFileParameter.rootedFileName = this.rootedFileName;
+                immutableFileParameter.numberOfTimesFileChanged = this.numberOfTimesFileChanged;
             }
             else {
                 this.rootedFileName = immutableFileParameter.rootedFileName;
+                this.numberOfTimesFileChanged = immutableFileParameter.numberOfTimesFileChanged;
             }
         }
     }
 
     private void changeSlightlyFileName() {
         // add a number at the end of the file so we can know which iteration it's at
-        rootedFileName = fileNameWithoutExtension + numberOfTimeFileChanged + fileExtension;
-        numberOfTimeFileChanged++;
+        rootedFileName = fileNameWithoutExtension + "_" + numberOfTimesFileChanged + "." + fileExtension;
+        numberOfTimesFileChanged++;
     }
 
     private String getNotRootedFileNameFromRootedFileName(String rootedFileName) {

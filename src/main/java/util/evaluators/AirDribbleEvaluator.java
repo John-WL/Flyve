@@ -12,11 +12,14 @@ public class AirDribbleEvaluator extends BotEvaluator {
     @Override
     public void updateEvaluation(DataPacket input) {
         // gotta find a way to evaluate air dribbles
-        double currentEvaluation = getEvaluation();
+        double currentEvaluation = 0;
 
-        currentEvaluation += 1000.0/input.ball.velocity.minus(input.car.velocity).magnitude();
-        currentEvaluation += 1000.0/input.ball.position.flatten().minus(input.car.position.flatten()).magnitude();
+        currentEvaluation -= input.ball.velocity.minus(input.car.velocity).magnitude();
+        currentEvaluation -= input.ball.position.minus(input.car.position).magnitude();
+        currentEvaluation += 7*input.ball.position.z;
+        currentEvaluation -= super.getDesiredDestination().getThrottleSpeed().minus(input.ball.velocity).magnitude();
+        currentEvaluation -= super.getDesiredDestination().getThrottleDestination().minus(input.ball.position).magnitude();
 
-        setEvaluation(currentEvaluation);
+        setEvaluation(currentEvaluation/1000 + getEvaluation());
     }
 }

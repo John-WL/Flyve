@@ -44,7 +44,7 @@ public class AirDribbleParameterSearcher extends PanBot {
 
         botEvaluator = new AirDribbleEvaluator(desiredDestination);
         dataRepresentation = new AirDribbleParameterSearcherFileData();
-        binarySearchHandler = new BinarySearchHandler(dataRepresentation);
+        binarySearchHandler = new BinarySearchHandler<>(dataRepresentation);
     }
 
     // called every frame
@@ -53,7 +53,7 @@ public class AirDribbleParameterSearcher extends PanBot {
         // game situations handling
         trainingPack.update();
 
-        // update bot's evaluation so we can know how if the updated parameters
+        // update bot's evaluation so we can know if the updated parameters
         // are better or worse than the current best ones we have
         botEvaluator.updateEvaluation(input);
 
@@ -85,14 +85,6 @@ public class AirDribbleParameterSearcher extends PanBot {
                 dataRepresentation.isolateBestResultsInFinalDataFolder();
             }
         }
-
-
-
-
-
-
-
-
 
         // bot's desired position advances one step
         pathHandler.updateDestination(input);

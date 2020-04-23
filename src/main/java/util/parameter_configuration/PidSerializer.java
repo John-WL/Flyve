@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PidSerializer {
-    public static final String PID_CFG_PATH = IOFile.LOCAL_CLASS_PATH + "pid_cfg\\";
+    public static final String LOCAL_CLASS_PATH = "src\\main\\java\\util\\parameter_configuration\\";
+    public static final String PID_CFG_PATH = LOCAL_CLASS_PATH + "pid_cfg\\";
     public static final String THROTTLE_FILENAME = PID_CFG_PATH + "pid_throttle_val.pcg";
     public static final String STEERING_FILENAME = PID_CFG_PATH + "pid_steering_val.pcg";
     public static final String PITCH_YAW_FILENAME = PID_CFG_PATH + "pid_pitch_yaw_val.pcg";

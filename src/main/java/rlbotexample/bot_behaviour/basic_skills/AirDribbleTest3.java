@@ -12,6 +12,7 @@ import util.controllers.PidController;
 import util.game_constants.RlConstants;
 import util.parameter_configuration.ArbitraryValueSerializer;
 import util.parameter_configuration.PidSerializer;
+import util.parameter_configuration.data.representation.file_hierarchy.AirDribbleParameterSearcherFileData;
 import util.vector.Vector2;
 import util.vector.Vector3;
 
@@ -20,7 +21,7 @@ import java.awt.*;
 public class AirDribbleTest3 extends SkillController {
 
     private static final double MAXIMUM_TARGET_BALL_SPEED = 400;
-    private static final double MAXIMUM_BALL_OFFSET = 5;
+    private static final double MAXIMUM_BALL_OFFSET = 70;
 
     private PidController playerDestinationOffsetXPid;
     private PidController playerDestinationOffsetYPid;
@@ -194,19 +195,38 @@ public class AirDribbleTest3 extends SkillController {
 
     @Override
     void updatePidValuesAndArbitraries() {
+
         pitchPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
         yawPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, yawPid);
         rollPid = PidSerializer.fromFileToPid(PidSerializer.ROLL_FILENAME, rollPid);
 
-        playerOrientationXPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationXPid);
-        playerOrientationYPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationYPid);
-        playerOrientationZPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_Z_FILENAME, playerOrientationZPid);
 
         aerialBoostPid = PidSerializer.fromFileToPid(PidSerializer.AERIAL_BOOST_FILENAME, aerialBoostPid);
 
         noseDistanceFromPLayer = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.AIR_DRIBBLE_NOSE_DISTANCE_FROM_PLAYER);
         ballRadiusCoefficient = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.AIR_DRIBBLE_BALL_RADIUS_COEFFICIENT);
+
+        playerDestinationOffsetXPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_FILENAME, playerDestinationOffsetXPid);
+        playerDestinationOffsetYPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_FILENAME, playerDestinationOffsetYPid);
+        //playerDestinationOffsetZPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_FILENAME, playerDestinationOffsetZPid);
+
+        playerOrientationXPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationXPid);
+        playerOrientationYPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationYPid);
+        playerOrientationZPid = PidSerializer.fromFileToPid(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_ORIENTATION_Z_FILENAME, playerOrientationZPid);
+
+        displacementAmountCoefficient = ArbitraryValueSerializer.serialize(AirDribbleParameterSearcherFileData.AIR_DRIBBLE_DISPLACEMENT_AMOUNT_COEFFICIENT);
+
+        /*
+        playerDestinationOffsetXPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_FILENAME, playerDestinationOffsetXPid);
+        playerDestinationOffsetYPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_FILENAME, playerDestinationOffsetYPid);
+        //playerDestinationOffsetZPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_FILENAME, playerDestinationOffsetZPid);
+
+        playerOrientationXPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationXPid);
+        playerOrientationYPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_XY_FILENAME, playerOrientationYPid);
+        playerOrientationZPid = PidSerializer.fromFileToPid(PidSerializer.AIR_DRIBBLE_ORIENTATION_Z_FILENAME, playerOrientationZPid);
+
         displacementAmountCoefficient = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.AIR_DRIBBLE_DISPLACEMENT_AMOUNT_COEFFICIENT);
+        */
     }
 
     @Override
