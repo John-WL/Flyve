@@ -2,6 +2,7 @@ package util.evaluators;
 
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
+import util.parameter_configuration.data.handler.DataHandler;
 
 public abstract class BotEvaluator {
 

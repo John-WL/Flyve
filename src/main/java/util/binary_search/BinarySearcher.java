@@ -5,26 +5,29 @@ import util.parameter_configuration.data.handler.DataHandler;
 public class BinarySearcher {
 
     private static final double DEFAULT_SEARCH_RANGE = 1500;
-    private static final double DEFAULT_PRECISION = 0.01;
+    private static final double DEFAULT_RESTART_SEARCH_NARROWING_COEFFICIENT = 1.2;
+    private static final double DEFAULT_PRECISION_FRACTION_FROM_STARTING_RANGE = 5;
 
     private DataHandler dataHandler;
+    private DataHandler bestParameters;
     private double searchRange;
     private double searchRangeAtRestart;
-    private double desiredPrecision;
     private double bestHypothesis;
     private double evaluationOfLeftSearch;
     private double evaluationOfRightSearch;
+    private double currentBestEvaluation;
     private SearchState currentSearchPosition;
 
     public BinarySearcher(DataHandler dataHandler) {
         this.dataHandler = dataHandler;
-        this.bestHypothesis = DEFAULT_SEARCH_RANGE/2;
+        this.bestParameters = dataHandler.copy();
+        this.bestHypothesis = DEFAULT_SEARCH_RANGE;
         this.searchRange = DEFAULT_SEARCH_RANGE;
         this.searchRangeAtRestart = DEFAULT_SEARCH_RANGE/2;
-        this.desiredPrecision = DEFAULT_PRECISION;
-        this.evaluationOfLeftSearch = 1;
+        this.currentBestEvaluation = Double.MIN_VALUE;
+        this.evaluationOfLeftSearch = 0;
         this.evaluationOfRightSearch = 0;
-        this.currentSearchPosition = SearchState.LEFT;
+        this.currentSearchPosition = SearchState.START;
     }
 
     public void confrontHypothesis(double resultFromHypothesis) {
@@ -36,6 +39,9 @@ public class BinarySearcher {
         }
         else if(currentSearchPosition == SearchState.RIGHT) {
             evaluationOfRightSearch = resultFromHypothesis;
+        }
+        else if(currentSearchPosition == SearchState.START) {
+            currentBestEvaluation = resultFromHypothesis;
         }
     }
 
@@ -49,7 +55,6 @@ public class BinarySearcher {
         // test the right one.
 
         if(currentSearchPosition == SearchState.LEFT) {
-            System.out.println("Left in the binary searcher!");
             // yes, this is very bad the first time we call this function.
             // Why? Because it directly starts by applying the hypothesis, before even evaluating it.
 
@@ -66,11 +71,17 @@ public class BinarySearcher {
 
             // And so, it is bad at first, but it lets us do the rest of the execution very beautifully.
             // If anyone has a better idea than what I had, I'm very open to discussion :).
-            if(evaluationOfLeftSearch > evaluationOfRightSearch) {
-                bestHypothesis -= searchRange;
-            }
-            else {
-                bestHypothesis += searchRange;
+
+            if(currentBestEvaluation < evaluationOfLeftSearch || currentBestEvaluation < evaluationOfRightSearch) {
+                if(evaluationOfLeftSearch > evaluationOfRightSearch) {
+                    currentBestEvaluation = evaluationOfLeftSearch;
+                    bestHypothesis -= searchRange;
+                }
+                else {
+                    currentBestEvaluation = evaluationOfRightSearch;
+                    bestHypothesis += searchRange;
+                }
+                bestParameters = dataHandler.copy();
             }
             searchRange /= 2;
             // update
@@ -78,31 +89,52 @@ public class BinarySearcher {
             dataHandler.set(nextHypothesis);
             currentSearchPosition = SearchState.RIGHT;
         }
-        else {
-            System.out.println("Right in the binary searcher!");
+        else if(currentSearchPosition == SearchState.RIGHT) {
             double nextHypothesis = bestHypothesis - searchRange;
             dataHandler.set(nextHypothesis);
             currentSearchPosition = SearchState.LEFT;
         }
+        else if(currentSearchPosition == SearchState.START) {
+            searchRange /= 2;
+            // update
+            double nextHypothesis = bestHypothesis + searchRange;
+            dataHandler.set(nextHypothesis);
+            currentSearchPosition = SearchState.RIGHT;
+        }
+
+    }
+
+    public void endSearch() {
+        // make sure that the best data is the data on which the other binary searches
+        // are operating
+        dataHandler.set(bestParameters.get());
     }
 
     public boolean isDoneSearching() {
-        return searchRange < desiredPrecision;
+        return searchRange < getDesiredPrecision();
+    }
+
+    public void setBestHypothesis(double bestHypothesis) {
+        this.bestHypothesis = bestHypothesis;
     }
 
     public void setSearchRange(double newSearchRange) {
         searchRange = newSearchRange;
+        searchRangeAtRestart = searchRange/DEFAULT_RESTART_SEARCH_NARROWING_COEFFICIENT;
     }
 
     public void resetSearchRange() {
         searchRange = searchRangeAtRestart;
         // narrowing down the search range each time we restart
         // so we can converge to some definitive value
-        searchRangeAtRestart /= 1.5;
+        searchRangeAtRestart /= DEFAULT_RESTART_SEARCH_NARROWING_COEFFICIENT;
+
+        // notify that we just started.
+        currentSearchPosition = SearchState.START;
     }
 
-    public void setPrecision(double newDesiredPrecision) {
-        this.desiredPrecision = newDesiredPrecision;
+    private double getDesiredPrecision() {
+        return searchRangeAtRestart/DEFAULT_PRECISION_FRACTION_FROM_STARTING_RANGE;
     }
 
 }

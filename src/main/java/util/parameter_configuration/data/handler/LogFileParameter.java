@@ -5,90 +5,63 @@ import util.parameter_configuration.IOFile;
 import java.io.File;
 import java.util.List;
 
-public class LogFileParameter implements DataHandler {
+public class LogFileParameter extends FileParameter implements DataHandler {
 
-    private String originalRootedFileName;
-    private String rootedFileName;
-    private StringBuilder fileNameWithoutExtension;
-    private String fileExtension;
-    private int numberOfTimesFileChanged;
-    private double parsedData;
     private int lineNumberOfParameterInFile;
-    private List<String> unparsedParameters;
 
     public LogFileParameter(String rootedFileName, int lineNumberOfParameterInFile) {
-        this.originalRootedFileName = rootedFileName;
-        this.rootedFileName = rootedFileName;
-        this.fileNameWithoutExtension = new StringBuilder();
-        String[] fragmentedFileName = rootedFileName.split("\\.");
-        if(fragmentedFileName.length < 2) {
-            this.fileNameWithoutExtension.append(fragmentedFileName[0]);
-            this.fileExtension = "";
-        }
-        else {
-            for(int i = 0; i < fragmentedFileName.length-1; i++) {
-                this.fileNameWithoutExtension.append(fragmentedFileName[i]);
-            }
-            this.fileExtension = fragmentedFileName[fragmentedFileName.length-1];
-        }
-        this.numberOfTimesFileChanged = 0;
+        super(rootedFileName);
         this.lineNumberOfParameterInFile = lineNumberOfParameterInFile;
-        unparsedParameters = IOFile.getFileContent(rootedFileName);
-        parsedData = Double.valueOf(unparsedParameters.get(this.lineNumberOfParameterInFile));
+        setParsedData(Double.valueOf(getUnparsedParameters().get(this.lineNumberOfParameterInFile)));
     }
 
     @Override
     public void set(double newData) {
         // update the new value
-        parsedData = newData;
+        setParsedData(newData);
 
         // change the specific parameter that we are interested in
-        unparsedParameters = IOFile.getFileContent(rootedFileName);
-        unparsedParameters.set(lineNumberOfParameterInFile, String.valueOf(newData));
+        setUnparsedParameters(IOFile.getFileContent(getRootedFileName()));
+        getUnparsedParameters().set(lineNumberOfParameterInFile, String.valueOf(newData));
 
         // modify the file with the new parameter (create a new file with slightly changed name and new parameter)
         changeSlightlyFileName();
-        IOFile.createFileWithContent(rootedFileName, unparsedParameters);
+        IOFile.createFileWithContent(getRootedFileName(), getUnparsedParameters());
 
         // update the real active files that the bot uses too
-        IOFile.deleteFile(originalRootedFileName);
-        IOFile.createFileWithContent(originalRootedFileName, unparsedParameters);
+        IOFile.deleteFile(getOriginalRootedFileName());
+        IOFile.createFileWithContent(getOriginalRootedFileName(), getUnparsedParameters());
     }
 
     @Override
     public double get() {
-        return parsedData;
+        return getParsedData();
     }
 
-    public LogFileParameter createCopyInFolder(String rootedCopyFolderName) {
-        File copy = new File(rootedCopyFolderName + "\\" + getNotRootedFileNameFromRootedFileName(rootedFileName));
+    @Override
+    public FileParameter createCopyInFolder(String rootedCopyFolderName) {
+        File copy = new File(rootedCopyFolderName + "\\" + getNotRootedFileNameFromRootedFileName(getRootedFileName()));
         String rootedCopyFileName = copy.getPath();
 
         if(copy.exists()) {
             IOFile.deleteFile(rootedCopyFileName);
         }
-        IOFile.createFileWithContent(rootedCopyFileName, unparsedParameters);
+        IOFile.createFileWithContent(rootedCopyFileName, getUnparsedParameters());
 
         return new LogFileParameter(rootedCopyFileName, lineNumberOfParameterInFile);
     }
 
-    public void resynchronizeWith(LogFileParameter immutableFileParameter) {
-        if(immutableFileParameter.originalRootedFileName.equals(this.originalRootedFileName)) {
-            if(this.numberOfTimesFileChanged > immutableFileParameter.numberOfTimesFileChanged) {
-                immutableFileParameter.rootedFileName = this.rootedFileName;
-                immutableFileParameter.numberOfTimesFileChanged = this.numberOfTimesFileChanged;
-            }
-            else {
-                this.rootedFileName = immutableFileParameter.rootedFileName;
-                this.numberOfTimesFileChanged = immutableFileParameter.numberOfTimesFileChanged;
-            }
-        }
+    @Override
+    public DataHandler copy() {
+        LogFileParameter logFileParameter = new LogFileParameter(getRootedFileName(), lineNumberOfParameterInFile);
+        logFileParameter.setOriginalRootedFileName(getOriginalRootedFileName());
+        return logFileParameter;
     }
 
     private void changeSlightlyFileName() {
         // add a number at the end of the file so we can know which iteration it's at
-        rootedFileName = fileNameWithoutExtension + "_" + numberOfTimesFileChanged + "." + fileExtension;
-        numberOfTimesFileChanged++;
+        setRootedFileName(getFileNameWithoutExtension() + "_" + getNumberOfTimesFileChanged() + "." + getFileExtension());
+        setNumberOfTimesFileChanged(getNumberOfTimesFileChanged() + 1);
     }
 
     private String getNotRootedFileNameFromRootedFileName(String rootedFileName) {

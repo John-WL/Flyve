@@ -7,8 +7,8 @@ import rlbotexample.bot_behaviour.basic_skills.SkillController;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.path.PathHandler;
-import rlbotexample.bot_behaviour.path.test_paths.RandomAerialPath;
-import util.evaluators.AirDribbleEvaluator;
+import rlbotexample.bot_behaviour.path.test_paths.RandomAerialPoint;
+import util.evaluators.AirDribbleEvaluatorLogger;
 import util.evaluators.BotEvaluator;
 import util.game_situation.*;
 import util.game_situation.handlers.FiniteTrainingPack;
@@ -16,7 +16,6 @@ import util.game_situation.handlers.GameSituationHandler;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.binary_search.BinarySearchHandler;
-import util.parameter_configuration.data.representation.file_hierarchy.AirDribbleParameterSearcherFileData;
 
 public class AirDribbleParameterSearcher extends PanBot {
 
@@ -30,20 +29,34 @@ public class AirDribbleParameterSearcher extends PanBot {
 
     public AirDribbleParameterSearcher() {
         trainingPack = new FiniteTrainingPack();
+        trainingPack.add(new RandomizedAirDribbleSetup());
         trainingPack.add(new RemoveResidualVelocity());
-        trainingPack.add(new AirDribbleSetup1());
+        trainingPack.add(new RandomizedAirDribbleSetup());
         trainingPack.add(new RemoveResidualVelocity());
-        trainingPack.add(new AirDribbleSetup2());
+        trainingPack.add(new RandomizedAirDribbleSetup());
         trainingPack.add(new RemoveResidualVelocity());
-        trainingPack.add(new AirDribbleSetup3());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
+        trainingPack.add(new RandomizedAirDribbleSetup());
+        trainingPack.add(new RemoveResidualVelocity());
 
         desiredDestination = new CarDestination();
 
-        pathHandler = new RandomAerialPath(desiredDestination);
+        pathHandler = new RandomAerialPoint(desiredDestination);
         skillController = new AirDribbleTest3(desiredDestination, this);
 
-        botEvaluator = new AirDribbleEvaluator(desiredDestination);
         dataRepresentation = new AirDribbleParameterSearcherFileData();
+        botEvaluator = new AirDribbleEvaluatorLogger(dataRepresentation.getAirDribbleEvaluatorFileParameter(), desiredDestination);
         binarySearchHandler = new BinarySearchHandler<>(dataRepresentation);
     }
 
@@ -77,6 +90,13 @@ public class AirDribbleParameterSearcher extends PanBot {
                 // stay synchronized with each other.
                 dataRepresentation.resynchronizeParameters();
 
+                // if we're at the end of a single binary search operation, then
+                // we need to find another point to train on!
+                if(binarySearchHandler.getCurrentBinarySearcher().isDoneSearching()) {
+                    // bot's desired position moves to another point in the air somewhere in the sky
+                    pathHandler.updateDestination(input);
+                }
+
                 // modify slightly the parameters for the next training pack sequence
                 binarySearchHandler.nextHypothesis();
             }
@@ -85,9 +105,6 @@ public class AirDribbleParameterSearcher extends PanBot {
                 dataRepresentation.isolateBestResultsInFinalDataFolder();
             }
         }
-
-        // bot's desired position advances one step
-        pathHandler.updateDestination(input);
 
         // do the thing
         skillController.setupAndUpdateOutputs(input);

@@ -9,6 +9,7 @@ import java.util.List;
 public class BinarySearchHandler<D extends DataHandler> {
 
     private static final int DEFAULT_NUMBER_OF_FULL_SEARCH_TO_DO = 100;
+    private static final int DEFAULT_SEARCH_RANGE_COEFFICIENT = 2;
 
     private List<BinarySearcher> searchers;
     private int indexOfActiveBinarySearcher;
@@ -23,6 +24,8 @@ public class BinarySearchHandler<D extends DataHandler> {
         List<D> parametersToOptimize = dataRepresentation.getDataHandlerList();
         for(DataHandler parameter: parametersToOptimize) {
             searchers.add(new BinarySearcher(parameter));
+            searchers.get(searchers.size()-1).setBestHypothesis(parameter.get());
+            searchers.get(searchers.size()-1).setSearchRange(parameter.get()*DEFAULT_SEARCH_RANGE_COEFFICIENT);
         }
 
         numberOfFullSearchDone = 0;
@@ -35,6 +38,7 @@ public class BinarySearchHandler<D extends DataHandler> {
         // has been attained
         activeBinarySearcher = searchers.get(indexOfActiveBinarySearcher);
         if(activeBinarySearcher.isDoneSearching()) {
+            activeBinarySearcher.endSearch();
             if(!isDoneSearching()) {
                 // change the active binary searcher
                 indexOfActiveBinarySearcher++;
@@ -43,12 +47,12 @@ public class BinarySearchHandler<D extends DataHandler> {
                     // and count the number of full searched that we did up to now.
                     indexOfActiveBinarySearcher = 0;
                     numberOfFullSearchDone++;
+
+                    // restart the search
+                    resetSearchRanges();
                 }
                 activeBinarySearcher = searchers.get(indexOfActiveBinarySearcher);
 
-                // restart the search
-                activeBinarySearcher.resetSearchRange();
-                System.out.println("Starting a new search!");
             }
             // else, do nothing! There is nothing to search anymore!
         }
@@ -56,7 +60,6 @@ public class BinarySearchHandler<D extends DataHandler> {
         // update the current data with the results we got from the search
         else {
             activeBinarySearcher.nextHypothesis();
-            System.out.println("Narrowing down a parameter!");
         }
     }
 
@@ -68,6 +71,7 @@ public class BinarySearchHandler<D extends DataHandler> {
         // for the current active BinarySearcher.
 
         searchers.get(indexOfActiveBinarySearcher).confrontHypothesis(resultingEvaluation);
+
     }
 
     public boolean isDoneSearching() {
@@ -89,5 +93,15 @@ public class BinarySearchHandler<D extends DataHandler> {
         }
 
         return isDoneSearching;
+    }
+
+    public BinarySearcher getCurrentBinarySearcher() {
+        return activeBinarySearcher;
+    }
+
+    private void resetSearchRanges() {
+        for(BinarySearcher binarySearcher: searchers) {
+            binarySearcher.resetSearchRange();
+        }
     }
 }
