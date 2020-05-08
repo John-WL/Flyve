@@ -1,12 +1,13 @@
 package util.game_situation;
 
 import rlbot.gamestate.*;
+import util.timer.FrameTimer;
 import util.timer.Timer;
 
 public class AirDribbleSetup2 extends GameSituation {
 
     public AirDribbleSetup2() {
-        super(new Timer(10));
+        super(new FrameTimer(10*30));
     }
 
     @Override

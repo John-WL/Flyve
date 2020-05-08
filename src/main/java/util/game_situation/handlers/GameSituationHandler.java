@@ -23,6 +23,7 @@ public abstract class GameSituationHandler {
     }
 
     public void update() {
+        currentGameSituation.frameHappend();
         if(currentGameSituation.isGameStateElapsed()) {
             if(hasNext()) {
                 next();

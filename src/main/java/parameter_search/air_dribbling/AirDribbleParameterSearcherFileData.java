@@ -1,16 +1,16 @@
 package parameter_search.air_dribbling;
 
-import util.parameter_configuration.data.handler.FileParameter;
-import util.parameter_configuration.data.handler.LogFileParameter;
-import util.parameter_configuration.data.handler.SafeLineIncrementFileParameter;
-import util.parameter_configuration.data.representation.DataRepresentation;
-import util.parameter_configuration.data.representation.file_hierarchy.ExpectedFileHierarchy;
-import util.parameter_configuration.data.representation.file_hierarchy.UnexpectedFileHierarchy;
+import util.machine_learning_models.generic_data_structure.generic_data.FileParameter;
+import util.machine_learning_models.generic_data_structure.generic_data.LogFileParameter;
+import util.machine_learning_models.generic_data_structure.generic_data.SafeLineIncrementFileParameter;
+import util.machine_learning_models.generic_data_structure.list.GenericDataList;
+import util.file_hierarchy_inspector.ExpectedFileHierarchy;
+import util.file_hierarchy_inspector.UnexpectedFileHierarchy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AirDribbleParameterSearcherFileData extends DataRepresentation<FileParameter> {
+public class AirDribbleParameterSearcherFileData extends GenericDataList<FileParameter> {
 
     private final static String ROOT = "src\\main\\java\\parameter_search\\air_dribbling";
     private final static String SERIALIZED_PARAMETER_ROOT = ROOT + "\\serialized_parameters";
@@ -41,13 +41,13 @@ public class AirDribbleParameterSearcherFileData extends DataRepresentation<File
             INITIAL_DATA_ROOT + "\\" + AERIAL_BOOST_FILE_NAME,
             INITIAL_DATA_ROOT + "\\" + AERIAL_BOOST_FILE_NAME,
     };
-    private final static String[] ROOTED_FINAL_FILE_NAMES = {
-            FINAL_DATA_ROOT + "\\" + PLAYER_DESTINATION_ON_BALL_FILE_NAME,
-            FINAL_DATA_ROOT + "\\" + PLAYER_DISPLACEMENT_AMOUNT_COEFFICIENT_FILE_NAME,
-            FINAL_DATA_ROOT + "\\" + PLAYER_ORIENTATION_XY_FILE_NAME,
-            FINAL_DATA_ROOT + "\\" + PLAYER_ORIENTATION_Z_FILE_NAME,
-            FINAL_DATA_ROOT + "\\" + BALL_MAXIMUM_OFFSET_FILE_NAME,
-            FINAL_DATA_ROOT + "\\" + AERIAL_BOOST_FILE_NAME,
+    private final static String[] ROOTED_FINAL_FOLDER_NAMES = {
+            FINAL_DATA_ROOT,
+            FINAL_DATA_ROOT,
+            FINAL_DATA_ROOT,
+            FINAL_DATA_ROOT,
+            FINAL_DATA_ROOT,
+            FINAL_DATA_ROOT,
     };
 
     public final static String AIR_DRIBBLE_ROOTED_FILENAME = RAW_DATA_ROOT + "\\" + PLAYER_DESTINATION_ON_BALL_FILE_NAME;
@@ -67,20 +67,25 @@ public class AirDribbleParameterSearcherFileData extends DataRepresentation<File
 
     public AirDribbleParameterSearcherFileData() {
         super(generateDataHandlerList());
+        linkFiles();
     }
 
     public void isolateBestResultsInFinalDataFolder() {
         // take the current File Parameters, and put them in the final data folder
-        for(int i = 0; i < ROOTED_FINAL_FILE_NAMES.length; i++) {
-            getDataHandlerList().get(INDEX_OF_FIRST_INSTANCE_OF_FILE_NAMES[i]).createCopyInFolder(ROOTED_FINAL_FILE_NAMES[i]);
+        for(int i = 0; i < ROOTED_FINAL_FOLDER_NAMES.length; i++) {
+            getDataHandlerList().get(INDEX_OF_FIRST_INSTANCE_OF_FILE_NAMES[i]).createCopyInFolder(ROOTED_FINAL_FOLDER_NAMES[i]);
         }
     }
 
-    public void resynchronizeParameters() {
-        fileParameters.get(0).resynchronizeWith(fileParameters.get(1));
-        fileParameters.get(3).resynchronizeWith(fileParameters.get(4));
-        fileParameters.get(5).resynchronizeWith(fileParameters.get(6));
-        fileParameters.get(8).resynchronizeWith(fileParameters.get(9));
+    public void linkFiles() {
+        fileParameters.get(0).linkWith(fileParameters.get(1));
+        fileParameters.get(1).linkWith(fileParameters.get(0));
+        fileParameters.get(3).linkWith(fileParameters.get(4));
+        fileParameters.get(4).linkWith(fileParameters.get(3));
+        fileParameters.get(5).linkWith(fileParameters.get(6));
+        fileParameters.get(6).linkWith(fileParameters.get(5));
+        fileParameters.get(8).linkWith(fileParameters.get(9));
+        fileParameters.get(9).linkWith(fileParameters.get(8));
     }
 
     public FileParameter getAirDribbleEvaluatorFileParameter() {

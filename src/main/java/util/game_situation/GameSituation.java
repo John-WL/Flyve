@@ -2,13 +2,14 @@ package util.game_situation;
 
 import rlbot.cppinterop.RLBotDll;
 import rlbot.gamestate.GameState;
+import util.timer.FrameTimer;
 import util.timer.Timer;
 
 public abstract class GameSituation {
 
-    private Timer gameStateDuration;
+    private FrameTimer gameStateDuration;
 
-    GameSituation(Timer gameStateDuration)  {
+    GameSituation(FrameTimer gameStateDuration) {
         this.gameStateDuration = gameStateDuration;
         this.gameStateDuration.start();
         this.loadGameState();
@@ -23,6 +24,10 @@ public abstract class GameSituation {
 
     public boolean isGameStateElapsed() {
         return gameStateDuration.isTimeElapsed();
+    }
+
+    public void frameHappend() {
+        gameStateDuration.countFrame();
     }
 
     GameState getCurrentGameState() {

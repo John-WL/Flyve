@@ -1,12 +1,13 @@
 package util.game_situation;
 
 import rlbot.gamestate.*;
+import util.timer.FrameTimer;
 import util.timer.Timer;
 
 public class RemoveResidualVelocity extends GameSituation {
 
     public RemoveResidualVelocity() {
-        super(new Timer(1));
+        super(new FrameTimer(1*30));
     }
 
     @Override

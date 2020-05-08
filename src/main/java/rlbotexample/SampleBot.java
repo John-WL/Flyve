@@ -47,29 +47,28 @@ public class SampleBot implements Bot {
      * Modify it to make your bot smarter!
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
-        fpsCap.update();
-        if(fpsCap.isTimeElapsed()) {
-            fpsCap.lapse();
 
-            // timestamp before executing the bot
-            time1 = System.currentTimeMillis();
+        // refresh boostPads information so we can utilize it
+        BoostManager.loadGameTickPacket(packet);
 
-            // Bot behaviour
-            myBotOutput = botBehaviour.processInput(input, packet);
+        // timestamp before executing the bot
+        time1 = System.currentTimeMillis();
 
-            // timestamp after executing the bot
-            time2 = System.currentTimeMillis();
+        // Bot behaviour
+        myBotOutput = botBehaviour.processInput(input, packet);
 
-            // just some debug calculations all the way down to the return...
-            previousFpsTime = currentFpsTime;
-            currentFpsTime = System.currentTimeMillis();
+        // timestamp after executing the bot
+        time2 = System.currentTimeMillis();
 
-            if(currentFpsTime - previousFpsTime == 0) {
-                currentFpsTime++;
-            }
-            currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
-            averageFps = (averageFps*29 + (currentFps)) / 30.0;
+        // just some debug calculations all the way down to the return...
+        previousFpsTime = currentFpsTime;
+        currentFpsTime = System.currentTimeMillis();
+
+        if(currentFpsTime - previousFpsTime == 0) {
+            currentFpsTime++;
         }
+        currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
+        averageFps = (averageFps*29 + (currentFps)) / 30.0;
 
         botBehaviour.updateGui(renderer, input, currentFps, averageFps, time2 - time1);
 

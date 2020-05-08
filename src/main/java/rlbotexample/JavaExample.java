@@ -1,6 +1,7 @@
 package rlbotexample;
 
 import rlbot.manager.BotManager;
+import rlbot.pyinterop.SocketServer;
 import util.PortReader;
 
 import javax.swing.*;
@@ -27,6 +28,9 @@ public class JavaExample {
             System.out.println("Could not read port from args, using default!");
             return DEFAULT_PORT;
         });
+
+        // cap refresh rates so the bot can run smoothly on low level pc
+        botManager.setRefreshRate(30);
 
         SamplePythonInterface pythonInterface = new SamplePythonInterface(port, botManager);
         new Thread(pythonInterface::start).start();

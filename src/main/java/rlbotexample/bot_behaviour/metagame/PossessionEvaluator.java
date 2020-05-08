@@ -17,6 +17,22 @@ public class PossessionEvaluator {
         Vector3 opponentNoseOrientation = input.allCars.get(indexOfOpponent).orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
+        double playerPossessionValue = opponentPosition.minus(ballPosition).magnitude();
+
+        double opponentPossessionValue = playerPosition.minus(ballPosition).magnitude();
+
+        return playerPossessionValue - opponentPossessionValue;
+    }
+
+    /*public static double possessionRatio(int indexOfPlayer, int indexOfOpponent, DataPacket input) {
+        Vector3 playerPosition = input.allCars.get(indexOfPlayer).position;
+        Vector3 playerSpeed = input.allCars.get(indexOfPlayer).velocity;
+        Vector3 playerNoseOrientation = input.allCars.get(indexOfPlayer).orientation.noseVector;
+        Vector3 opponentPosition = input.allCars.get(indexOfOpponent).position;
+        Vector3 opponentSpeed = input.allCars.get(indexOfOpponent).velocity;
+        Vector3 opponentNoseOrientation = input.allCars.get(indexOfOpponent).orientation.noseVector;
+        Vector3 ballPosition = input.ball.position;
+        Vector3 ballSpeed = input.ball.velocity;
 
         // evaluation = distance + angle from ball + speed from ball.
         // the bigger the number, the worst it is for the car that has the value.
@@ -39,5 +55,5 @@ public class PossessionEvaluator {
         // result > 1 -> player has possession
         // result < 1 -> opponent has possession
         return playerPossessionValue/opponentPossessionValue;
-    }
+    }*/
 }

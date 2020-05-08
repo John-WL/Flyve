@@ -69,7 +69,7 @@ public class CarDestination {
         return throttleDestination;
     }
 
-    void setThrottleDestination(Vector3 throttleDestination) {
+    public void setThrottleDestination(Vector3 throttleDestination) {
         this.previousThrottleDestination = this.throttleDestination;
         this.throttleDestination = throttleDestination;
     }
@@ -86,7 +86,7 @@ public class CarDestination {
        return steeringDestination;
     }
 
-    void setSteeringDestination(Vector3 steeringDestination) {
+    public void setSteeringDestination(Vector3 steeringDestination) {
         this.steeringDestination = steeringDestination;
     }
 

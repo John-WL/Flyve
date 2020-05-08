@@ -48,7 +48,7 @@ public abstract class PathHandler {
                 futureBallPosition = new Vector3(ballPrediction.slices(currentBallPositionIndex).physics().location());
                 initialBallTime = ballPrediction.slices(0).gameSeconds();
                 futureBallTime = ballPrediction.slices(currentBallPositionIndex).gameSeconds();
-                timeToGo = myPosition.minus(currentBallPosition).magnitude()/input.car.velocity.magnitude();
+                timeToGo = (myPosition.minus(futureBallPosition).magnitude() - 150)/input.car.velocity.magnitude();
 
                 if(timeToGo > futureBallTime - initialBallTime) {
                     currentBallPositionIndex += divisor;
@@ -58,8 +58,8 @@ public abstract class PathHandler {
                 }
             }
 
-            // return the avergae between the predicted ball position and the current one
-            return futureBallPosition.plus(currentBallPosition).scaled(0.5);
+            // return hte predicted ball position
+            return futureBallPosition;
         }
         catch(Exception e) {
             e.printStackTrace();

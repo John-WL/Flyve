@@ -70,7 +70,7 @@ public class AirDribbleTest1 extends SkillController {
     }
 
     @Override
-    void updateOutput(DataPacket input) {
+    public void updateOutput(DataPacket input) {
         findDesiredAerialDirection(input);
 
         updateAerialOutput(input);
@@ -183,7 +183,7 @@ public class AirDribbleTest1 extends SkillController {
     }
 
     @Override
-    void updatePidValuesAndArbitraries() {
+    public void updatePidValuesAndArbitraries() {
         pitchPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
         yawPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, yawPid);
         rollPid = PidSerializer.fromFileToPid(PidSerializer.ROLL_FILENAME, rollPid);

@@ -26,10 +26,10 @@ public class PredictedBallPositionPath extends PathHandler {
         // and creates a new path that starts there and ends where the
         // new predicted ball is.
         List<Vector3> controlPoints = new ArrayList<>();
-        controlPoints.add(destination);
-        controlPoints.add(futureBallPosition.minus(new Vector3(0, 0, 50)));
+        controlPoints.add(futureBallPosition);
+        controlPoints.add(futureBallPosition.minus(new Vector3(0, 0, 1)));
 
         // generating the next path
-        initiateNewPath(controlPoints, steeringDestination.minus(destination));
+        initiateNewPath(controlPoints, input.car.orientation.noseVector);
     }
 }

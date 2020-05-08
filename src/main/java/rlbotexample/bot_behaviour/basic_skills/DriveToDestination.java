@@ -48,7 +48,7 @@ public class DriveToDestination extends SkillController {
     }
 
     @Override
-    void updateOutput(DataPacket input) {
+    public void updateOutput(DataPacket input) {
         // drive and turn to reach destination F
         throttle(input);
         steer(input);
@@ -163,7 +163,7 @@ public class DriveToDestination extends SkillController {
     }
 
     @Override
-    void updatePidValuesAndArbitraries() {
+    public void updatePidValuesAndArbitraries() {
         // instantiate new pid controllers based on the data files that corresponds
         throttlePid = PidSerializer.fromFileToPid(PidSerializer.THROTTLE_FILENAME, throttlePid);
         steerPid = PidSerializer.fromFileToPid(PidSerializer.STEERING_FILENAME, steerPid);

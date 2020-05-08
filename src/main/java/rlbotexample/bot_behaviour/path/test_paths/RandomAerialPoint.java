@@ -16,16 +16,14 @@ public class RandomAerialPoint extends PathHandler {
 
     @Override
     public void generateNewPath(DataPacket input) {
-        Vector3 myNoseVector = input.car.orientation.noseVector;
-
         double x = ((Math.random() - 0.5) * 2) * 3000;
         double y = ((Math.random() - 0.5) * 2) * 4000;
-        double z = (Math.random() * 400) + 1000;
+        double z = (Math.random() * 400) + 700;
 
         List<Vector3> controlPoints = new ArrayList<>();
         controlPoints.add(new Vector3(x, y, 800 + z));
         controlPoints.add(new Vector3(x, y, 801 + z));
 
-        initiateNewPath(controlPoints, myNoseVector);
+        initiateNewPath(controlPoints, new Vector3(0, 0, 1));
     }
 }

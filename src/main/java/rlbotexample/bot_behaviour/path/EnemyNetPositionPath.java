@@ -20,13 +20,13 @@ public class EnemyNetPositionPath extends PathHandler {
             List<Vector3> controlPoints = new ArrayList<>();
             if(input.car.team == 0) {
                 double playerDistanceFromGoal = input.car.position.minus(new Vector3(0, 5500, 50)).magnitude();
-                controlPoints.add(new Vector3(0, 5500 - Math.min(playerDistanceFromGoal/2, 2000), 50));
-                controlPoints.add(new Vector3(0, 5501 - Math.min(playerDistanceFromGoal/2, 2000), 50));
+                controlPoints.add(new Vector3(0, 5500 - Math.min(playerDistanceFromGoal/3, 2000), 50));
+                controlPoints.add(new Vector3(0, 5501 - Math.min(playerDistanceFromGoal/3, 2000), 50));
             }
             else {
                 double playerDistanceFromGoal = input.car.position.minus(new Vector3(0, -5500, 50)).magnitude();
-                controlPoints.add(new Vector3(0, -5500 + Math.min(playerDistanceFromGoal/2, 2000), 50));
-                controlPoints.add(new Vector3(0, -5501 + Math.min(playerDistanceFromGoal/2, 2000), 50));
+                controlPoints.add(new Vector3(0, -5500 + Math.min(playerDistanceFromGoal/3, 2000), 50));
+                controlPoints.add(new Vector3(0, -5501 + Math.min(playerDistanceFromGoal/3, 2000), 50));
             }
 
             initiateNewPath(controlPoints, initialDirection);

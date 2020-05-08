@@ -2,12 +2,13 @@ package util.game_situation;
 
 import rlbot.gamestate.*;
 import util.game_situation.GameSituation;
+import util.timer.FrameTimer;
 import util.timer.Timer;
 
 public class RandomizedAirDribbleSetup extends GameSituation {
 
     public RandomizedAirDribbleSetup() {
-        super(new Timer(10));
+        super(new FrameTimer(20*30));
     }
 
     @Override
@@ -18,14 +19,14 @@ public class RandomizedAirDribbleSetup extends GameSituation {
         float basePositionZ = randomRange(800, 1500);
         float baseSpeedX = randomRange(-800, 800);
         float baseSpeedY = randomRange(-800, 800);
-        float baseSpeedZ = randomRange(0, 800);
+        float baseSpeedZ = randomRange(0, 500);
 
-        float deltaPositionX = randomRange(-50, 50);
-        float deltaPositionY = randomRange(-50, 50);
-        float deltaPositionZ = randomRange(-300, -500);
+        float deltaPositionX = randomRange(0, 0);
+        float deltaPositionY = randomRange(0, 0);
+        float deltaPositionZ = randomRange(-400, -600);
         float deltaSpeedX = randomRange(-100, 100);
         float deltaSpeedY = randomRange(-100, 100);
-        float deltaSpeedZ = randomRange(100, 300);
+        float deltaSpeedZ = randomRange(200, 300);
 
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState()

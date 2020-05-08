@@ -11,13 +11,13 @@ public abstract class SkillController {
 
     private Timer pidParamReloadTime;
 
-    SkillController() {
+    public SkillController() {
         pidParamReloadTime = new Timer(TIME_BEFORE_RELOADING_PIDS);
         pidParamReloadTime.start();
     }
 
-    abstract void updateOutput(DataPacket input);
-    abstract void updatePidValuesAndArbitraries();
+    public abstract void updateOutput(DataPacket input);
+    public abstract void updatePidValuesAndArbitraries();
     public abstract void debug(Renderer renderer, DataPacket input);
 
     public void setupAndUpdateOutputs(DataPacket input) {
