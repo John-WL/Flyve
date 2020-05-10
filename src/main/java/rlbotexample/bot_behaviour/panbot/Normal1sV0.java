@@ -2,8 +2,8 @@ package rlbotexample.bot_behaviour.panbot;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.basic_skills.competitionwise.Dribble;
-import rlbotexample.bot_behaviour.basic_skills.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.basic_controller.Dribble;
+import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
 import rlbotexample.bot_behaviour.path.PathHandler;

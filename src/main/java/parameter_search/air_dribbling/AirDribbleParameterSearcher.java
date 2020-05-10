@@ -2,8 +2,8 @@ package parameter_search.air_dribbling;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.basic_skills.AirDribbleTest5;
-import rlbotexample.bot_behaviour.basic_skills.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.test_controller.AirDribbleTest5;
+import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.path.PathHandler;

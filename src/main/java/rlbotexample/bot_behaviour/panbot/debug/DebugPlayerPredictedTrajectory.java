@@ -1,0 +1,59 @@
+package rlbotexample.bot_behaviour.panbot.debug;
+
+import rlbot.flat.GameTickPacket;
+import rlbot.render.Renderer;
+import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
+import rlbotexample.output.BotOutput;
+import util.vector.Vector3;
+
+import java.awt.*;
+
+public class DebugPlayerPredictedTrajectory extends PanBot {
+
+    public DebugPlayerPredictedTrajectory() {
+    }
+
+    @Override
+    public BotOutput processInput(DataPacket input, GameTickPacket packet) {
+
+        return new BotOutput();
+    }
+
+    @Override
+    public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
+        super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+
+        // get the car
+        CarData opponentCar = input.allCars.get((input.allCars.size()-1) - input.playerIndex);
+
+        // draw predicted parabola
+        int resolution = 200;
+        double amountOfTimeInFuture = 6;
+        Vector3 previousPredictedPosition = opponentCar.position;
+        for(int i = 1; i < resolution; i++) {
+            // get the next predicted position
+            double secondsFromNow = (i*amountOfTimeInFuture)/resolution;
+            Vector3 predictedPosition = Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, secondsFromNow);
+
+            // print a small segment on the trajectory
+            renderer.drawLine3d(Color.ORANGE, previousPredictedPosition, predictedPosition);
+
+            // setup for the next prediction so we can draw the next segment
+            previousPredictedPosition = predictedPosition;
+        }
+
+        // draw a square on the apogee of the parabola
+        double timeBeforeReachingApogee = Predictions.timeBeforeReachingAerialPlayerApogeePosition(opponentCar.velocity);
+        renderer.drawRectangle3d(Color.ORANGE, Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, timeBeforeReachingApogee), 10, 10, true);
+
+        // try to predict the point with which we should try to hit the ball
+        double timeBeforeReachingBall = input.ball.position.minus(opponentCar.position).magnitude()/opponentCar.velocity.magnitude();
+        renderer.drawRectangle3d(Color.CYAN, Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, timeBeforeReachingBall), 10, 10, true);
+
+        // draw find the same timed point, but on the ball trajectory instead
+        renderer.drawRectangle3d(Color.green, Predictions.ballPositon(input.ball.position, timeBeforeReachingBall), 10, 10, true);
+    }
+}

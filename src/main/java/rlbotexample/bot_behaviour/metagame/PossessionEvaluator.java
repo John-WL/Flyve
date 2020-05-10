@@ -25,7 +25,7 @@ public class PossessionEvaluator {
     }
 
     /*public static double possessionRatio(int indexOfPlayer, int indexOfOpponent, DataPacket input) {
-        Vector3 playerPosition = input.allCars.get(indexOfPlayer).position;
+        Vector3 aerialPlayerPosition = input.allCars.get(indexOfPlayer).position;
         Vector3 playerSpeed = input.allCars.get(indexOfPlayer).velocity;
         Vector3 playerNoseOrientation = input.allCars.get(indexOfPlayer).orientation.noseVector;
         Vector3 opponentPosition = input.allCars.get(indexOfOpponent).position;
@@ -42,9 +42,9 @@ public class PossessionEvaluator {
         playerPossessionValue += opponentPosition.minus(ballPosition).flatten().correctionAngle(opponentNoseOrientation.flatten());
         playerPossessionValue += ballSpeed.minus(opponentSpeed).dotProduct(ballPosition.minus(opponentPosition));
 
-        double opponentPossessionValue = playerPosition.minus(ballPosition).magnitude();
-        opponentPossessionValue += playerPosition.minus(ballPosition).flatten().correctionAngle(playerNoseOrientation.flatten());
-        opponentPossessionValue += ballSpeed.minus(playerSpeed).dotProduct(ballPosition.minus(playerPosition));
+        double opponentPossessionValue = aerialPlayerPosition.minus(ballPosition).magnitude();
+        opponentPossessionValue += aerialPlayerPosition.minus(ballPosition).flatten().correctionAngle(playerNoseOrientation.flatten());
+        opponentPossessionValue += ballSpeed.minus(playerSpeed).dotProduct(ballPosition.minus(aerialPlayerPosition));
 
         // If the number is ~1, then each player has somewhat the same possession value. No player has the advantage from the other.
         // If the number is >> 1, then the player definitely has possession over the opponent, and it can take his due time to play.
