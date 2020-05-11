@@ -13,7 +13,10 @@ import java.awt.*;
 
 public class DebugPlayerPredictedTrajectory extends PanBot {
 
+    private Predictions predictions;
+
     public DebugPlayerPredictedTrajectory() {
+        predictions = new Predictions();
     }
 
     @Override
@@ -36,7 +39,7 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
         for(int i = 1; i < resolution; i++) {
             // get the next predicted position
             double secondsFromNow = (i*amountOfTimeInFuture)/resolution;
-            Vector3 predictedPosition = Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, secondsFromNow);
+            Vector3 predictedPosition = predictions.aerialKinematicBody(opponentCar.position, opponentCar.velocity, secondsFromNow).getPosition();
 
             // print a small segment on the trajectory
             renderer.drawLine3d(Color.ORANGE, previousPredictedPosition, predictedPosition);
@@ -45,15 +48,11 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
             previousPredictedPosition = predictedPosition;
         }
 
-        // draw a square on the apogee of the parabola
-        double timeBeforeReachingApogee = Predictions.timeBeforeReachingAerialPlayerApogeePosition(opponentCar.velocity);
-        renderer.drawRectangle3d(Color.ORANGE, Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, timeBeforeReachingApogee), 10, 10, true);
-
         // try to predict the point with which we should try to hit the ball
-        double timeBeforeReachingBall = input.ball.position.minus(opponentCar.position).magnitude()/opponentCar.velocity.magnitude();
-        renderer.drawRectangle3d(Color.CYAN, Predictions.aerialPlayerPosition(opponentCar.position, opponentCar.velocity, timeBeforeReachingBall), 10, 10, true);
+        double timeBeforeReachingBall = predictions.timeToReachAerialDestination(input.ball.position.minus(opponentCar.position), input.ball.velocity.minus(opponentCar.velocity));
+        renderer.drawRectangle3d(Color.CYAN, predictions.aerialKinematicBody(opponentCar.position, opponentCar.velocity, timeBeforeReachingBall).getPosition(), 10, 10, true);
 
         // draw find the same timed point, but on the ball trajectory instead
-        renderer.drawRectangle3d(Color.green, Predictions.ballPositon(input.ball.position, timeBeforeReachingBall), 10, 10, true);
+        renderer.drawRectangle3d(Color.green, predictions.ball(input.ball.position, timeBeforeReachingBall).getPosition(), 10, 10, true);
     }
 }

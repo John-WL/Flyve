@@ -38,7 +38,7 @@ public class Flick extends SkillController {
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 localBallPosition = CarDestination.getLocal(ballPosition, input);
-        //Vector3 nonUniformScaledPlayerDistanceFromBall = ((aerialPlayerPosition.minus(ballPosition)).minusAngle(playerNoseOrientation)).scaled(1, 1, 1);
+        //Vector3 nonUniformScaledPlayerDistanceFromBall = ((aerialKinematicBody.minus(ball)).minusAngle(playerNoseOrientation)).scaled(1, 1, 1);
 
         /*
         // if the bot can flick

@@ -18,12 +18,14 @@ import java.awt.*;
 public class AerialHit extends SkillController {
 
     private BotBehaviour bot;
+    private Predictions predictions;
     private AerialOrientationHandler aerialOrientationHandler;
     private JumpHandler jumpHandler;
     private Vector3 orientation;
 
-    public AerialHit(BotBehaviour bot) {
+    public AerialHit(BotBehaviour bot, Predictions predictions) {
         this.bot = bot;
+        this.predictions = predictions;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
         this.jumpHandler = new JumpHandler();
         this.orientation = new Vector3();
@@ -44,9 +46,9 @@ public class AerialHit extends SkillController {
         // get the future player and ball positions
         Vector3 playerFuturePosition = input.ball.position;
         if(input.ball.velocity.magnitude() > 0.1) {
-            playerFuturePosition = Predictions.aerialPlayerPosition(playerPosition, playerSpeed, timeBeforeReachingBall);
+            playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
         }
-        Vector3 ballFuturePosition = Predictions.ballPositon(input.ball.position, timeBeforeReachingBall);
+        Vector3 ballFuturePosition = predictions.ball(input.ball.position, timeBeforeReachingBall).getPosition();
 
         // get the orientation we should have to hit the ball
         Vector3 orientation = ballFuturePosition.minus(playerFuturePosition);

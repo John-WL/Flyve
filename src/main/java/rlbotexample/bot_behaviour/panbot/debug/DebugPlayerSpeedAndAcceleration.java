@@ -6,6 +6,7 @@ import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.debuging.OtherPlayerAccelerationSpeedPrinter;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 
 public class DebugPlayerSpeedAndAcceleration extends PanBot {

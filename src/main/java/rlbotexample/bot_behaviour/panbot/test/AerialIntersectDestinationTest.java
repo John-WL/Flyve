@@ -7,6 +7,7 @@ import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialDirectionalHit;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialIntersectDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_situation.AerialHitSetup1;
 import util.game_situation.AerialHitSetup2;
@@ -20,9 +21,11 @@ public class AerialIntersectDestinationTest extends PanBot {
 
     private AerialIntersectDestination aerialIntersectDestinationController;
     private GameSituationHandler gameSituationHandler;
+    private Predictions predictions;
 
     public AerialIntersectDestinationTest() {
-        aerialIntersectDestinationController = new AerialIntersectDestination(this);
+        predictions = new Predictions();
+        aerialIntersectDestinationController = new AerialIntersectDestination(this, predictions);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());

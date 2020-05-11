@@ -7,6 +7,7 @@ import rlbotexample.bot_behaviour.skill_controller.test_controller.AerialHit;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_situation.*;
 import util.game_situation.handlers.CircularTrainingPack;
@@ -16,10 +17,12 @@ public class AerialHitPredictionTest extends PanBot {
 
     private SkillController aerialHitController;
     private GameSituationHandler gameSituationHandler;
+    private Predictions predictions;
 
     public AerialHitPredictionTest() {
 
-        aerialHitController = new AerialHit(this);
+        predictions = new Predictions();
+        aerialHitController = new AerialHit(this, predictions);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());
@@ -34,6 +37,10 @@ public class AerialHitPredictionTest extends PanBot {
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         // game situation handling
         //gameSituationHandler.update();
+
+        // load the ball prediction path so we don't overuse the implementation.
+        // If we use too much the core implementation, it lags and breaks, sometimes D:
+        predictions.loadBallPrediction();
 
         // do the thing
         aerialHitController.updateOutput(input);

@@ -4,6 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 
 public class DebugPlayerDistanceFromBall extends PanBot {

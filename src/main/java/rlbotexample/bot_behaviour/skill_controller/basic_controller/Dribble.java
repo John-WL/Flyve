@@ -212,8 +212,8 @@ public class Dribble extends SkillController {
         // get useful variables
         /*
         BotOutput output = bot.output();
-        Vector3 ballPosition = input.ball.position;
-        Vector3 localBallPosition = CarDestination.getLocal(ballPosition, input);
+        Vector3 ball = input.ball.position;
+        Vector3 localBallPosition = CarDestination.getLocal(ball, input);
 
         // compute the pitch, roll, and yaw pid values
         double pitchAmount = pitchPid.process(localBallPosition.z, 0);

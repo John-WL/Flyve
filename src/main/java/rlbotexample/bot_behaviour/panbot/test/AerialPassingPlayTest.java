@@ -4,9 +4,11 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerPredictedTrajectory;
+import rlbotexample.bot_behaviour.panbot.debug.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialDirectionalHit;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialIntersectDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_situation.*;
 import util.game_situation.handlers.CircularTrainingPack;
@@ -21,11 +23,15 @@ public class AerialPassingPlayTest extends PanBot {
     private AerialDirectionalHit aerialDirectionalHitControllerBot1;
     private AerialIntersectDestination aerialIntersectDestinationBot1;
     private GameSituationHandler gameSituationHandler;
+    private Predictions predictionsForBot0;
+    private Predictions predictionsForBot1;
 
     public AerialPassingPlayTest() {
-        aerialDirectionalHitControllerBot0 = new AerialDirectionalHit(this);
-        aerialDirectionalHitControllerBot1 = new AerialDirectionalHit(this);
-        aerialIntersectDestinationBot1 = new AerialIntersectDestination(this);
+        predictionsForBot0 = new Predictions();
+        predictionsForBot1 = new Predictions();
+        aerialDirectionalHitControllerBot0 = new AerialDirectionalHit(this, predictionsForBot0);
+        aerialDirectionalHitControllerBot1 = new AerialDirectionalHit(this, predictionsForBot1);
+        aerialIntersectDestinationBot1 = new AerialIntersectDestination(this, predictionsForBot1);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialPassingPlaySetup1());
@@ -38,23 +44,29 @@ public class AerialPassingPlayTest extends PanBot {
         gameSituationHandler.update();
 
         // do the thing
+        // bot0 behaviour (starts the pass)
         if(input.playerIndex == 0) {
-            if(input.ball.position.y > -2000) {
-                aerialDirectionalHitControllerBot0.setBallDestination(input.allCars.get(1).position);
-                aerialDirectionalHitControllerBot0.updateOutput(input);
-            }
-            else {
-                aerialDirectionalHitControllerBot0.setBallDestination(new Vector3(0, 5500, 100));
-                aerialDirectionalHitControllerBot0.updateOutput(input);
-            }
+            // load the ball prediction path so we don't overuse the implementation.
+            // If we use too much the core implementation, it lags and breaks, sometimes D:
+            predictionsForBot0.loadBallPrediction();
+
+            // pass the damn ball
+            aerialDirectionalHitControllerBot0.setBallDestination(input.allCars.get(1).position);
+            aerialDirectionalHitControllerBot0.updateOutput(input);
         }
+        // bot1 behaviour (receives the pass and tries to score)
         else if(input.playerIndex == 1) {
-            // if bot1 goes for a pass
-            if(input.allCars.get(0).velocity.minus(input.ball.velocity).dotProduct(input.allCars.get(0).position.minus(input.ball.position)) < 0) {
-                aerialIntersectDestinationBot1.setDestination(new Vector3(1000, 2000, 800));
+            // load the ball prediction path so we don't overuse the implementation.
+            // If we use too much the core implementation, it lags and breaks, sometimes D:
+            predictionsForBot1.loadBallPrediction();
+
+            // if bot0 goes for a pass
+            if(input.allCars.get(0).velocity.minus(input.ball.velocity).dotProduct(input.allCars.get(0).position.minus(input.ball.position)) < 0
+            && input.allCars.get(1).position.minus(input.ball.position).magnitude() > 1000) {
+                aerialIntersectDestinationBot1.setDestination(new Vector3(-400, 1500, 800));
                 aerialIntersectDestinationBot1.updateOutput(input);
             }
-            // if bot1 did the pass
+            // if bot0 did the pass
             else {
                 aerialDirectionalHitControllerBot1.setBallDestination(new Vector3(0, 5500, 100));
                 aerialDirectionalHitControllerBot1.updateOutput(input);
@@ -71,6 +83,6 @@ public class AerialPassingPlayTest extends PanBot {
         aerialDirectionalHitControllerBot0.debug(renderer, input);
         aerialDirectionalHitControllerBot1.debug(renderer, input);
         aerialIntersectDestinationBot1.debug(renderer, input);
-        new DebugPlayerPredictedTrajectory().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        new DebugPredictedAerialHitOnBall().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
     }
 }

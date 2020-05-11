@@ -7,7 +7,7 @@ import util.timer.FrameTimer;
 public class AerialPassingPlaySetup1 extends GameSituation {
 
     public AerialPassingPlaySetup1() {
-        super(new FrameTimer(10*30));
+        super(new FrameTimer(6*30));
     }
 
     @Override
@@ -30,8 +30,8 @@ public class AerialPassingPlaySetup1 extends GameSituation {
                 .withPhysics(new PhysicsState()
                         .withRotation(new DesiredRotation(0f, (float)Math.PI/2, 0f))
                         .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))
-                        .withLocation(new DesiredVector3(0f, -2000f, 0f))
-                        .withVelocity(new DesiredVector3(0f, 0f, 0f)))
+                        .withLocation(new DesiredVector3(1000f, -2500f, 0f))
+                        .withVelocity(new DesiredVector3(0f, 1000f, 0f)))
                 .withBoostAmount(100f));
 
         applyGameState(gameState);

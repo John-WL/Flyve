@@ -25,26 +25,26 @@ public class PossessionEvaluator {
     }
 
     /*public static double possessionRatio(int indexOfPlayer, int indexOfOpponent, DataPacket input) {
-        Vector3 aerialPlayerPosition = input.allCars.get(indexOfPlayer).position;
+        Vector3 aerialKinematicBody = input.allCars.get(indexOfPlayer).position;
         Vector3 playerSpeed = input.allCars.get(indexOfPlayer).velocity;
         Vector3 playerNoseOrientation = input.allCars.get(indexOfPlayer).orientation.noseVector;
         Vector3 opponentPosition = input.allCars.get(indexOfOpponent).position;
         Vector3 opponentSpeed = input.allCars.get(indexOfOpponent).velocity;
         Vector3 opponentNoseOrientation = input.allCars.get(indexOfOpponent).orientation.noseVector;
-        Vector3 ballPosition = input.ball.position;
+        Vector3 ball = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
 
         // evaluation = distance + angle from ball + speed from ball.
         // the bigger the number, the worst it is for the car that has the value.
         // this is why player possession is calculated from opponent possession variables.
         // the output is a number between 0 and a lot (lol).
-        double playerPossessionValue = opponentPosition.minus(ballPosition).magnitude();
-        playerPossessionValue += opponentPosition.minus(ballPosition).flatten().correctionAngle(opponentNoseOrientation.flatten());
-        playerPossessionValue += ballSpeed.minus(opponentSpeed).dotProduct(ballPosition.minus(opponentPosition));
+        double playerPossessionValue = opponentPosition.minus(ball).magnitude();
+        playerPossessionValue += opponentPosition.minus(ball).flatten().correctionAngle(opponentNoseOrientation.flatten());
+        playerPossessionValue += ballSpeed.minus(opponentSpeed).dotProduct(ball.minus(opponentPosition));
 
-        double opponentPossessionValue = aerialPlayerPosition.minus(ballPosition).magnitude();
-        opponentPossessionValue += aerialPlayerPosition.minus(ballPosition).flatten().correctionAngle(playerNoseOrientation.flatten());
-        opponentPossessionValue += ballSpeed.minus(playerSpeed).dotProduct(ballPosition.minus(aerialPlayerPosition));
+        double opponentPossessionValue = aerialKinematicBody.minus(ball).magnitude();
+        opponentPossessionValue += aerialKinematicBody.minus(ball).flatten().correctionAngle(playerNoseOrientation.flatten());
+        opponentPossessionValue += ballSpeed.minus(playerSpeed).dotProduct(ball.minus(aerialKinematicBody));
 
         // If the number is ~1, then each player has somewhat the same possession value. No player has the advantage from the other.
         // If the number is >> 1, then the player definitely has possession over the opponent, and it can take his due time to play.

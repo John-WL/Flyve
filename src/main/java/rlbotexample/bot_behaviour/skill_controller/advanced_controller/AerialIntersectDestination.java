@@ -23,9 +23,11 @@ public class AerialIntersectDestination extends SkillController {
     private JumpHandler jumpHandler;
     private Vector3 destination;
     private Vector3 orientation;
+    private Predictions predictions;
 
-    public AerialIntersectDestination(BotBehaviour bot) {
+    public AerialIntersectDestination(BotBehaviour bot, Predictions predictions) {
         this.bot = bot;
+        this.predictions = predictions;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
         this.jumpHandler = new JumpHandler();
 
@@ -61,7 +63,7 @@ public class AerialIntersectDestination extends SkillController {
         }
 
         // get the future player position
-        Vector3 playerFuturePosition = Predictions.aerialPlayerPosition(playerPosition, playerSpeed, timeBeforeReachingDestination);
+        Vector3 playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingDestination).getPosition();
 
         // get the orientation we should have to hit the ball
         Vector3 orientation = destination.minus(playerFuturePosition);
@@ -75,6 +77,14 @@ public class AerialIntersectDestination extends SkillController {
         }
         else {
             output.boost(false);
+        }
+
+
+        // if we're hitting the ball in the future, face the ball to hit it properly
+        if(destination.minus(playerFuturePosition).magnitude() < 50) {
+            output.boost(false);
+            orientation = destination.minus(input.car.position);
+            this.orientation = orientation;
         }
 
         // set the desired orientation and apply it
