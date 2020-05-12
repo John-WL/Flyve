@@ -9,6 +9,7 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJu
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;
@@ -37,20 +38,20 @@ public class AerialHit extends SkillController {
         Vector3 playerPosition = input.car.position;
         Vector3 playerSpeed = input.car.velocity;
 
-        // try to predict the point in time with which we should try to hit the ball
+        // try to predict the point in time with which we should try to hit the getNativeBallPrediction
         double timeBeforeReachingBall = input.ball.position.minus(playerPosition).magnitude()/(input.ball.velocity.minus(playerSpeed).magnitude()*1.2);
         if(timeBeforeReachingBall > 6) {
             timeBeforeReachingBall = 6;
         }
 
-        // get the future player and ball positions
+        // get the future player and getNativeBallPrediction positions
         Vector3 playerFuturePosition = input.ball.position;
         if(input.ball.velocity.magnitude() > 0.1) {
             playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
         }
-        Vector3 ballFuturePosition = predictions.ball(input.ball.position, timeBeforeReachingBall).getPosition();
+        Vector3 ballFuturePosition = predictions.getNativeBallPrediction(input.ball.position, timeBeforeReachingBall).getPosition();
 
-        // get the orientation we should have to hit the ball
+        // get the orientation we should have to hit the getNativeBallPrediction
         Vector3 orientation = ballFuturePosition.minus(playerFuturePosition);
 
         this.orientation = orientation;

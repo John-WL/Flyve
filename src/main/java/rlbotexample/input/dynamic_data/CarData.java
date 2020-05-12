@@ -1,6 +1,7 @@
 package rlbotexample.input.dynamic_data;
 
 
+import rlbot.flat.BoxShape;
 import util.vector.Vector3;
 
 /**
@@ -17,6 +18,9 @@ public class CarData {
     /** The velocity of the car. */
     public final Vector3 velocity;
 
+    /** The angular velocity of the car. */
+    public final Vector3 spin;
+
     /** The orientation of the car */
     public final CarOrientation orientation;
 
@@ -25,6 +29,9 @@ public class CarData {
 
     /** True if the car is driving on the ground, the wall, etc. In other words, true if you can steer. */
     public final boolean hasWheelContact;
+
+    /** The orientation of the car */
+    public final HitBox hitBox;
 
     /**
      * True if the car is showing the supersonic and can demolish enemies on contact.
@@ -46,11 +53,15 @@ public class CarData {
     public CarData(rlbot.flat.PlayerInfo playerInfo, float elapsedSeconds) {
         this.position = new Vector3(playerInfo.physics().location());
         this.velocity = new Vector3(playerInfo.physics().velocity());
+        this.spin = new Vector3(playerInfo.physics().angularVelocity());
         this.orientation = CarOrientation.fromFlatbuffer(playerInfo);
         this.boost = playerInfo.boost();
         this.isSupersonic = playerInfo.isSupersonic();
         this.team = playerInfo.team();
         this.hasWheelContact = playerInfo.hasWheelContact();
         this.elapsedSeconds = elapsedSeconds;
+        BoxShape boxShape = playerInfo.hitbox();
+        Vector3 centerOfMassOffset = new Vector3(playerInfo.hitboxOffset());
+        this.hitBox = new HitBox(new Vector3(boxShape.length(), boxShape.width(), boxShape.height()), centerOfMassOffset, position, orientation.noseVector, orientation.roofVector);
     }
 }

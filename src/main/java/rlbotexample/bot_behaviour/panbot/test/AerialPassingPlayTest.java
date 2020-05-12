@@ -3,7 +3,6 @@ package rlbotexample.bot_behaviour.panbot.test;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.panbot.debug.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialDirectionalHit;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialIntersectDestination;
@@ -46,19 +45,19 @@ public class AerialPassingPlayTest extends PanBot {
         // do the thing
         // bot0 behaviour (starts the pass)
         if(input.playerIndex == 0) {
-            // load the ball prediction path so we don't overuse the implementation.
+            // load the getNativeBallPrediction prediction path so we don't overuse the implementation.
             // If we use too much the core implementation, it lags and breaks, sometimes D:
-            predictionsForBot0.loadBallPrediction();
+            predictionsForBot0.loadNativeBallPrediction();
 
-            // pass the damn ball
+            // pass the damn getNativeBallPrediction
             aerialDirectionalHitControllerBot0.setBallDestination(input.allCars.get(1).position);
             aerialDirectionalHitControllerBot0.updateOutput(input);
         }
         // bot1 behaviour (receives the pass and tries to score)
         else if(input.playerIndex == 1) {
-            // load the ball prediction path so we don't overuse the implementation.
+            // load the getNativeBallPrediction prediction path so we don't overuse the implementation.
             // If we use too much the core implementation, it lags and breaks, sometimes D:
-            predictionsForBot1.loadBallPrediction();
+            predictionsForBot1.loadNativeBallPrediction();
 
             // if bot0 goes for a pass
             if(input.allCars.get(0).velocity.minus(input.ball.velocity).dotProduct(input.allCars.get(0).position.minus(input.ball.position)) < 0

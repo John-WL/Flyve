@@ -4,7 +4,6 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialDirectionalHit;
-import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerPredictedTrajectory;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
@@ -41,9 +40,9 @@ public class AerialDirectionalHitPredictionTest extends PanBot {
         // game situation handling
         gameSituationHandler.update();
 
-        // load the ball prediction path so we don't overuse the implementation.
+        // load the getNativeBallPrediction prediction path so we don't overuse the implementation.
         // If we use too much the core implementation, it lags and breaks, sometimes D:
-        predictions.loadBallPrediction();
+        predictions.loadNativeBallPrediction();
 
         // do the thing
         aerialDirectionalHitController.setBallDestination(new Vector3(0, 5120, 100));

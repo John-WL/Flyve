@@ -1,6 +1,7 @@
 package util.vector;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import rlbot.flat.Rotator;
 
 /**
  * A simple 3d vector class with the most essential operations.
@@ -18,6 +19,14 @@ public class Vector3 extends rlbot.vector.Vector3 {
 
     public Vector3() {
         this(0, 0, 0);
+    }
+
+    public Vector3(Vector3 v) {
+        this(v.x, v.y, v.z);
+    }
+
+    public Vector3(Rotator rotator) {
+        this(rotator.pitch(), rotator.yaw(), rotator.roll());
     }
 
     public Vector3(rlbot.flat.Vector3 vec) {
@@ -104,6 +113,29 @@ public class Vector3 extends rlbot.vector.Vector3 {
         double ty = z * v.x - x * v.z;
         double tz = x * v.y - y * v.x;
         return new Vector3(tx, ty, tz);
+    }
+
+    /*
+
+
+     */
+    public Vector3 matrixRotation(Vector3 forwardFacingVector, Vector3 roofFacingVector) {
+        Vector3 result = new Vector3(this);
+
+        // roll
+        Vector3 rotatedRoll = roofFacingVector.minusAngle(forwardFacingVector);
+        Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
+        Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
+        result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
+
+        // computing global pitch and yaw
+        Vector2 pitchProjection = new Vector2(forwardFacingVector.flatten().magnitude(), -forwardFacingVector.z);
+        Vector2 localPointProjection = new Vector2(result.x, result.z);
+        Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
+        result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
+        result = result.plusAngle(new Vector3(forwardFacingVector.flatten(), 0));
+
+        return result;
     }
 
     public Vector3 toFrameOfReference(Vector3 frontDirection, Vector3 topDirection)

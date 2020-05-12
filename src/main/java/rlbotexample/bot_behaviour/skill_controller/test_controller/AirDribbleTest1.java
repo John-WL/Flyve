@@ -90,17 +90,17 @@ public class AirDribbleTest1 extends SkillController {
         Vector3 ballDestination = desiredDestination.getThrottleDestination();
 
 
-        // cap the max desired ball speed.
+        // cap the max desired getNativeBallPrediction speed.
         Vector3 cappedTargetBallSpeed = ballPosition.minus(ballDestination);
         if(cappedTargetBallSpeed.magnitude() > MAXIMUM_TARGET_BALL_SPEED) {
             cappedTargetBallSpeed = cappedTargetBallSpeed.scaledToMagnitude(MAXIMUM_TARGET_BALL_SPEED);
         }
 
-        // compute next player offset from ball in X and Y
+        // compute next player offset from getNativeBallPrediction in X and Y
         double playerDestinationOffsetX = -playerDestinationOffsetXPid.process(ballSpeed.x, cappedTargetBallSpeed.x);
         double playerDestinationOffsetY = -playerDestinationOffsetYPid.process(ballSpeed.y, cappedTargetBallSpeed.y);
 
-        // cap the max offset from ball so everything stays in control and doesn't explode lul
+        // cap the max offset from getNativeBallPrediction so everything stays in control and doesn't explode lul
         Vector2 playerDestinationOffsetXY = new Vector2(playerDestinationOffsetX, playerDestinationOffsetY);
         if(playerDestinationOffsetXY.magnitudeSquared() > MAXIMUM_BALL_OFFSET*MAXIMUM_BALL_OFFSET) {
             double userProofCappedMaxOffset = Math.min(RlConstants.BALL_RADIUS, Math.max(0, MAXIMUM_BALL_OFFSET));
@@ -109,11 +109,11 @@ public class AirDribbleTest1 extends SkillController {
             playerDestinationOffsetY = playerDestinationOffsetXY.y;
         }
 
-        // get the z coordinate on the surface of the ball, so the player tries to go to that coordinate instead of a wacky
-        // through-the-ball destination...
+        // get the z coordinate on the surface of the getNativeBallPrediction, so the player tries to go to that coordinate instead of a wacky
+        // through-the-getNativeBallPrediction destination...
         double ballOffsetZ = Math.sqrt(RlConstants.BALL_RADIUS* RlConstants.BALL_RADIUS - new Vector2(playerDestinationOffsetX, playerDestinationOffsetY).magnitudeSquared());
 
-        // compute next player offset from ball in Z
+        // compute next player offset from getNativeBallPrediction in Z
         double playerDestinationOffsetZ = playerDestinationOffsetZPid.process(ballSpeed.z, cappedTargetBallSpeed.z);
         playerDestinationOffsetZ -= ballOffsetZ;
 
@@ -122,7 +122,7 @@ public class AirDribbleTest1 extends SkillController {
 
         // compute the player's desired orientation
         // I don't have a fucking clue what's going on here
-        // I mean, with this code, the bot tries to go in the direction of the ball (plus some pid effects to actually handle the behaviour)
+        // I mean, with this code, the bot tries to go in the direction of the getNativeBallPrediction (plus some pid effects to actually handle the behaviour)
         // But WHY CAN I PUT 200000000 million something as a factor and nothing breaks??? Makes no sense.
         // gotta fix this somehow...
 

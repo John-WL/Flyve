@@ -8,7 +8,7 @@ import util.vector.Vector3;
 import java.awt.*;
 
 /**
- * This class can help you get started with ball prediction. Feel free to change it as much as you want,
+ * This class can help you get started with getNativeBallPrediction prediction. Feel free to change it as much as you want,
  * this is part of your bot, not part of the framework!
  */
 public class BallPredictionHelper {

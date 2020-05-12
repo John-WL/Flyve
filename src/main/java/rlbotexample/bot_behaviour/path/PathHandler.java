@@ -30,7 +30,7 @@ public abstract class PathHandler {
 
     public static Vector3 getFutureExpectedBallPosition(DataPacket input) {
         try {
-            // Get the "thanks-god" implementation of the ball prediction and use it to find
+            // Get the "thanks-god" implementation of the getNativeBallPrediction prediction and use it to find
             // the next likely future position
             Vector3 myPosition = input.car.position;
             Vector3 currentBallPosition = input.ball.position;
@@ -42,7 +42,7 @@ public abstract class PathHandler {
             double futureBallTime;
             double timeToGo;
 
-            // pinpoint the position where PanBot will hit the ball
+            // pinpoint the position where PanBot will hit the getNativeBallPrediction
             while(divisor >= 1) {
                 divisor /= 2;
                 futureBallPosition = new Vector3(ballPrediction.slices(currentBallPositionIndex).physics().location());
@@ -58,13 +58,13 @@ public abstract class PathHandler {
                 }
             }
 
-            // return hte predicted ball position
+            // return hte predicted getNativeBallPrediction position
             return futureBallPosition;
         }
         catch(Exception e) {
             e.printStackTrace();
 
-            // return a 0ed vector if ball prediction is not working.
+            // return a 0ed vector if getNativeBallPrediction prediction is not working.
             return new Vector3();
         }
     }

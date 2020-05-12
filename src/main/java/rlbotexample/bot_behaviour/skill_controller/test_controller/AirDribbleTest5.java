@@ -101,17 +101,17 @@ public class AirDribbleTest5 extends SkillController {
         Vector3 ballDestination = desiredDestination.getThrottleDestination();
 
 
-        // cap the max desired ball speed.
+        // cap the max desired getNativeBallPrediction speed.
         Vector3 cappedTargetBallSpeed = ballPosition.minus(ballDestination);
         if(cappedTargetBallSpeed.magnitude() > MAXIMUM_TARGET_BALL_SPEED) {
             cappedTargetBallSpeed = cappedTargetBallSpeed.scaledToMagnitude(MAXIMUM_TARGET_BALL_SPEED);
         }
 
-        // compute next player offset from ball in X and Y
+        // compute next player offset from getNativeBallPrediction in X and Y
         double playerDestinationOffsetX = -playerDestinationOffsetXPid.process(ballSpeed.x, cappedTargetBallSpeed.x);
         double playerDestinationOffsetY = -playerDestinationOffsetYPid.process(ballSpeed.y, cappedTargetBallSpeed.y);
 
-        // cap the max offset from ball so everything stays in control and doesn't explode lul
+        // cap the max offset from getNativeBallPrediction so everything stays in control and doesn't explode lul
         Vector2 playerDestinationOffsetXY = new Vector2(playerDestinationOffsetX, playerDestinationOffsetY);
         if(playerDestinationOffsetXY.magnitudeSquared() > maximumBallOffset * maximumBallOffset) {
             double userProofCappedMaxOffset = Math.min(RlConstants.BALL_RADIUS, Math.max(0, maximumBallOffset));
@@ -121,9 +121,9 @@ public class AirDribbleTest5 extends SkillController {
         }
 
 
-        // compute next player offset from ball in Z
+        // compute next player offset from getNativeBallPrediction in Z
         double playerDestinationOffsetZ = playerDestinationOffsetZPid.process(ballSpeed.z, cappedTargetBallSpeed.z);
-        /* remove ball radius from destination Z */ {
+        /* remove getNativeBallPrediction radius from destination Z */ {
             double ballOffsetZ = RlConstants.BALL_RADIUS;
             playerDestinationOffsetZ -= ballOffsetZ;
         }

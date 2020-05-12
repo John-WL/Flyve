@@ -15,16 +15,16 @@ public class PredictedBallPositionPath extends PathHandler {
 
     @Override
     public void generateNewPath(DataPacket input) {
-        // get the future expected ball position
+        // get the future expected getNativeBallPrediction position
         Vector3 futureBallPosition = getFutureExpectedBallPosition(input);
         Vector3 destination = getDesiredDestination().getThrottleDestination();
         Vector3 steeringDestination = getDesiredDestination().getSteeringDestination();
 
         // creating the next path. Here, we do a little trick so we can generate
-        // a new end point that goes to the ball prediction every frame.
+        // a new end point that goes to the getNativeBallPrediction prediction every frame.
         // It basically cuts the current path to where the throttle position is,
         // and creates a new path that starts there and ends where the
-        // new predicted ball is.
+        // new predicted getNativeBallPrediction is.
         List<Vector3> controlPoints = new ArrayList<>();
         controlPoints.add(futureBallPosition);
         controlPoints.add(futureBallPosition.minus(new Vector3(0, 0, 1)));

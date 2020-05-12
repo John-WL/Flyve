@@ -38,9 +38,9 @@ public class AerialHitPredictionTest extends PanBot {
         // game situation handling
         //gameSituationHandler.update();
 
-        // load the ball prediction path so we don't overuse the implementation.
+        // load the getNativeBallPrediction prediction path so we don't overuse the implementation.
         // If we use too much the core implementation, it lags and breaks, sometimes D:
-        predictions.loadBallPrediction();
+        predictions.loadNativeBallPrediction();
 
         // do the thing
         aerialHitController.updateOutput(input);

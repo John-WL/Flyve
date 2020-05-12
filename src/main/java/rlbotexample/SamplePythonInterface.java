@@ -3,6 +3,8 @@ package rlbotexample;
 import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
+import rlbotexample.bot_behaviour.panbot.debug.DebugFuturePlayerHitBox;
+import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerHitBox;
 import rlbotexample.bot_behaviour.panbot.debug.DebugPredictedAerialHitOnBall;
 
 public class SamplePythonInterface extends SocketServer {

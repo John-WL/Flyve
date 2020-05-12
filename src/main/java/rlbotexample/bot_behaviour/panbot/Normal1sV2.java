@@ -68,7 +68,7 @@ public class Normal1sV2 extends PanBot {
 
         // is it the kickoff...?
         if(input.ball.velocity.magnitude() < 0.1) {
-            // destination on ball
+            // destination on getNativeBallPrediction
             pathHandler = ballPositionPath;
 
             // drive to it
@@ -86,7 +86,7 @@ public class Normal1sV2 extends PanBot {
                 skillController = dribbleController;
                 //System.out.println("dribble");
             }
-            // flick the ball if threat
+            // flick the getNativeBallPrediction if threat
             else {
                 // destination on enemy net
                 pathHandler = enemyNetPositionPath;
@@ -109,7 +109,7 @@ public class Normal1sV2 extends PanBot {
             }
 
             /*
-            // obvious rush on the ball?
+            // obvious rush on the getNativeBallPrediction?
             Vector3 playerNetCenterPosition;
             if(input.team == 0) {
                 playerNetCenterPosition = new Vector3(0, -5500, 50);
@@ -117,7 +117,7 @@ public class Normal1sV2 extends PanBot {
             else {
                 playerNetCenterPosition = new Vector3(0, 5500, 50);
             }
-            if(input.ball.velocity.y * playerNetCenterPosition.y < 0) {
+            if(input.getNativeBallPrediction.velocity.y * playerNetCenterPosition.y < 0) {
 
             }*/
         }

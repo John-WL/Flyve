@@ -48,8 +48,8 @@ public class AirDribbleTestAndTweak extends PanBot {
         pathHandler.updateDestination(input);
 
         /*
-        if(2*desiredDestination.getThrottleDestination().z + input.ball.velocity.z < 500 ||
-            input.car.position.minus(input.ball.position).flatten().magnitude() > input.ball.position.z) {
+        if(2*desiredDestination.getThrottleDestination().z + input.getNativeBallPrediction.velocity.z < 500 ||
+            input.car.position.minus(input.getNativeBallPrediction.position).flatten().magnitude() > input.getNativeBallPrediction.position.z) {
             skillController = driveToDestination;
         }
         else {

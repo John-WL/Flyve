@@ -101,7 +101,7 @@ public class Dribble extends SkillController {
                 Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
         );
 
-        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
+        // compute the desired offset from the getNativeBallPrediction to be able to accelerate or slow down, turn left or right accordingly...
         double desiredPlayerOffsetX = ballDirectionOffsetXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
         double desiredPlayerOffsetY = ballDirectionOffsetYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
 
@@ -151,23 +151,23 @@ public class Dribble extends SkillController {
                 Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
         );
 
-        // compute the desired offset from the ball to be able to accelerate or slow down, turn left or right accordingly...
+        // compute the desired offset from the getNativeBallPrediction to be able to accelerate or slow down, turn left or right accordingly...
         double desiredPlayerOffsetX = ballSteeringDirectionOffsetXPid.process(cappedTargetBallSpeed.x, -ballSpeed.x);
         double desiredPlayerOffsetY = ballSteeringDirectionOffsetYPid.process(cappedTargetBallSpeed.y, -ballSpeed.y);
 
         desiredPlayerOffsetX = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetX));
         desiredPlayerOffsetY = Math.max(-MAXIMUM_BALL_OFFSET, Math.min(MAXIMUM_BALL_OFFSET, desiredPlayerOffsetY));
 
-        // compute the player steering destination from ball speed and ball steering destination
-        // here, we steer in the direction of the ball's velocity.
+        // compute the player steering destination from getNativeBallPrediction speed and getNativeBallPrediction steering destination
+        // here, we steer in the direction of the getNativeBallPrediction's velocity.
         Vector3 desiredPlayerOffset = new Vector3(desiredPlayerOffsetX, desiredPlayerOffsetY, 0);
         Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
-        /* handle loss of ball control. Regain that control damn it! (We consider loss of control if behind the ball and not close enough.)*/ {
+        /* handle loss of getNativeBallPrediction control. Regain that control damn it! (We consider loss of control if behind the getNativeBallPrediction and not close enough.)*/ {
             if (playerPosition.minus(ballPosition).magnitude() > PLAYER_DISTANCE_FROM_BALL_WHEN_CONSIDERED_DRIBBLING
                 && playerPosition.minus(ballPosition).dotProduct(ballSpeed) < 0
                 || ballSpeed.magnitude() < 1) {
                 Vector3 alternativeDesiredPlayerOffset;
-                // should the player go to the right or to the left of the ball's velocity vector?
+                // should the player go to the right or to the left of the getNativeBallPrediction's velocity vector?
                 if(playerPosition.minus(ballPosition).minusAngle(ballDestination.minus(ballPosition)).y < 0) {
                     alternativeDesiredPlayerOffset = new Vector3(0, PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST, 0);
                 }
@@ -212,8 +212,8 @@ public class Dribble extends SkillController {
         // get useful variables
         /*
         BotOutput output = bot.output();
-        Vector3 ball = input.ball.position;
-        Vector3 localBallPosition = CarDestination.getLocal(ball, input);
+        Vector3 getNativeBallPrediction = input.getNativeBallPrediction.position;
+        Vector3 localBallPosition = CarDestination.getLocal(getNativeBallPrediction, input);
 
         // compute the pitch, roll, and yaw pid values
         double pitchAmount = pitchPid.process(localBallPosition.z, 0);

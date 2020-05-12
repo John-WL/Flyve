@@ -9,6 +9,7 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
@@ -65,7 +66,7 @@ public class AerialIntersectDestination extends SkillController {
         // get the future player position
         Vector3 playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingDestination).getPosition();
 
-        // get the orientation we should have to hit the ball
+        // get the orientation we should have to hit the getNativeBallPrediction
         Vector3 orientation = destination.minus(playerFuturePosition);
 
         // update variables so we can print them later in the debugger
@@ -80,7 +81,7 @@ public class AerialIntersectDestination extends SkillController {
         }
 
 
-        // if we're hitting the ball in the future, face the ball to hit it properly
+        // if we're hitting the getNativeBallPrediction in the future, face the getNativeBallPrediction to hit it properly
         if(destination.minus(playerFuturePosition).magnitude() < 50) {
             output.boost(false);
             orientation = destination.minus(input.car.position);

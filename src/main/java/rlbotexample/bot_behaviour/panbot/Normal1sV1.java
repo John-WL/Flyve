@@ -61,7 +61,7 @@ public class Normal1sV1 extends PanBot {
 
         // is it the kickoff...?
         if(input.ball.velocity.magnitude() < 0.1) {
-            // destination on ball
+            // destination on getNativeBallPrediction
             pathHandler = ballPositionPath;
 
             // drive to it
@@ -76,7 +76,7 @@ public class Normal1sV1 extends PanBot {
             if (predictivePlayerPossessionRatio > 600) {
                 dribbleController.setupAndUpdateOutputs(input);
             }
-            // flick the ball if threat
+            // flick the getNativeBallPrediction if threat
             else {
                 flickController.setupAndUpdateOutputs(input);
             }

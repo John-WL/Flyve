@@ -17,7 +17,6 @@ public class SampleBot implements Bot {
     private final int playerIndex;
     private BotOutput myBotOutput;
     private BotBehaviour botBehaviour;
-    private AutoCorrectingLapse fpsCap;
     private Renderer renderer;
     private double averageFps;
     private long currentFpsTime;
@@ -31,7 +30,6 @@ public class SampleBot implements Bot {
         this.playerIndex = playerIndex;
         myBotOutput = new BotOutput();
         this.botBehaviour = botBehaviour;
-        fpsCap = new AutoCorrectingLapse(0.03333333333);
         renderer = getRenderer();
         averageFps = 0;
         currentFpsTime = 0;
@@ -43,7 +41,7 @@ public class SampleBot implements Bot {
     }
 
     /**
-     * This is where we keep the actual bot logic. This function shows how to chase the ball.
+     * This is where we keep the actual bot logic. This function shows how to chase the getNativeBallPrediction.
      * Modify it to make your bot smarter!
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {

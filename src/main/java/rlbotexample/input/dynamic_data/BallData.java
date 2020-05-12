@@ -5,7 +5,7 @@ import rlbot.flat.BallInfo;
 import util.vector.Vector3;
 
 /**
- * Basic information about the ball.
+ * Basic information about the getNativeBallPrediction.
  *
  * This class is here for your convenience, it is NOT part of the framework. You can change it as much
  * as you want, or delete it.
@@ -13,11 +13,13 @@ import util.vector.Vector3;
 public class BallData {
     public final Vector3 position;
     public final Vector3 velocity;
+    public final Vector3 orientation;
     public final Vector3 spin;
 
     public BallData(final BallInfo ball) {
         this.position = new Vector3(ball.physics().location());
         this.velocity = new Vector3(ball.physics().velocity());
+        this.orientation = new Vector3(ball.physics().rotation());
         this.spin = new Vector3(ball.physics().angularVelocity());
     }
 }
