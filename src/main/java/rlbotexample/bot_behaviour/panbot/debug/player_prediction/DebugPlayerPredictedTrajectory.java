@@ -1,11 +1,10 @@
-package rlbotexample.bot_behaviour.panbot.debug;
+package rlbotexample.bot_behaviour.panbot.debug.player_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;
@@ -31,18 +30,19 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
         // get the car
-        CarData opponentCar = input.allCars.get((input.allCars.size()-1) - input.playerIndex);
+        CarData playerCar = input.car;
 
         // draw predicted parabola
         int resolution = 30;
-        double amountOfTimeInFuture = 6;
-        Vector3 previousPredictedPosition = opponentCar.position;
+        double amountOfTimeInFuture = 3;
+        Vector3 previousPredictedPosition = playerCar.position;
 
-        if(opponentCar.position.z > 50) {
+        if(playerCar.position.z < 20 && playerCar.hasWheelContact) {
+            // draw predicted ground trajectory
             for(int i = 1; i < resolution; i++) {
                 // get the next predicted position
                 double secondsFromNow = (i*amountOfTimeInFuture)/resolution;
-                Vector3 predictedPosition = predictions.aerialKinematicBody(opponentCar.position, opponentCar.velocity, secondsFromNow).getPosition();
+                Vector3 predictedPosition = predictions.onGroundKinematicBody(playerCar, secondsFromNow).getPosition();
 
                 // print a small segment on the trajectory
                 renderer.drawLine3d(Color.ORANGE, previousPredictedPosition, predictedPosition);
@@ -52,11 +52,10 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
             }
         }
         else {
-            // draw predicted ground trajectory
             for(int i = 1; i < resolution; i++) {
                 // get the next predicted position
                 double secondsFromNow = (i*amountOfTimeInFuture)/resolution;
-                Vector3 predictedPosition = predictions.onGroundKinematicBody(opponentCar, secondsFromNow).getPosition();
+                Vector3 predictedPosition = predictions.aerialKinematicBody(playerCar.position, playerCar.velocity, secondsFromNow).getPosition();
 
                 // print a small segment on the trajectory
                 renderer.drawLine3d(Color.ORANGE, previousPredictedPosition, predictedPosition);
@@ -67,8 +66,8 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
         }
 
         // try to predict the point with which we should try to hit the getNativeBallPrediction
-        double timeBeforeReachingBall = predictions.timeToReachAerialDestination(input.ball.position.minus(opponentCar.position), input.ball.velocity.minus(opponentCar.velocity));
-        renderer.drawRectangle3d(Color.CYAN, predictions.aerialKinematicBody(opponentCar.position, opponentCar.velocity, timeBeforeReachingBall).getPosition(), 10, 10, true);
+        double timeBeforeReachingBall = predictions.timeToReachAerialDestination(input.ball.position.minus(playerCar.position), input.ball.velocity.minus(playerCar.velocity));
+        renderer.drawRectangle3d(Color.CYAN, predictions.aerialKinematicBody(playerCar.position, playerCar.velocity, timeBeforeReachingBall).getPosition(), 10, 10, true);
 
         // draw find the same timed point, but on the getNativeBallPrediction trajectory instead
         renderer.drawRectangle3d(Color.green, predictions.getNativeBallPrediction(input.ball.position, timeBeforeReachingBall).getPosition(), 10, 10, true);

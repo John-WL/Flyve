@@ -23,6 +23,7 @@ public class SampleBot implements Bot {
     private long previousFpsTime;
     private long time1;
     private long time2;
+    private long deltaTime;
     private double currentFps;
 
 
@@ -36,6 +37,7 @@ public class SampleBot implements Bot {
         previousFpsTime = 0;
         time1 = 0;
         time2 = 0;
+        deltaTime = 0;
         currentFps = 0;
 
     }
@@ -49,14 +51,10 @@ public class SampleBot implements Bot {
         // refresh boostPads information so we can utilize it
         BoostManager.loadGameTickPacket(packet);
 
-        // timestamp before executing the bot
-        time1 = System.currentTimeMillis();
-
         // Bot behaviour
         myBotOutput = botBehaviour.processInput(input, packet);
 
-        // timestamp after executing the bot
-        time2 = System.currentTimeMillis();
+
 
         // just some debug calculations all the way down to the return...
         previousFpsTime = currentFpsTime;
@@ -68,7 +66,7 @@ public class SampleBot implements Bot {
         currentFps = 1.0 / ((currentFpsTime - previousFpsTime) / 1000.0);
         averageFps = (averageFps*29 + (currentFps)) / 30.0;
 
-        botBehaviour.updateGui(renderer, input, currentFps, averageFps, time2 - time1);
+        botBehaviour.updateGui(renderer, input, currentFps, averageFps, deltaTime);
 
         // Output the calculated states
         return myBotOutput.getForwardedOutput();
@@ -89,6 +87,8 @@ public class SampleBot implements Bot {
      */
     @Override
     public ControllerState processInput(GameTickPacket packet) {
+        // timestamp after executing the bot
+        time1 = System.currentTimeMillis();
 
         if (packet.playersLength() <= playerIndex || packet.ball() == null || !packet.gameInfo().isRoundActive()) {
             // Just return immediately if something looks wrong with the data. This helps us avoid stack traces.
@@ -105,6 +105,10 @@ public class SampleBot implements Bot {
         // Do the actual logic using our dataPacket.
         ControlsOutput controlsOutput = processInput(dataPacket, packet);
 
+        // timestamp before executing the bot
+        time2 = System.currentTimeMillis();
+
+        deltaTime = time2 - time1;
         return controlsOutput;
     }
 

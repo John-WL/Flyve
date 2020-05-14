@@ -1,7 +1,5 @@
 package rlbotexample.bot_behaviour.skill_controller.advanced_controller;
 
-import rlbot.cppinterop.RLBotDll;
-import rlbot.flat.BallPrediction;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
@@ -11,8 +9,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.BallPredictionHelper;
-import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
@@ -56,31 +52,6 @@ public class AerialDirectionalHit extends SkillController {
         Vector3 playerDistanceFromBall = input.ball.position.minus(playerPosition);
         Vector3 playerSpeedFromBall = input.ball.velocity.minus(playerSpeed);
 
-        // try to predict the point in time with which we should try to hit the getNativeBallPrediction
-        /*
-        // first try
-        double timeBeforeReachingBall = input.getNativeBallPrediction.position.minus(playerPosition).magnitude()/(input.getNativeBallPrediction.velocity.minus(playerSpeed).magnitude());
-        if(timeBeforeReachingBall > 6) {
-            timeBeforeReachingBall = 6;
-        }*/
-        /*
-        // second try
-        // this is the player speed SIGNED (it's the player speed, but it's negative if it's going away from the getNativeBallPrediction...)
-
-        double signedPlayerSpeedFromBall = playerSpeedFromBall.magnitude() *(
-                playerSpeedFromBall.dotProduct(playerDistanceFromBall)/(playerDistanceFromBall.magnitude()*playerSpeedFromBall.magnitude())
-        );
-        double a = -RlConstants.ACCELERATION_DUE_TO_BOOST/2;
-        // + (input.car.orientation.noseVector.dotProduct(new Vector3(0, 0, 1))*RlConstants.NORMAL_GRAVITY_STRENGTH/2);
-        double b = signedPlayerSpeedFromBall;
-        double c = playerDistanceFromBall.magnitude();
-        double timeBeforeReachingBall = -b - Math.sqrt(b*b - 4*a*c);
-        timeBeforeReachingBall /= 2*a;
-
-        if(timeBeforeReachingBall > 3) {
-            timeBeforeReachingBall = 3;
-        }*/
-
         double timeBeforeReachingBall = predictions.timeToReachAerialDestination(playerDistanceFromBall, playerSpeedFromBall);
 
         // get the future player and getNativeBallPrediction positions
@@ -88,7 +59,7 @@ public class AerialDirectionalHit extends SkillController {
         if(input.ball.velocity.magnitude() > 0.1) {
             playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
         }
-        Vector3 ballFuturePosition = predictions.getNativeBallPrediction(input.ball.position, timeBeforeReachingBall).getPosition();
+        Vector3 ballFuturePosition = predictions.resultingBallTrajectoryFromAerialHit(input.car, input.ball, timeBeforeReachingBall).getPosition();
 
         // get the getNativeBallPrediction offset so we actually hit the getNativeBallPrediction to make it go in the desired direction
         Vector3 ballOffset = ballFuturePosition.minus(ballDestination.plus(new Vector3(0, 0, 1000))).scaledToMagnitude(RlConstants.BALL_RADIUS);
@@ -150,6 +121,7 @@ public class AerialDirectionalHit extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
+
         renderer.drawLine3d(Color.green, input.car.position, orientation.plus(input.car.position));
         /* draw cool 3D X "hit" thingy */ {
             renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(20, 20, 20)), hitPositionOnBall.plus(new Vector3(-20, -20, -20)));
@@ -158,12 +130,5 @@ public class AerialDirectionalHit extends SkillController {
             renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(20, 20, -20)), hitPositionOnBall.plus(new Vector3(-20, -20, 20)));
         }
         renderer.drawLine3d(Color.CYAN, ballFuturePosition, hitPositionOnBall);
-        try {
-            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
-            BallPredictionHelper.drawTillMoment(ballPrediction, ballPrediction.slices(0).gameSeconds() + 6, Color.LIGHT_GRAY, renderer);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
     }
 }

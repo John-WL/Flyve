@@ -9,7 +9,7 @@ public abstract class GameSituation {
 
     private FrameTimer gameStateDuration;
 
-    GameSituation(FrameTimer gameStateDuration) {
+    public GameSituation(FrameTimer gameStateDuration) {
         this.gameStateDuration = gameStateDuration;
         this.gameStateDuration.start();
         this.loadGameState();
@@ -20,7 +20,7 @@ public abstract class GameSituation {
         this.loadGameState();
     }
 
-    abstract void loadGameState();
+    public abstract void loadGameState();
 
     public boolean isGameStateElapsed() {
         return gameStateDuration.isTimeElapsed();
@@ -30,11 +30,11 @@ public abstract class GameSituation {
         gameStateDuration.countFrame();
     }
 
-    GameState getCurrentGameState() {
+    public GameState getCurrentGameState() {
         return new rlbot.gamestate.GameState();
     }
 
-    void applyGameState(GameState gameState) {
+    public void applyGameState(GameState gameState) {
         RLBotDll.setGameState(gameState.buildPacket());
     }
 }

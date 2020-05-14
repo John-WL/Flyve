@@ -9,7 +9,7 @@ public class FiniteTrainingPack extends GameSituationHandler {
     }
 
     @Override
-    boolean hasNext() {
+    public boolean hasNext() {
         return getNextGameSituationIndex() < getGameSituationList().size();
     }
 

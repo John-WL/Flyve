@@ -1,6 +1,6 @@
 package rlbotexample.input.dynamic_data;
 
-import rlbotexample.input.prediction.Orientation;
+import rlbot.flat.BoxShape;
 import util.vector.Vector3;
 
 public class HitBox {
@@ -10,9 +10,9 @@ public class HitBox {
 
     private Vector3 cornerPosition;
 
-    public HitBox(Vector3 cornerPosition, Vector3 centerOfMassOffset, Vector3 centerPosition, Vector3 frontOrientation, Vector3 roofOrientation) {
-        this.cornerPosition = cornerPosition.scaled(0.5);
-        this.centerPosition = centerPosition.plus(centerOfMassOffset.scaled(-1, 1, 1).matrixRotation(frontOrientation, roofOrientation));
+    public HitBox(BoxShape boxShape, rlbot.flat.Vector3 centerOfMassOffset, Vector3 centerPosition, Vector3 frontOrientation, Vector3 roofOrientation) {
+        this.cornerPosition = new Vector3(boxShape.length(), boxShape.width(), boxShape.height()).scaled(0.5);
+        this.centerPosition = centerPosition.plus(new Vector3(centerOfMassOffset).scaled(-1, 1, 1).matrixRotation(frontOrientation, roofOrientation));
         this.frontOrientation = frontOrientation;
         this.roofOrientation = roofOrientation;
     }
@@ -31,7 +31,6 @@ public class HitBox {
 
     public Vector3 projectPointOnSurface(Vector3 pointToProject) {
         Vector3 localPointToProject = getLocal(pointToProject);
-        localPointToProject.scaledToMagnitude(1000);
 
         double newXCoordinate = localPointToProject.x;
         if(localPointToProject.x > cornerPosition.x) {

@@ -12,7 +12,7 @@ public class RandomizedAirDribbleSetup extends GameSituation {
     }
 
     @Override
-    void loadGameState() {
+    public void loadGameState() {
 
         float basePositionX = randomRange(-2000, 2000);
         float basePositionY = randomRange(-3000, 3000);

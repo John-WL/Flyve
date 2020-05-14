@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.test;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.debug.DebugPlayerPredictedTrajectory;
+import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.test_controller.AerialHit;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.panbot.PanBot;

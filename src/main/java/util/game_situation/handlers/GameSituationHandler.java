@@ -12,7 +12,7 @@ public abstract class GameSituationHandler {
     private GameSituation currentGameSituation;
     private int currentGameSituationIndex;
 
-    GameSituationHandler() {
+    public GameSituationHandler() {
         gameSituationList = new ArrayList<>();
         currentGameSituation = new UnhandledGameState();
         currentGameSituationIndex = 0;
@@ -36,22 +36,22 @@ public abstract class GameSituationHandler {
         currentGameSituationIndex = 0;
     }
 
-    GameSituation next() {
+    public GameSituation next() {
         int index = currentGameSituationIndex;
         currentGameSituation = gameSituationList.get(index);
         currentGameSituationIndex++;
         return currentGameSituation;
     }
 
-    abstract boolean hasNext();
+    public abstract boolean hasNext();
 
     public abstract boolean hasBeenCompleted();
 
-    int getNextGameSituationIndex() {
+    public int getNextGameSituationIndex() {
         return currentGameSituationIndex;
     }
 
-    List<GameSituation> getGameSituationList() {
+    public List<GameSituation> getGameSituationList() {
         return gameSituationList;
     }
 }

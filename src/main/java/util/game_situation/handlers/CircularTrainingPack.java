@@ -23,7 +23,7 @@ public class CircularTrainingPack extends GameSituationHandler {
     }
 
     @Override
-    boolean hasNext() {
+    public boolean hasNext() {
         // it's a circular training pack, it always has a next game situation
         return true;
     }

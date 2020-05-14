@@ -1,11 +1,14 @@
-package rlbotexample.bot_behaviour.panbot.debug;
+package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugFuturePlayerHitBox;
+import rlbotexample.bot_behaviour.panbot.debug.player_values.DebugPlayerHitBox;
+import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.HitBox;
-import rlbotexample.input.prediction.Orientation;
+import rlbotexample.input.dynamic_data.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;
@@ -38,13 +41,11 @@ public class DebugPredictedAerialHitOnBall extends PanBot {
 
         debugPlayerHitBox.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
-        predictions.loadNativeBallPrediction();
-
-        double timeOfIntersection = predictions.findIntersectionTimeBetweenAerialPlayerPositionAndBall(input.allCars.get(1-input.playerIndex), input.ball);
+        double timeOfIntersection = predictions.findIntersectionTimeBetweenAerialPlayerPositionAndBall(input.car, input.ball);
         if(timeOfIntersection < 6) {
-            Orientation playerOrientation = new Orientation(input.allCars.get(1-input.playerIndex).orientation.noseVector, input.allCars.get(1-input.playerIndex).orientation.roofVector);
-            HitBox playerHitBox = input.allCars.get(1-input.playerIndex).hitBox;
-            Vector3 futurePlayerPosition = predictions.aerialKinematicBody(input.allCars.get(1-input.playerIndex).position, input.allCars.get(1-input.playerIndex).velocity, timeOfIntersection).getPosition();
+            Orientation playerOrientation = new Orientation(input.car.orientation.noseVector, input.car.orientation.roofVector);
+            HitBox playerHitBox = input.car.hitBox;
+            Vector3 futurePlayerPosition = predictions.aerialKinematicBody(input.car.position, input.car.velocity, timeOfIntersection).getPosition();
             Vector3 futureBallPosition = predictions.getNativeBallPrediction(input.ball.position, timeOfIntersection).getPosition();
 
             HitBox futurePlayerHitBox = playerHitBox.generateHypotheticalHitBox(futurePlayerPosition, playerOrientation);
@@ -61,7 +62,7 @@ public class DebugPredictedAerialHitOnBall extends PanBot {
         int resolution = 30;
         for(int i = 0; i < resolution; i++) {
             double secondsInTheFuture = (6.0*i)/resolution;
-            Vector3 futureBallPosition = predictions.resultingBallTrajectoryFromAerialHit(input.allCars.get(1), input.ball, secondsInTheFuture).getPosition();
+            Vector3 futureBallPosition = predictions.resultingBallTrajectoryFromAerialHit(input.car, input.ball, secondsInTheFuture).getPosition();
             renderer.drawLine3d(Color.red, previousBallPosition, futureBallPosition);
             previousBallPosition = futureBallPosition;
         }

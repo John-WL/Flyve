@@ -1,4 +1,4 @@
-package rlbotexample.input.prediction;
+package rlbotexample.input.dynamic_data;
 
 import util.vector.Vector3;
 

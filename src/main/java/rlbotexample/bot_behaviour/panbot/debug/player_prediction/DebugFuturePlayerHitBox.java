@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.panbot.debug;
+package rlbotexample.bot_behaviour.panbot.debug.player_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;

@@ -1,20 +1,25 @@
-package rlbotexample.bot_behaviour.panbot.debug;
+package rlbotexample.bot_behaviour.panbot.debug.player_values;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
+import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.debuging.OtherPlayerAccelerationSpeedPrinter;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 
-public class DebugPlayerDistanceFromBall extends PanBot {
+public class DebugPlayerSpeedAndAcceleration extends PanBot {
 
-    public DebugPlayerDistanceFromBall() {
+    private SkillController skillController;
+
+    public DebugPlayerSpeedAndAcceleration() {
+        skillController = new OtherPlayerAccelerationSpeedPrinter();
     }
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        System.out.println(input.ball.position.minus(input.allCars.get(1-input.playerIndex).position));
+        skillController.updateOutput(input);
         return new BotOutput();
     }
 

@@ -2,6 +2,7 @@ package rlbotexample.input.dynamic_data;
 
 
 import rlbot.flat.BoxShape;
+import rlbotexample.input.prediction.Predictions;
 import util.vector.Vector3;
 
 /**
@@ -60,8 +61,6 @@ public class CarData {
         this.team = playerInfo.team();
         this.hasWheelContact = playerInfo.hasWheelContact();
         this.elapsedSeconds = elapsedSeconds;
-        BoxShape boxShape = playerInfo.hitbox();
-        Vector3 centerOfMassOffset = new Vector3(playerInfo.hitboxOffset());
-        this.hitBox = new HitBox(new Vector3(boxShape.length(), boxShape.width(), boxShape.height()), centerOfMassOffset, position, orientation.noseVector, orientation.roofVector);
+        this.hitBox = new HitBox(playerInfo.hitbox(), playerInfo.hitboxOffset(), position, orientation.noseVector, orientation.roofVector);
     }
 }

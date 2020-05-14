@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.panbot.test;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.panbot.debug.DebugPredictedAerialHitOnBall;
+import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialDirectionalHit;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.AerialIntersectDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -79,9 +79,14 @@ public class AerialPassingPlayTest extends PanBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        aerialDirectionalHitControllerBot0.debug(renderer, input);
-        aerialDirectionalHitControllerBot1.debug(renderer, input);
-        aerialIntersectDestinationBot1.debug(renderer, input);
-        new DebugPredictedAerialHitOnBall().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        if(input.playerIndex == 0) {
+            new DebugPredictedAerialHitOnBall().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+            aerialDirectionalHitControllerBot0.debug(renderer, input);
+        }
+        else if(input.playerIndex == 1) {
+            new DebugPredictedAerialHitOnBall().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+            aerialDirectionalHitControllerBot1.debug(renderer, input);
+            //aerialIntersectDestinationBot1.debug(renderer, input);
+        }
     }
 }

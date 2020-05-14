@@ -10,7 +10,7 @@ public class AerialHitSetup2 extends GameSituation {
     }
 
     @Override
-    void loadGameState() {
+    public void loadGameState() {
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState().withLocation(new DesiredVector3(3000f, 0f, 200f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))

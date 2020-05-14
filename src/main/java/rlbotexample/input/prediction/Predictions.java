@@ -5,10 +5,8 @@ import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.Physics;
 import rlbot.flat.PredictionSlice;
-import rlbotexample.input.dynamic_data.BallData;
-import rlbotexample.input.dynamic_data.CarData;
-import rlbotexample.input.dynamic_data.CarOrientation;
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.*;
+import rlbotexample.input.geometry.StandardMap;
 import util.game_constants.RlConstants;
 import util.vector.Vector2;
 import util.vector.Vector3;
@@ -21,6 +19,15 @@ public class Predictions {
     private final List<KinematicPoint> loadedBallPath = new ArrayList<>();
 
     public Predictions() {}
+
+    public KinematicPoint player(CarData carData, double secondsInTheFuture) {
+        return null;
+    }
+
+    public KinematicPoint ball(DataPacket input, double secondsInTheFuture) {
+        // we get a DataPacket input, because we need all the cars to predict hits
+        return null;
+    }
 
     // this is just a parabola
     public KinematicPoint aerialKinematicBody(Vector3 kinematicBodyPosition, Vector3 kinematicBodySpeed, double secondsInTheFuture) {
@@ -51,6 +58,37 @@ public class Predictions {
         // prediction in Z
         double futureZSpeed = -RlConstants.NORMAL_GRAVITY_STRENGTH * secondsInTheFuture;
         futureZSpeed += kinematicBodySpeed.z;
+
+        Vector3 futureSpeed = new Vector3(futureXSpeed, futureYSpeed, futureZSpeed);
+
+        return new KinematicPoint(futurePosition, futureSpeed, secondsInTheFuture);
+    }
+
+    public KinematicPoint groundKinematicBody(Vector3 kinematicBodyPosition, Vector3 kinematicBodySpeed, double secondsInTheFuture) {
+
+        /* position prediction */
+        // prediction in X
+        double futureXPosition = kinematicBodySpeed.x * secondsInTheFuture;
+        futureXPosition += kinematicBodyPosition.x;
+
+        // prediction in Y
+        double futureYPosition = kinematicBodySpeed.y * secondsInTheFuture;
+        futureYPosition += kinematicBodyPosition.y;
+
+        // prediction in Z
+        double futureZPosition = kinematicBodyPosition.z;
+
+        Vector3 futurePosition = new Vector3(futureXPosition, futureYPosition, futureZPosition);
+
+        /* speed prediction */
+        // prediction in X
+        double futureXSpeed = kinematicBodySpeed.x;
+
+        // prediction in Y
+        double futureYSpeed = kinematicBodySpeed.y;
+
+        // prediction in Z
+        double futureZSpeed = 0;
 
         Vector3 futureSpeed = new Vector3(futureXSpeed, futureYSpeed, futureZSpeed);
 
@@ -120,6 +158,13 @@ public class Predictions {
         }
     }
 
+    private KinematicPoint aerialKinematicBodyWithSpin(Vector3 kinematicBodyPosition, Vector3 kinematicBodySpeed, Vector3 kinematicBodySpin, double secondsInTheFuture) {
+        KinematicPoint kinematicPoint = aerialKinematicBody(kinematicBodyPosition, kinematicBodySpeed, secondsInTheFuture);
+        kinematicPoint.setSpin(kinematicBodySpin);
+
+        return kinematicPoint;
+    }
+
     // makes sure to load ONCE before getting the native ball prediction path.
     public KinematicPoint getNativeBallPrediction(Vector3 ballPosition, double secondsInTheFuture) {
         KinematicPoint futureBall = null;
@@ -131,7 +176,7 @@ public class Predictions {
             return new KinematicPoint(ballPosition, new Vector3(), 0);
         }
 
-        double initialTime = futureBall.getGameTime();
+        double initialTime = futureBall.getTime();
         int i = 0;
         while (i < loadedBallPath.size()) {
             KinematicPoint kinematicBall = loadedBallPath.get(i);
@@ -141,7 +186,7 @@ public class Predictions {
                 break;
             }
 
-            if (kinematicBall.getGameTime() - initialTime < secondsInTheFuture) {
+            if (kinematicBall.getTime() - initialTime < secondsInTheFuture) {
                 futureBall = kinematicBall;
             } else {
                 // UGH this is ugly
@@ -215,6 +260,36 @@ public class Predictions {
         return timeOfImpact;
     }
 
+    // get the exact time it'll take before the ball hist anything
+    public double findIntersectionTimeBetweenMapAndBall(Vector3 ballPosition, Vector3 ballSpeed) {
+        StandardMap standardMap = new StandardMap();
+
+        // assume we don't have an intersection and that it takes
+        // virtually an infinite amount of time to reach that point
+        double timeOfImpact = Double.MAX_VALUE;
+
+        // find the next time the ball reaches out of map
+        double precision = 0.001;
+        double maximumTimeInTheFuture = 6;
+        double futureTime = maximumTimeInTheFuture/2;
+        double divisor = futureTime;
+        while(divisor > precision) {
+            KinematicPoint futureBall = aerialKinematicBody(ballPosition, ballSpeed, futureTime);
+
+            if(standardMap.getHitNormal(futureBall.getPosition(), RlConstants.BALL_RADIUS).magnitude() < 0.1) {
+                divisor /= 2;
+                futureTime += divisor;
+            }
+            else {
+                divisor /= 2;
+                futureTime -= divisor;
+            }
+            timeOfImpact = futureTime;
+        }
+
+        return timeOfImpact + precision;
+    }
+
     public KinematicPoint resultingBallTrajectoryFromAerialHit(CarData carData, BallData ballData, double secondsInTheFuture) {
         Vector3 playerPosition = carData.position;
         Vector3 playerSpeed = carData.velocity;
@@ -235,17 +310,126 @@ public class Predictions {
             Vector3 futurePlayerSpeed = futurePlayer.getSpeed();
 
             // this is hard to compute, and so this is only an approximation for now...
-            // get the normal vector of the hit so we can flip the getNativeBallPrediction speed with respect to it
-            Vector3 hitNormal = futureBallPosition.minus(futurePlayerPosition);
+            // predict the future hitBox position and orientation, so we can get the right hit normal
+            HitBox futureHitBox = carData.hitBox.generateHypotheticalHitBox(futurePlayerPosition, new Orientation(carData.orientation.noseVector, carData.orientation.roofVector));
 
-            // flip the future getNativeBallPrediction speed in the direction perpendicular to the normal
-            Vector3 flippedBallSpeed = reverseSpeedFromCollisionNormal(futureBallSpeed, hitNormal);
+            // get the normal vector of the hit so we can flip the getNativeBallPrediction speed with respect to it
+            Vector3 scaledHitNormal = futureHitBox.projectPointOnSurface(futureBallPosition).minus(futureBallPosition);
+            Vector3 hitNormal = scaledHitNormal.normalized();
 
             // add the player's speed difference from the getNativeBallPrediction to find the result of the hit
-            Vector3 predictedBallSpeed = futurePlayerSpeed.minus(futureBallSpeed).plus(flippedBallSpeed);
+            KinematicPoint predictedBall = resultingBallFromHit(futureBallPosition, futurePlayerSpeed.minus(futureBallSpeed), ballData.spin, hitNormal);
 
-            return aerialKinematicBody(futureBallPosition, predictedBallSpeed, secondsInTheFuture - timeOfImpact);
+            return ballPredictionRoughMapEstimateBounce(futureBallPosition, predictedBall.getSpeed().plus(futurePlayerSpeed), predictedBall.getSpin(), secondsInTheFuture - timeOfImpact);
         }
+    }
+
+    public KinematicPoint ballPredictionGroundBounce(Vector3 ballPosition, Vector3 ballSpeed, Vector3 ballSpin, double secondsInTheFuture) {
+        KinematicPoint futureBall = aerialKinematicBody(ballPosition, ballSpeed, secondsInTheFuture);
+
+        while(futureBall.getPosition().z < RlConstants.BALL_RADIUS) {
+            // hit normal
+            Vector3 hitNormal = new Vector3(0, 0, -1);
+            // find the ball that's hugging the ground in the future
+            double timeToReachGround = findIntersectionTimeBetweenMapAndBall(ballPosition, ballSpeed);
+            KinematicPoint futureBallAtGroundBounce = aerialKinematicBody(ballPosition, ballSpeed, timeToReachGround);
+
+            // turn that ball's speed in z upside down
+            ballPosition = futureBallAtGroundBounce.getPosition();
+            ballSpeed = futureBallAtGroundBounce.getSpeed();
+
+            // find the next ball from hit
+            KinematicPoint hitBall = resultingBallFromHit(ballPosition, ballSpeed, ballSpin, hitNormal);
+            ballSpeed = hitBall.getSpeed();
+            ballSpin = hitBall.getSpin();
+
+            secondsInTheFuture -= timeToReachGround;
+            futureBall = aerialKinematicBody(ballPosition, ballSpeed, secondsInTheFuture);
+
+            // just slide on the ground if the ball is not bouncing anymore
+            if(Math.abs(ballSpeed.z) < 50 && ballPosition.z < RlConstants.BALL_RADIUS + 50) {
+                return groundKinematicBody(new Vector3(ballPosition.x, ballPosition.y, RlConstants.BALL_RADIUS),
+                        ballSpeed,
+                        secondsInTheFuture);
+            }
+        }
+
+        return futureBall;
+    }
+
+    public KinematicPoint ballPredictionRoughMapEstimateBounce(Vector3 ballPosition, Vector3 ballSpeed, Vector3 ballSpin, double secondsInTheFuture) {
+
+        KinematicPoint futureBall = aerialKinematicBody(ballPosition, ballSpeed, secondsInTheFuture);
+
+        StandardMap map = new StandardMap();
+
+        while(map.getHitNormal(futureBall.getPosition(), RlConstants.BALL_RADIUS).magnitude() > 0.01) {
+
+            // find the ball to hit
+            double timeToReachGround = findIntersectionTimeBetweenMapAndBall(ballPosition, ballSpeed);
+            KinematicPoint nextBallToHit = aerialKinematicBody(ballPosition, ballSpeed, timeToReachGround);
+
+            // hit normal
+            Vector3 hitNormal = map.getHitNormal(nextBallToHit.getPosition(), RlConstants.BALL_RADIUS);
+
+            System.out.println(hitNormal);
+
+            // find the next ball from hit
+            KinematicPoint hitBall = resultingBallFromHit(nextBallToHit.getPosition(), nextBallToHit.getSpeed(), ballSpin, hitNormal);
+
+            // update variables
+            ballSpeed = hitBall.getSpeed();
+            ballSpin = hitBall.getSpin();
+
+            //
+            secondsInTheFuture -= timeToReachGround;
+            futureBall = aerialKinematicBody(hitBall.getPosition(), hitBall.getSpeed(), secondsInTheFuture);
+
+            // just slide on the ground if the ball is not bouncing anymore
+            if(Math.abs(hitBall.getSpeed().z) < 50 && hitBall.getPosition().z < RlConstants.BALL_RADIUS + 1000) {
+                return groundKinematicBody(new Vector3(ballPosition.x, ballPosition.y, RlConstants.BALL_RADIUS),
+                        hitBall.getSpeed(),
+                        secondsInTheFuture);
+            }
+        }
+
+        return futureBall;
+    }
+
+    public KinematicPoint resultingBallFromHit(Vector3 ballPosition, Vector3 ballSpeed, Vector3 ballSpin, Vector3 hitNormal) {
+        // normalize the normal just to make sure it doesn't break the calculations
+        hitNormal = hitNormal.normalized();
+        Vector3 downVector = new Vector3(0, 0, -1);
+        Vector3 localHitNormal = hitNormal.minusAngle(downVector);
+        Vector3 localBallSpeed = ballSpeed.minusAngle(localHitNormal);
+        Vector3 localBallSpin = ballSpin.minusAngle(localHitNormal);
+
+        // flip that ball speed in the direction of the hit normal
+        localBallSpeed = localBallSpeed.scaled(1, 1, -0.6);
+
+        // take the spin into account...
+        // actually, I don't know how the physics of ball hit is computed.
+        // how do they apply forces?
+        double deltaSpeedAttenuationFactor = (1.8*localBallSpeed.z)/RlConstants.BALL_MAX_SPEED;
+        Vector3 flattenedBallSpeed = new Vector3(localBallSpeed.flatten(), 0);
+        Vector3 speedDifferenceBetweenHitSurfaceAndBallSurface;
+        if(hitNormal.z < 0) {
+            speedDifferenceBetweenHitSurfaceAndBallSurface = localBallSpin.scaled(RlConstants.BALL_RADIUS).crossProduct(downVector).minus(flattenedBallSpeed);
+        }
+        else {
+            speedDifferenceBetweenHitSurfaceAndBallSurface = flattenedBallSpeed.minus(downVector.crossProduct(localBallSpin.scaled(RlConstants.BALL_RADIUS)));
+        }
+        localBallSpeed = localBallSpeed.plus(speedDifferenceBetweenHitSurfaceAndBallSurface.scaled(deltaSpeedAttenuationFactor));
+
+        Vector3 newFlattenedBallSpeed = new Vector3(localBallSpeed.flatten(), 0);
+        localBallSpin = downVector.crossProduct(newFlattenedBallSpeed).scaled(1/RlConstants.BALL_RADIUS);
+
+        ballSpeed = localBallSpeed.plusAngle(localHitNormal);
+        ballSpin = localBallSpin.plusAngle(localHitNormal);
+
+        KinematicPoint ball = new KinematicPoint(ballPosition, ballSpeed, 0);
+        ball.setSpin(ballSpin);
+        return ball;
     }
 
     public Orientation predictFutureOrientation(Orientation currentOrientation, Vector3 currentSpin, double timeInTheFuture) {
@@ -253,7 +437,19 @@ public class Predictions {
         Vector3 rotatedRoofOrientation = predictFutureOrientationVectorFromSpinAndTime(currentOrientation.getRoof(), currentSpin, timeInTheFuture);
 
         return new Orientation(rotatedNoseOrientation, rotatedRoofOrientation);
+    }
 
+    private Vector3 flattenInNormalDirection(Vector3 vectorWithComponentToRemove, Vector3 normal) {
+        return vectorWithComponentToRemove.minus(vectorWithComponentToRemove.projectionOnto(normal));
+    }
+
+    private Vector3 sidewaysHitComponent(Vector3 sidewaysHitComponent, Vector3 normal) {
+        sidewaysHitComponent = flattenInNormalDirection(sidewaysHitComponent, normal);
+        if(normal.z > 0) {
+            sidewaysHitComponent = sidewaysHitComponent.scaled(-1);
+        }
+
+        return sidewaysHitComponent;
     }
 
     private Vector3 predictFutureOrientationVectorFromSpinAndTime(Vector3 currentOrientationVector, Vector3 currentSpin, double timeInTheFuture) {
@@ -275,6 +471,42 @@ public class Predictions {
         double suddenChangeInSpeedAmount = 2*vectorToReverse.dotProduct(hitNormal);
 
         // flip the future getNativeBallPrediction speed in the direction perpendicular to the normal on the perpendicular plane of the normal
-        return vectorToReverse.plus(hitNormal.scaledToMagnitude(suddenChangeInSpeedAmount));
+        return vectorToReverse.minus(hitNormal.scaledToMagnitude(suddenChangeInSpeedAmount));
+    }
+
+    private double timeToReachGivenHeight(Vector3 currentHeight, Vector3 currentSpeed, double heightToReach) {
+        double timeBeforeReachingApogee = currentSpeed.z/RlConstants.NORMAL_GRAVITY_STRENGTH;
+        double apogeeHeight = currentHeight.z + currentSpeed.z*timeBeforeReachingApogee + (-RlConstants.NORMAL_GRAVITY_STRENGTH/2 * timeBeforeReachingApogee * timeBeforeReachingApogee);
+
+        if(apogeeHeight < heightToReach) {
+            return Double.MAX_VALUE;
+        }
+
+        // (-b +- sqrt(b^2 - 4ac))/2a... to get the time of impact.
+        double a = -RlConstants.NORMAL_GRAVITY_STRENGTH/2;
+        double b = currentSpeed.z;
+        double c = currentHeight.z - heightToReach;
+        double timeBeforeReachingHeight = -b - Math.sqrt(b*b - 4*a*c);
+        timeBeforeReachingHeight /= 2*a;
+
+        return timeBeforeReachingHeight;
+    }
+
+    private double timeToReachGivenHeight2(Vector3 currentHeight, Vector3 currentSpeed, double heightToReach) {
+        double timeBeforeReachingApogee = currentSpeed.z/RlConstants.NORMAL_GRAVITY_STRENGTH;
+        double apogeeHeight = currentHeight.z + currentSpeed.z*timeBeforeReachingApogee + (-RlConstants.NORMAL_GRAVITY_STRENGTH/2 * timeBeforeReachingApogee * timeBeforeReachingApogee);
+
+        if(apogeeHeight < heightToReach) {
+            return Double.MAX_VALUE;
+        }
+
+        // (-b +- sqrt(b^2 - 4ac))/2a... to get the time of impact.
+        double a = -RlConstants.NORMAL_GRAVITY_STRENGTH/2;
+        double b = currentSpeed.z;
+        double c = currentHeight.z - heightToReach;
+        double timeBeforeReachingHeight = -b + Math.sqrt(b*b - 4*a*c);
+        timeBeforeReachingHeight /= 2*a;
+
+        return timeBeforeReachingHeight;
     }
 }

@@ -9,7 +9,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;

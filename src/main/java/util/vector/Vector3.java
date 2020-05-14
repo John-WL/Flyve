@@ -115,6 +115,15 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(tx, ty, tz);
     }
 
+    public Vector3 projectionOnto(Vector3 vectorToProjectOnto) {
+        return vectorToProjectOnto.scaled(this.dotProduct(vectorToProjectOnto)/vectorToProjectOnto.magnitudeSquared());
+    }
+
+    public double angleWith(Vector3 vector) {
+        double cosine = this.dotProduct(vector)/(this.magnitude()*vector.magnitude());
+        return Math.acos(cosine);
+    }
+
     /*
 
 

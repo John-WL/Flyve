@@ -9,7 +9,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJu
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Orientation;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;

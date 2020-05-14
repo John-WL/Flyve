@@ -1,6 +1,7 @@
 package rlbotexample.input.dynamic_data;
 
 import rlbot.flat.GameTickPacket;
+import rlbotexample.input.prediction.AdvancedBallPrediction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,28 +15,30 @@ import java.util.List;
  */
 public class DataPacket {
 
+    public static final double BALL_PREDICTION_TIME = 6;
+    public static final double BALL_PREDICTION_REFRESH_RATE = 120;
+
     /** Your own car, based on the playerIndex */
     public final CarData car;
 
     public final List<CarData> allCars;
 
     public final BallData ball;
+    public final AdvancedBallPrediction ballPrediction;
     public final int team;
 
     /** The index of your player */
     public final int playerIndex;
 
     public DataPacket(GameTickPacket request, int playerIndex) {
-
         this.playerIndex = playerIndex;
-        this.ball = new BallData(request.ball());
-
-        allCars = new ArrayList<>();
+        this.allCars = new ArrayList<>();
         for (int i = 0; i < request.playersLength(); i++) {
             allCars.add(new CarData(request.players(i), request.gameInfo().secondsElapsed()));
         }
-
         this.car = allCars.get(playerIndex);
         this.team = this.car.team;
+        this.ball = new BallData(request.ball());
+        this.ballPrediction = new AdvancedBallPrediction(this.ball, this.allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
     }
 }

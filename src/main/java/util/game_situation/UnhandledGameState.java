@@ -10,5 +10,5 @@ public class UnhandledGameState extends GameSituation {
     }
 
     @Override
-    void loadGameState() {}
+    public void loadGameState() {}
 }

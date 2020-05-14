@@ -11,7 +11,7 @@ public class RemoveResidualVelocity extends GameSituation {
     }
 
     @Override
-    void loadGameState() {
+    public void loadGameState() {
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState().withLocation(new DesiredVector3(0f, 0f, 0f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))
