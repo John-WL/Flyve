@@ -29,12 +29,13 @@ public class BallBounce {
     }
 
     public BallData compute() {
-        final Vector3 velocityDifferenceBetweenVelocityAndSurfaceVelocity = surfaceVelocity.minus(initialVelocity);
+        final Vector3 velocityDifferenceBetweenVelocityAndSurfaceVelocity = velocityComponentTangentToHitNormalDirection.plus(surfaceVelocity).scaled(-1);
         final Vector3 deltaVelocity = velocityDifferenceBetweenVelocityAndSurfaceVelocity.scaled(Math.sin(angleOfIncidence)/VELOCITY_DECREASE_COEFFICIENT_FOR_SPEED_TANGENT_TO_HIT_NORMAL);
         final Vector3 newVelocityTangentToHitNormal = velocityComponentTangentToHitNormalDirection.minus(deltaVelocity);
         final Vector3 newVelocity = newVelocityTangentToHitNormal.plus(velocityComponentInHitNormalDirection.scaled(-0.6));
+        System.out.println();
 
-        final double deltaSpinStrength = -velocityComponentInHitNormalDirection.magnitude();
+        final double deltaSpinStrength = -velocityComponentInHitNormalDirection.magnitude()*2;
         final Vector3 deltaSpin = surfaceNormal.crossProduct(velocityDifferenceBetweenVelocityAndSurfaceVelocity.scaled(deltaSpinStrength));
         final Vector3 newSpin = spin.plus(deltaSpin);
 

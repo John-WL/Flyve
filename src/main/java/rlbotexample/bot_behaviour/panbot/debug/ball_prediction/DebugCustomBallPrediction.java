@@ -28,7 +28,7 @@ public class DebugCustomBallPrediction extends PanBot {
         int divisor = 0;
         for(BallData nextBall: input.ballPrediction.balls) {
             divisor++;
-            divisor %= 12;
+            divisor %= 4;
 
             if(divisor == 0) {
                 renderer.drawLine3d(new Color(158, 63, 229), previousBall.position, nextBall.position);

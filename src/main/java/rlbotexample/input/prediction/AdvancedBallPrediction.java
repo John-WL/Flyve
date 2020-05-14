@@ -46,7 +46,6 @@ public class AdvancedBallPrediction {
         for(int i = 0; i < amountOfPredictionTimeToLoad*refreshRate; i++) {
             // try to step 1 frame into the future
             BallData predictedBall = updateAerialBall(previousPredictedBall, 1/refreshRate);
-            System.out.println(predictedBall.velocity.z);
 
             // handle map bounces
             final Vector3 ballToMapHitNormal = standardMap.getHitNormal(predictedBall.position, RlConstants.BALL_RADIUS);
