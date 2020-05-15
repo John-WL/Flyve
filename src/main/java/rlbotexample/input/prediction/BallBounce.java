@@ -6,16 +6,13 @@ import util.vector.Vector3;
 
 public class BallBounce {
 
-    private static final double VELOCITY_DECREASE_COEFFICIENT_FOR_SPEED_TANGENT_TO_HIT_NORMAL = 2.5;
-
     private final Vector3 initialPosition;
     private final Vector3 initialVelocity;
     private final Vector3 spin;
     private final Vector3 surfaceNormal;
     private final Vector3 surfaceVelocity;
-    private final Vector3 velocityComponentInHitNormalDirection;
-    private final Vector3 velocityComponentTangentToHitNormalDirection;
-    private final double angleOfIncidence;
+    private final Vector3 velocityComponentParallelToHitNormal;
+    private final Vector3 velocityComponentPerpendicularToHitNormal;
 
     public BallBounce(final BallData ballData, final Vector3 hitNormal) {
         this.initialPosition = ballData.position;
@@ -23,20 +20,20 @@ public class BallBounce {
         this.spin = ballData.spin;
         this.surfaceNormal = hitNormal;
         this.surfaceVelocity = ballData.surfaceVelocity(hitNormal);
-        this.velocityComponentInHitNormalDirection = initialVelocity.projectionOnto(hitNormal);
-        this.velocityComponentTangentToHitNormalDirection = initialVelocity.minus(velocityComponentInHitNormalDirection);
-        this.angleOfIncidence = initialVelocity.angleWith(hitNormal);
+        this.velocityComponentParallelToHitNormal = initialVelocity.projectionOnto(hitNormal);
+        this.velocityComponentPerpendicularToHitNormal = initialVelocity.minus(velocityComponentParallelToHitNormal);
     }
 
     public BallData compute() {
-        final Vector3 velocityDifferenceBetweenVelocityAndSurfaceVelocity = velocityComponentTangentToHitNormalDirection.plus(surfaceVelocity).scaled(-1);
-        final Vector3 deltaVelocity = velocityDifferenceBetweenVelocityAndSurfaceVelocity.scaled(Math.sin(angleOfIncidence)/VELOCITY_DECREASE_COEFFICIENT_FOR_SPEED_TANGENT_TO_HIT_NORMAL);
-        final Vector3 newVelocityTangentToHitNormal = velocityComponentTangentToHitNormalDirection.minus(deltaVelocity);
-        final Vector3 newVelocity = newVelocityTangentToHitNormal.plus(velocityComponentInHitNormalDirection.scaled(-0.6));
-        System.out.println();
+        final Vector3 slipSpeed = velocityComponentPerpendicularToHitNormal.plus(surfaceVelocity);
+        final double surfaceSpeedRatio = velocityComponentParallelToHitNormal.magnitude()/slipSpeed.magnitude();
 
-        final double deltaSpinStrength = -velocityComponentInHitNormalDirection.magnitude()*2;
-        final Vector3 deltaSpin = surfaceNormal.crossProduct(velocityDifferenceBetweenVelocityAndSurfaceVelocity.scaled(deltaSpinStrength));
+        final Vector3 newParallelVelocity = velocityComponentParallelToHitNormal.scaled(-0.6);
+        final Vector3 perpendicularDeltaVelocity = slipSpeed.scaled(-Math.min(1.0, 2*surfaceSpeedRatio) * 0.285);
+
+        final Vector3 newVelocity = newParallelVelocity.plus(velocityComponentPerpendicularToHitNormal.plus(perpendicularDeltaVelocity));
+
+        final Vector3 deltaSpin = perpendicularDeltaVelocity.crossProduct(surfaceNormal).scaled(0.0003 * RlConstants.BALL_RADIUS);
         final Vector3 newSpin = spin.plus(deltaSpin);
 
         return new BallData(initialPosition, newVelocity, newSpin, 0);

@@ -36,6 +36,6 @@ public class BallData {
     }
 
     public final Vector3 surfaceVelocity(final Vector3 normal) {
-        return spin.crossProduct(normal).scaled(RlConstants.BALL_RADIUS);
+        return normal.crossProduct(spin).scaled(RlConstants.BALL_RADIUS);
     }
 }

@@ -49,9 +49,12 @@ public class AdvancedBallPrediction {
 
             // handle map bounces
             final Vector3 ballToMapHitNormal = standardMap.getHitNormal(predictedBall.position, RlConstants.BALL_RADIUS);
-            if(!ballToMapHitNormal.isZero()) {
+            final double ballSpeedProductWithHitNormal = predictedBall.velocity.dotProduct(ballToMapHitNormal);
+            if(!ballToMapHitNormal.isZero() && ballSpeedProductWithHitNormal > 0) {
                 predictedBall = updateBallBounce(previousPredictedBall, ballToMapHitNormal);
             }
+
+            //predictedBall = updateSlidingBall(predictedBall, ballToMapHitNormal, 1/refreshRate);
 
             // make sure to set the game time correctly (these are seconds from the current frame)
             predictedBall = new BallData(predictedBall.position, predictedBall.velocity, predictedBall.spin, i/refreshRate);
@@ -61,21 +64,15 @@ public class AdvancedBallPrediction {
     }
 
     private BallData updateAerialBall(final BallData ballData, final double deltaTime) {
-        final Vector3 gravity = new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH);
-        final Parabola3D ballTrajectory = new Parabola3D(ballData.position, ballData.velocity, gravity);
-        ballTrajectory.setAirDrag(RlConstants.BALL_AIR_DRAG_COEFFICIENT);
-        final Vector3 updatedPosition = ballTrajectory.compute(deltaTime);
-        final Vector3 updatedSpeed = ballTrajectory.derivative(deltaTime);
-        final Vector3 updatedSpin = ballData.spin;
-
-        return new BallData(updatedPosition, updatedSpeed, updatedSpin, deltaTime);
-    }
-
-    private BallData updateSlidingBall(final BallData ballData, final Vector3 surfaceNormal, final double deltaTime) {
-        return slidingBallTrajectory.compute(ballData, surfaceNormal, deltaTime);
+        final BallAerialTrajectory ballTrajectory = new BallAerialTrajectory(ballData);
+        return ballTrajectory.compute(deltaTime);
     }
 
     private BallData updateBallBounce(final BallData ball, final Vector3 hitNormal) {
         return new BallBounce(ball, hitNormal).compute();
+    }
+
+    private BallData updateSlidingBall(final BallData ballData, final Vector3 surfaceNormal, final double deltaTime) {
+        return slidingBallTrajectory.compute(ballData, surfaceNormal, deltaTime);
     }
 }

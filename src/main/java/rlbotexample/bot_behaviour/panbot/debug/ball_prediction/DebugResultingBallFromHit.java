@@ -20,12 +20,7 @@ public class DebugResultingBallFromHit extends PanBot {
 
     public DebugResultingBallFromHit() {
         gameSituationHandler = new CircularTrainingPack();
-        gameSituationHandler.add(new CeilingHit1());
-        gameSituationHandler.add(new CeilingHit2());
-        gameSituationHandler.add(new CeilingHit3());
-        gameSituationHandler.add(new CeilingHit4());
-        gameSituationHandler.add(new CeilingHit5());
-        gameSituationHandler.add(new CeilingHit6());
+        gameSituationHandler.add(new CeilingHit7());
         this.predictions = new Predictions();
     }
 
@@ -39,16 +34,5 @@ public class DebugResultingBallFromHit extends PanBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        Vector3 lastPosition = input.ball.position;
-        int precision = 200;
-        for(int i = 0; i < precision; i++) {
-            Vector3 newPosition = predictions.ballPredictionRoughMapEstimateBounce(input.ball.position, input.ball.velocity, input.ball.spin, 2.0*i/precision).getPosition();
-            renderer.drawLine3d(Color.red, lastPosition, newPosition);
-            lastPosition = newPosition;
-        }
-
-        //KinematicPoint bouncedBall = predictions.resultingBallFromHit(new Vector3(), new Vector3(0, 0, 100), new Vector3(0, 100, 0), new Vector3(0, 0, 1));
-
-        //System.out.println(bouncedBall.getSpeed());
     }
 }

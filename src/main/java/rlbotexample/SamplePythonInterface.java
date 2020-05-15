@@ -4,6 +4,7 @@ import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugCustomBallPrediction;
+import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugResultingBallFromHit;
 
 public class SamplePythonInterface extends SocketServer {
 
