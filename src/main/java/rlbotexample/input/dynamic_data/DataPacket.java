@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class DataPacket {
 
-    public static final double BALL_PREDICTION_TIME = 1;
+    public static final double BALL_PREDICTION_TIME = 6;
     public static final double BALL_PREDICTION_REFRESH_RATE = 120;
 
     /** Your own car, based on the playerIndex */

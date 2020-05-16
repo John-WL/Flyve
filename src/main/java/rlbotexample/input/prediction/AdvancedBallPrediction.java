@@ -17,7 +17,7 @@ public class AdvancedBallPrediction {
     private final double refreshRate;
     private final BallData initialBall;
     private final List<CarData> initialCars;
-    private final SlidingBall slidingBallTrajectory = new SlidingBall();
+    private final BallStopper ballStopper = new BallStopper();
 
     public AdvancedBallPrediction(final BallData initialBall, final List<CarData> initialCars, final double amountOfAvailableTime, final double refreshRate) {
         this.initialBall = initialBall;
@@ -44,19 +44,20 @@ public class AdvancedBallPrediction {
         final StandardMap standardMap = new StandardMap();
 
         for(int i = 0; i < amountOfPredictionTimeToLoad*refreshRate; i++) {
-            // try to step 1 frame into the future
+            // step 1 frame into the future
             BallData predictedBall = updateAerialBall(previousPredictedBall, 1/refreshRate);
 
-            // handle map bounces
+            // correct ball data from bounces
             final Vector3 ballToMapHitNormal = standardMap.getHitNormal(predictedBall.position, RlConstants.BALL_RADIUS);
             final double ballSpeedProductWithHitNormal = predictedBall.velocity.dotProduct(ballToMapHitNormal);
             if(!ballToMapHitNormal.isZero() && ballSpeedProductWithHitNormal > 0) {
-                predictedBall = updateBallBounce(previousPredictedBall, ballToMapHitNormal);
+                predictedBall = updateBallBounce(predictedBall, ballToMapHitNormal);
             }
 
-            //predictedBall = updateSlidingBall(predictedBall, ballToMapHitNormal, 1/refreshRate);
+            // stop the ball if it's rolling too slowly
+            predictedBall = updateBallStopper(predictedBall, 1/refreshRate);
 
-            // make sure to set the game time correctly (these are seconds from the current frame)
+            // make sure to set the game time correctly (these are seconds from the in-game current frame)
             predictedBall = new BallData(predictedBall.position, predictedBall.velocity, predictedBall.spin, i/refreshRate);
             balls.add(predictedBall);
             previousPredictedBall = predictedBall;
@@ -72,7 +73,7 @@ public class AdvancedBallPrediction {
         return new BallBounce(ball, hitNormal).compute();
     }
 
-    private BallData updateSlidingBall(final BallData ballData, final Vector3 surfaceNormal, final double deltaTime) {
-        return slidingBallTrajectory.compute(ballData, surfaceNormal, deltaTime);
+    private BallData updateBallStopper(final BallData ballData, final double deltaTime) {
+        return ballStopper.compute(ballData, deltaTime);
     }
 }

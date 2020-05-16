@@ -20,12 +20,12 @@ public class BallBounce {
         this.spin = ballData.spin;
         this.surfaceNormal = hitNormal;
         this.surfaceVelocity = ballData.surfaceVelocity(hitNormal);
-        this.velocityComponentParallelToHitNormal = initialVelocity.projectionOnto(hitNormal);
+        this.velocityComponentParallelToHitNormal = initialVelocity.projectOnto(hitNormal);
         this.velocityComponentPerpendicularToHitNormal = initialVelocity.minus(velocityComponentParallelToHitNormal);
     }
 
     public BallData compute() {
-        final Vector3 slipSpeed = velocityComponentPerpendicularToHitNormal.plus(surfaceVelocity);
+        final Vector3 slipSpeed = velocityComponentPerpendicularToHitNormal.minus(surfaceVelocity);
         final double surfaceSpeedRatio = velocityComponentParallelToHitNormal.magnitude()/slipSpeed.magnitude();
 
         final Vector3 newParallelVelocity = velocityComponentParallelToHitNormal.scaled(-0.6);

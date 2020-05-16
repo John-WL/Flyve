@@ -43,8 +43,6 @@ public class DebugCustomBallPrediction extends PanBot {
             }
         }
 
-        renderer.drawLine3d(Color.green, new Vector3(4096, 5120-1152, 500), new Vector3(4096-800, 5120-1152-400, 500));
-
         /*
         try {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();

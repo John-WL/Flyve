@@ -4,30 +4,18 @@ import rlbotexample.input.dynamic_data.BallData;
 import util.game_constants.RlConstants;
 import util.vector.Vector3;
 
-public class SlidingBall {
+public class BallStopper {
 
     private static final double APPROXIMATED_SPIN_ACCELERATION_COEFFICIENT_DUE_TO_NON_NULL_VELOCITY_BETWEEN_BALL_SURFACE_AND_MAP = Math.PI/2000;
 
-    private Vector3 initialPosition;
-    private Vector3 initialVelocity;
-    private Vector3 spin;
-    private Vector3 surfaceNormal;
-    private Vector3 surfaceVelocity;
-    private final double fastSpeedSurfaceFrictionForce;
-    private final double slowSpeedSurfaceFrictionCoefficient;
-    private final double airDragCoefficient;
-    private final double speedThreshold;
     private double amountOfTimeSinceCriticalSlowSpeedReached;
 
-    public SlidingBall() {
-        this.fastSpeedSurfaceFrictionForce = RlConstants.BALL_FAST_SLIDING_FRICTION_FORCE;
-        this.slowSpeedSurfaceFrictionCoefficient = RlConstants.BALL_SLOW_SLIDING_FRICTION_COEFFICIENT;
-        this.airDragCoefficient = RlConstants.BALL_AIR_DRAG_COEFFICIENT;
-        this.speedThreshold = RlConstants.BALL_SPEED_THRESHOLD_TO_APPLY_SLIDING_FRICTION;
+    public BallStopper() {
         this.amountOfTimeSinceCriticalSlowSpeedReached = 0;
     }
 
-    public BallData compute(BallData ballData, Vector3 surfaceNormal, double deltaTime) {
+    public BallData compute(BallData ballData, double deltaTime) {
+        /*
         this.initialPosition = ballData.position;
         this.initialVelocity = ballData.velocity;
         this.spin = ballData.spin;
@@ -56,21 +44,27 @@ public class SlidingBall {
 
         Vector3 newPosition = initialPosition.plus(deltaVelocity);
         Vector3 newVelocity = deltaVelocity.scaled(1/deltaTime);
-        BallData newBallData = new BallData(newPosition, newVelocity, newSpin, 0);
+        BallData newBallData = new BallData(newPosition, newVelocity, newSpin, 0);*/
 
-        if(hasStoppedMoving()) {
+        amountOfTimeSinceCriticalSlowSpeedReached += deltaTime;
+
+        Vector3 newPosition = ballData.position;
+        Vector3 newVelocity = ballData.velocity;
+        Vector3 newSpin = ballData.spin;
+
+        if(hasStoppedMoving(ballData)) {
+            amountOfTimeSinceCriticalSlowSpeedReached = 0;
             newVelocity = new Vector3();
             newSpin = new Vector3();
-            newBallData =  new BallData(initialPosition, newVelocity, newSpin, 0);
         }
 
-        return newBallData;
+        return new BallData(newPosition, newVelocity, newSpin, 0);
     }
 
-    private boolean hasStoppedMoving() {
-        return initialVelocity.magnitudeSquared() < RlConstants.BALL_MINIMUM_ROLLING_SPEED
+    private boolean hasStoppedMoving(BallData ballData) {
+        return ballData.velocity.magnitudeSquared() < square(RlConstants.BALL_MINIMUM_ROLLING_SPEED)
                 && amountOfTimeSinceCriticalSlowSpeedReached > RlConstants.BALL_CRITICAL_AMOUNT_OF_TIME_OF_SLOW_SPEED_ROLLING_BEFORE_COMPLETE_STOP
-                && spin.scaled(1/(Math.PI*2)).magnitudeSquared() < square(RlConstants.BALL_MINIMUM_RPM_WHEN_ROLLING_BEFORE_COMPLETE_STOP/60);
+                && ballData.spin.scaled(1/(Math.PI*2)).magnitudeSquared() < square(RlConstants.BALL_MINIMUM_RPM_WHEN_ROLLING_BEFORE_COMPLETE_STOP/60);
     }
 
     private double square(double x) {

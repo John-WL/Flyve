@@ -440,7 +440,7 @@ public class Predictions {
     }
 
     private Vector3 flattenInNormalDirection(Vector3 vectorWithComponentToRemove, Vector3 normal) {
-        return vectorWithComponentToRemove.minus(vectorWithComponentToRemove.projectionOnto(normal));
+        return vectorWithComponentToRemove.minus(vectorWithComponentToRemove.projectOnto(normal));
     }
 
     private Vector3 sidewaysHitComponent(Vector3 sidewaysHitComponent, Vector3 normal) {
