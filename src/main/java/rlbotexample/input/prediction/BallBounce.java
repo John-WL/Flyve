@@ -25,13 +25,15 @@ public class BallBounce {
     }
 
     public BallData compute() {
+
+        // WORKING CODE (but not when wall sliding upward from the ground)
         final Vector3 slipSpeed = velocityComponentPerpendicularToHitNormal.minus(surfaceVelocity);
         final double surfaceSpeedRatio = velocityComponentParallelToHitNormal.magnitude()/slipSpeed.magnitude();
 
         final Vector3 newParallelVelocity = velocityComponentParallelToHitNormal.scaled(-0.6);
         final Vector3 perpendicularDeltaVelocity = slipSpeed.scaled(-Math.min(1.0, 2*surfaceSpeedRatio) * 0.285);
 
-        final Vector3 newVelocity = newParallelVelocity.plus(velocityComponentPerpendicularToHitNormal.plus(perpendicularDeltaVelocity));
+        Vector3 newVelocity = newParallelVelocity.plus(velocityComponentPerpendicularToHitNormal.plus(perpendicularDeltaVelocity));
 
         final Vector3 deltaSpin = perpendicularDeltaVelocity.crossProduct(surfaceNormal).scaled(0.0003 * RlConstants.BALL_RADIUS);
         final Vector3 newSpin = spin.plus(deltaSpin);

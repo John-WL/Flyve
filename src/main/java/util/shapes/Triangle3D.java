@@ -31,14 +31,4 @@ public class Triangle3D {
     public Vector3 getCenterPosition() {
         return point0.plus(point1).plus(point2).scaled(1.0/3);
     }
-
-    public Triangle3D toLocal() {
-        final Vector3 centerPosition = getCenterPosition();
-        final Vector3 normal = getNormal();
-        final Vector3 localPoint0 = point0.minus(centerPosition).minusAngle(normal);
-        final Vector3 localPoint1 = point1.minus(centerPosition).minusAngle(normal);
-        final Vector3 localPoint2 = point2.minus(centerPosition).minusAngle(normal);
-
-        return new Triangle3D(localPoint0, localPoint1, localPoint2);
-    }
 }
