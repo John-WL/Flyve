@@ -2,7 +2,10 @@ package util.vector;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
+import rlbot.render.Renderer;
 import util.shapes.Triangle3D;
+
+import java.awt.*;
 
 /**
  * A simple 3d vector class with the most essential operations.
@@ -195,52 +198,53 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(resultXy.x, resultXy.y, projectedVectorXyXyz.y);
     }
 
-    // this is so ugly...
-    // there might be a MUCH better way to handle this, this can't be right.
     public Vector3 projectOnto(final Triangle3D triangle) {
-        final Vector3 triangleNormal = triangle.getNormal();
-        final Vector3 triangleCenterPosition = triangle.getCenterPosition();
-        final Vector3 localThis = this.minus(triangleCenterPosition).minusAngle(triangleNormal);
-        final Vector3 flatLocalThis = new Vector3(localThis.flatten(), 0);
-        final Triangle3D localTriangle = triangle.toLocal();
+        final Vector3 p1 = triangle.point0;
+        final Vector3 p2 = triangle.point1;
+        final Vector3 p3 = triangle.point2;
+        final Vector3 p = this;
+        final Vector3 u = p2.minus(p1);
+        final Vector3 v = p3.minus(p1);
+        final Vector3 n = u.crossProduct(v);
+        final Vector3 w = p.minus(p1);
+        double Y = (u.crossProduct(w).dotProduct(n)) / n.magnitudeSquared();
+        double B = (w.crossProduct(v).dotProduct(n)) / n.magnitudeSquared();
 
-        final Vector3 localRotatedTriangleSide0 = localTriangle.point0.minus(localTriangle.point1);
-        final Vector3 localRotatedTriangleSide1 = localTriangle.point1.minus(localTriangle.point2);
-        final Vector3 localRotatedTriangleSide2 = localTriangle.point2.minus(localTriangle.point0);
+        double a = 1-Y-B;
 
-        Vector3 resultingProjectedPoint = flatLocalThis;
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide0).x > localRotatedTriangleSide0.x) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide0);
-            resultingProjectedPoint = new Vector3(localRotatedTriangleSide0.x, resultingProjectedPoint.y, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide0);
+        if(a >= 0 && a <= 1
+                && B >= 0 && B <= 1
+                && Y >= 0 && Y <= 1) {
+            return p1.scaled(a).plus(p2.scaled(B)).plus(p3.scaled(Y));
         }
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide0).y < 0) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide0);
-            resultingProjectedPoint = new Vector3(resultingProjectedPoint.x, 0, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide0);
-        }
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide1).x > localRotatedTriangleSide1.x) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide1);
-            resultingProjectedPoint = new Vector3(localRotatedTriangleSide1.x, resultingProjectedPoint.y, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide1);
-        }
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide1).y < 0) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide1);
-            resultingProjectedPoint = new Vector3(resultingProjectedPoint.x, 0, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide1);
-        }
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide2).x > localRotatedTriangleSide2.x) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide2);
-            resultingProjectedPoint = new Vector3(localRotatedTriangleSide2.x, resultingProjectedPoint.y, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide2);
-        }
-        if(flatLocalThis.minusAngle(localRotatedTriangleSide2).y < 0) {
-            resultingProjectedPoint = resultingProjectedPoint.minusAngle(localRotatedTriangleSide2);
-            resultingProjectedPoint = new Vector3(resultingProjectedPoint.x, 0, resultingProjectedPoint.z);
-            resultingProjectedPoint = resultingProjectedPoint.plusAngle(localRotatedTriangleSide2);
-        }
+        else {
+            final Vector3 edgePosition1 = triangleEdgePosition(p1, p2.minus(p1), p);
+            final Vector3 edgePosition2 = triangleEdgePosition(p2, p3.minus(p2), p);
+            final Vector3 edgePosition3 = triangleEdgePosition(p3, p1.minus(p3), p);
 
-        return resultingProjectedPoint;
+            final double dist1 = edgePosition1.minus(p).magnitude();
+            final double dist2 = edgePosition2.minus(p).magnitude();
+            final double dist3 = edgePosition3.minus(p).magnitude();
+
+            if(dist1 < dist2 && dist1 < dist3) {
+                return edgePosition1;
+            }
+            if(dist2 < dist1 && dist2 < dist3) {
+                return edgePosition2;
+            }
+            else {
+                return edgePosition3;
+            }
+        }
+    }
+
+    private Vector3 triangleEdgePosition(final Vector3 start, final Vector3 dir, final Vector3 p) {
+        final double u = clamp(p.minus(start).dotProduct(dir)/dir.dotProduct(dir), 0, 1);
+        return start.plus(dir.scaled(u));
+    }
+
+    private double clamp(final double valueToClamp, final double min, final double max) {
+        return Math.max(min, Math.min(max, valueToClamp));
     }
 
     @Override

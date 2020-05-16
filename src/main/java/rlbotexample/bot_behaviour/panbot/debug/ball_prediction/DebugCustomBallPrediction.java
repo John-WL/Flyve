@@ -8,10 +8,8 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.BallBounce;
 import rlbotexample.input.prediction.BallPredictionHelper;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
 
 import java.awt.*;
 
@@ -31,37 +29,45 @@ public class DebugCustomBallPrediction extends PanBot {
 
         // custom ball prediction is purple
         // native one is red
+
         BallData previousBall = input.ball;
         int divisor = 0;
         for(BallData nextBall: input.ballPrediction.balls) {
             divisor++;
-            divisor %= 4;
+            divisor %= 8;
 
             if(divisor == 0) {
-                renderer.drawLine3d(new Color(158, 63, 229), previousBall.position, nextBall.position);
+                renderer.drawLine3d(new Color(6, 0, 229), previousBall.position, nextBall.position);
                 previousBall = nextBall;
             }
         }
 
-        /*
+
         try {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();
             BallPredictionHelper.drawTillMoment(ballPrediction, input.car.elapsedSeconds + 6, Color.red, renderer);
         } catch (RLBotInterfaceException e) {
             e.printStackTrace();
-        }*/
-
-
+        }
 
         /*
-        BallData initialBall = new BallData(new Vector3(), new Vector3(2800, 0, -1616), new Vector3(0, 0, 0), 0);
-        System.out.println("bounce 0: " + initialBall.surfaceVelocity(new Vector3(0, 0, -1)));
+        Mesh3DBuilder mesh3DBuilder = new Mesh3DBuilder();
+        mesh3DBuilder.addVertex(new Vector3(1000, 1000, 300));
+        mesh3DBuilder.addVertex(new Vector3(-1000, 1000, 100));
+        mesh3DBuilder.addVertex(new Vector3(-1000, -1000, 100));
+        mesh3DBuilder.addTriangle(0, 1, 2);
 
-        BallData bouncedBall = new BallBounce(initialBall, new Vector3(0, 0, -1)).compute();
-        System.out.println("bounce 1: " + bouncedBall.surfaceVelocity(new Vector3(0, 0, -1)));
+        Mesh3D mesh3D = mesh3DBuilder.build();
 
-        BallData secondTimeBouncedBall = new BallBounce(bouncedBall, new Vector3(0, 0, -1)).compute();
-        System.out.println("bounce 2: " + secondTimeBouncedBall.surfaceVelocity(new Vector3(0, 0, -1)));
+        renderer.drawLine3d(Color.red, new Vector3(1000, 1000, 300), new Vector3(-1000, 1000, 100));
+        renderer.drawLine3d(Color.red, new Vector3(-1000, 1000, 100), new Vector3(-1000, -1000, 100));
+        renderer.drawLine3d(Color.red, new Vector3(-1000, -1000, 100), new Vector3(1000, 1000, 300));
+
+        Vector3 projectedPointOntoTriangle = input.allCars.get(1).position.projectOnto(mesh3D.triangleList.get(0), renderer);
+
+        renderer.drawLine3d(Color.green, input.allCars.get(1).position, projectedPointOntoTriangle);
+
+        //System.out.println(mesh3D.getClosestTriangle(new Sphere(new Vector3(1, -1, 1), 0.5)).point1);
         */
     }
 }

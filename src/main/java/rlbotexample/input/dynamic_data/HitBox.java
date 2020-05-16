@@ -17,6 +17,13 @@ public class HitBox {
         this.roofOrientation = roofOrientation;
     }
 
+    public HitBox(Vector3 boxSize, Vector3 centerPosition) {
+        this.cornerPosition = boxSize;
+        this.centerPosition = centerPosition;
+        this.frontOrientation = new Vector3(1, 0, 0);
+        this.roofOrientation = new Vector3(0, 0, 1);
+    }
+
     private HitBox() { }
 
     public HitBox generateHypotheticalHitBox(Vector3 hypotheticalPosition, Orientation hypotheticalOrientation) {
