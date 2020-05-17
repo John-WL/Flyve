@@ -9,10 +9,10 @@ import util.vector.Vector3;
 
 public class StandardMapSplitMesh {
 
-    private static final MeshSplitter3D STANDARD_MAP_MESH = new MeshSplitter3D(ObjFileReader.loadMeshFromFile(ObjFileReader.STANDARD_MAP_MESH_GEOMETRY_PATH));
+    public static final MeshSplitter3D STANDARD_MAP_MESH = new MeshSplitter3D(ObjFileReader.loadMeshFromFile(ObjFileReader.STANDARD_MAP_MESH_GEOMETRY_PATH));
 
     public Vector3 getCollisionNormalOrElse(final Sphere sphere, Vector3 defaultNormal) {
-        final Triangle3D closestTriangleToBall = STANDARD_MAP_MESH.getClosestTriangle(sphere.center);
+        final Triangle3D closestTriangleToBall = STANDARD_MAP_MESH.getClosestTriangle(sphere);
         final Vector3 distanceBetweenSphereCenterAndMesh = sphere.center.projectOnto(closestTriangleToBall).minus(sphere.center);
 
         if(distanceBetweenSphereCenterAndMesh.magnitudeSquared() < sphere.radius * sphere.radius ) {

@@ -4,14 +4,26 @@ import rlbot.cppinterop.RLBotDll;
 import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.GameTickPacket;
+import rlbot.render.NamedRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.BallData;
+import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.BallPredictionHelper;
+import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.prediction.AdvancedBallPrediction;
+import util.renderers.NativeBallPredictionRenderer;
 import rlbotexample.output.BotOutput;
+import util.renderers.ShapeRenderer;
+import util.shapes.Triangle3D;
+import util.shapes.meshes.Mesh3D;
+import util.shapes.meshes.Mesh3DBuilder;
+import util.shapes.meshes.MeshSplitter3D;
+import util.vector.Vector3;
+import util.vector.Vector3Int;
 
 import java.awt.*;
+import java.util.List;
 
 public class DebugCustomBallPrediction extends PanBot {
 
@@ -30,6 +42,8 @@ public class DebugCustomBallPrediction extends PanBot {
         // custom ball prediction is purple
         // native one is red
 
+        // my ball prediction
+
         BallData previousBall = input.ball;
         int divisor = 0;
         for(BallData nextBall: input.ballPrediction.balls) {
@@ -42,13 +56,42 @@ public class DebugCustomBallPrediction extends PanBot {
             }
         }
 
+        AdvancedBallPrediction advancedBallPrediction = new AdvancedBallPrediction(input.ball, input.allCars, 0.01,120);
 
+        ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
+        for(Mesh3D mesh: advancedBallPrediction.standardMap.STANDARD_MAP_MESH.meshRegions) {
+            if(mesh != null) {
+                for (Triangle3D triangle : mesh.triangleList) {
+                    shapeRenderer.renderTriangle(triangle, Color.CYAN);
+                }
+            }
+        }
+
+        // native ball prediction
         try {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();
-            BallPredictionHelper.drawTillMoment(ballPrediction, input.car.elapsedSeconds + 6, Color.red, renderer);
+            NativeBallPredictionRenderer.drawTillMoment(ballPrediction, input.car.elapsedSeconds + 6, Color.red, renderer);
         } catch (RLBotInterfaceException e) {
             e.printStackTrace();
         }
+
+        // mesh splitter
+
+        //System.out.println(MeshSplitter3D.MESH_REGIONS);
+
+        /*for(int i = 0; i < 27; i++) {
+            final double x = ((int) (i % 3) - 1) * MeshSplitter3D.SPLIT_SIZE;
+            final double y = ((int) ((i / 3) % 3) - 1) * MeshSplitter3D.SPLIT_SIZE;
+            final double z = ((int) (i / 9) - 1) * MeshSplitter3D.SPLIT_SIZE;
+            final Vector3 deltaPosition = new Vector3(x, y, z);
+
+            Vector3 ballCappedPosition = input.ball.position.plus(MeshSplitter3D.OFFSET_POSITION).scaled(1/MeshSplitter3D.SPLIT_SIZE);
+            ballCappedPosition = new Vector3((int)ballCappedPosition.x, (int)ballCappedPosition.y, (int)ballCappedPosition.z);
+
+            final HitBox hitBox = new HitBox(ballCappedPosition.scaled(MeshSplitter3D.SPLIT_SIZE).minus(MeshSplitter3D.OFFSET_POSITION).plus(deltaPosition), new Vector3(1, 1, 1).scaled(MeshSplitter3D.SPLIT_SIZE / 2));
+
+            shapeRenderer.renderHitBox(hitBox, Color.green);
+        }*/
 
         /*
         Mesh3DBuilder mesh3DBuilder = new Mesh3DBuilder();
@@ -63,11 +106,12 @@ public class DebugCustomBallPrediction extends PanBot {
         renderer.drawLine3d(Color.red, new Vector3(-1000, 1000, 100), new Vector3(-1000, -1000, 100));
         renderer.drawLine3d(Color.red, new Vector3(-1000, -1000, 100), new Vector3(1000, 1000, 300));
 
-        Vector3 projectedPointOntoTriangle = input.allCars.get(1).position.projectOnto(mesh3D.triangleList.get(0), renderer);
+        Vector3 projectedPointOntoTriangle = input.allCars.get(1).position.projectOnto(mesh3D.triangleList.get(0));
 
         renderer.drawLine3d(Color.green, input.allCars.get(1).position, projectedPointOntoTriangle);
+        */
 
         //System.out.println(mesh3D.getClosestTriangle(new Sphere(new Vector3(1, -1, 1), 0.5)).point1);
-        */
+
     }
 }

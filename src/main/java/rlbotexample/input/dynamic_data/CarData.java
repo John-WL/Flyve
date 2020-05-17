@@ -61,6 +61,6 @@ public class CarData {
         this.team = playerInfo.team();
         this.hasWheelContact = playerInfo.hasWheelContact();
         this.elapsedSeconds = elapsedSeconds;
-        this.hitBox = new HitBox(playerInfo.hitbox(), playerInfo.hitboxOffset(), position, orientation.noseVector, orientation.roofVector);
+        this.hitBox = new HitBox(position, playerInfo.hitboxOffset(), playerInfo.hitbox(), orientation.noseVector, orientation.roofVector);
     }
 }

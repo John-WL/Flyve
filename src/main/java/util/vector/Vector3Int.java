@@ -20,4 +20,9 @@ public class Vector3Int {
         this.y = y;
         this.z = z;
     }
+
+    @Override
+    public String toString() {
+        return "[ x:" + this.x + ", y:" + this.y + ", z:" + this.z + " ]";
+    }
 }

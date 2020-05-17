@@ -20,7 +20,7 @@ public class ObjFileReader {
 
         for(String fileLine: fileContent) {
             final List<String> lineParameters = getLineParameters(fileLine);
-            if(isValidLineLength(fileLine, lineParameters)) {
+            if(isValidLineLength(lineParameters)) {
                 if(isVertex(lineParameters)) {
                     final Vector3 vertex = parseVertex(lineParameters);
                     mesh3DBuilder.addVertex(vertex);
@@ -42,22 +42,21 @@ public class ObjFileReader {
         return Arrays.asList(fileLine.split(" "));
     }
 
-    private static boolean isValidLineLength(final String fileLine, final List<String> lineParameters) {
-        return fileLine.length() >= 7
-                && lineParameters.size() == 4;
+    private static boolean isValidLineLength(final List<String> lineParameters) {
+        return lineParameters.size() == 4;
     }
 
     private static boolean isVertex(final List<String> lineParameters) {
-        return lineParameters.get(0).equals("v") || lineParameters.get(0).equals("V");
+        return lineParameters.get(0).equals("v");
     }
 
     private static boolean isTriangle(final List<String> lineParameters) {
-        return lineParameters.get(0).equals("f") || lineParameters.get(0).equals("F");
+        return lineParameters.get(0).equals("f");
     }
 
     private static Vector3 parseVertex(final List<String> lineParameters) {
-        final double positionX = Double.valueOf(lineParameters.get(2));
-        final double positionY = -Double.valueOf(lineParameters.get(1));
+        final double positionX = -Double.valueOf(lineParameters.get(2));
+        final double positionY = Double.valueOf(lineParameters.get(1));
         final double positionZ = Double.valueOf(lineParameters.get(3));
 
         return new Vector3(positionX, positionY, positionZ);
