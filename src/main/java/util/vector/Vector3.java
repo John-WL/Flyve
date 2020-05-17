@@ -6,6 +6,7 @@ import rlbot.render.Renderer;
 import util.shapes.Triangle3D;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * A simple 3d vector class with the most essential operations.
@@ -226,15 +227,13 @@ public class Vector3 extends rlbot.vector.Vector3 {
             final double dist2 = edgePosition2.minus(p).magnitude();
             final double dist3 = edgePosition3.minus(p).magnitude();
 
-            if(dist1 < dist2 && dist1 < dist3) {
+            if(dist1 <= dist2 && dist1 <= dist3) {
                 return edgePosition1;
             }
-            if(dist2 < dist1 && dist2 < dist3) {
+            if(dist2 <= dist1 && dist2 <= dist3) {
                 return edgePosition2;
             }
-            else {
-                return edgePosition3;
-            }
+            return edgePosition3;
         }
     }
 
@@ -250,5 +249,10 @@ public class Vector3 extends rlbot.vector.Vector3 {
     @Override
     public String toString() {
         return "[ x:" + this.x + ", y:" + this.y + ", z:" + this.z + " ]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash((int)x, (int)y, (int)z);
     }
 }

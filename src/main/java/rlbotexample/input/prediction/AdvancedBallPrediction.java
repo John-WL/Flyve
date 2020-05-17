@@ -1,11 +1,8 @@
 package rlbotexample.input.prediction;
 
-import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.KinematicCar;
-import rlbotexample.input.geometry.NotOptimizedStandardMapMesh;
-import rlbotexample.input.geometry.StandardMap;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
@@ -22,6 +19,7 @@ public class AdvancedBallPrediction {
     private final BallData initialBall;
     private final List<CarData> initialCars;
     private final BallStopper ballStopper = new BallStopper();
+    public final StandardMapSplitMesh standardMap = new StandardMapSplitMesh();
 
     public AdvancedBallPrediction(final BallData initialBall, final List<CarData> initialCars, final double amountOfAvailableTime, final double refreshRate) {
         this.initialBall = initialBall;
@@ -50,16 +48,16 @@ public class AdvancedBallPrediction {
             // step 1 frame into the future
             BallData predictedBall = updateAerialBall(previousPredictedBall, 1/refreshRate);
 
-            StandardMapSplitMesh standardMapSplitMesh = new StandardMapSplitMesh();
 
-            // correct ball data from bounces
-            final Vector3 ballToMapHitNormal = standardMapSplitMesh.getCollisionNormalOrElse(
+
+            // correct ball with bounces
+            final Vector3 hitNormal = standardMap.getCollisionNormalOrElse(
                     new Sphere(predictedBall.position, RlConstants.BALL_RADIUS),
                     new Vector3()
             );
-            final double ballSpeedProductWithHitNormal = predictedBall.velocity.dotProduct(ballToMapHitNormal);
-            if(!ballToMapHitNormal.isZero() && ballSpeedProductWithHitNormal > 0) {
-                predictedBall = updateBallBounce(predictedBall, ballToMapHitNormal);
+            final double ballSpeedProductWithHitNormal = predictedBall.velocity.dotProduct(hitNormal);
+            if(!hitNormal.isZero() && ballSpeedProductWithHitNormal > 0) {
+                predictedBall = updateBallBounce(predictedBall, hitNormal);
             }
 
             // stop the ball if it's rolling too slowly

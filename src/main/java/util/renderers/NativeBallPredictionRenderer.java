@@ -1,4 +1,4 @@
-package rlbotexample.input.prediction;
+package util.renderers;
 
 import rlbot.flat.BallPrediction;
 import rlbot.flat.PredictionSlice;
@@ -11,7 +11,7 @@ import java.awt.*;
  * This class can help you get started with getNativeBallPrediction prediction. Feel free to change it as much as you want,
  * this is part of your bot, not part of the framework!
  */
-public class BallPredictionHelper {
+public class NativeBallPredictionRenderer {
 
     public static void drawTillMoment(BallPrediction ballPrediction, float gameSeconds, Color color, Renderer renderer) {
         Vector3 previousLocation = null;

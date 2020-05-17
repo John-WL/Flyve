@@ -4,36 +4,38 @@ import rlbot.flat.BoxShape;
 import util.vector.Vector3;
 
 public class HitBox {
-    public Vector3 centerPosition;
-    public Vector3 frontOrientation;
-    public Vector3 roofOrientation;
+    public final Vector3 centerPosition;
+    private final Vector3 cornerPosition;
+    public final Vector3 frontOrientation;
+    public final Vector3 roofOrientation;
 
-    private Vector3 cornerPosition;
-
-    public HitBox(BoxShape boxShape, rlbot.flat.Vector3 centerOfMassOffset, Vector3 centerPosition, Vector3 frontOrientation, Vector3 roofOrientation) {
-        this.cornerPosition = new Vector3(boxShape.length(), boxShape.width(), boxShape.height()).scaled(0.5);
+    public HitBox(Vector3 centerPosition, rlbot.flat.Vector3 centerOfMassOffset, BoxShape boxShape, Vector3 frontOrientation, Vector3 roofOrientation) {
         this.centerPosition = centerPosition.plus(new Vector3(centerOfMassOffset).scaled(-1, 1, 1).matrixRotation(frontOrientation, roofOrientation));
+        this.cornerPosition = new Vector3(boxShape.length(), boxShape.width(), boxShape.height()).scaled(0.5);
         this.frontOrientation = frontOrientation;
         this.roofOrientation = roofOrientation;
     }
 
-    public HitBox(Vector3 boxSize, Vector3 centerPosition) {
-        this.cornerPosition = boxSize;
+    public HitBox(Vector3 centerPosition, Vector3 boxSize) {
         this.centerPosition = centerPosition;
+        this.cornerPosition = boxSize;
         this.frontOrientation = new Vector3(1, 0, 0);
         this.roofOrientation = new Vector3(0, 0, 1);
     }
 
-    private HitBox() { }
+    private HitBox(Vector3 centerPosition, Vector3 boxSize, Orientation orientation) {
+        this.centerPosition = centerPosition;
+        this.cornerPosition = boxSize;
+        this.frontOrientation = orientation.getNose();
+        this.roofOrientation = orientation.getRoof();
+    }
 
     public HitBox generateHypotheticalHitBox(Vector3 hypotheticalPosition, Orientation hypotheticalOrientation) {
-        HitBox hypotheticalHitBox = new HitBox();
-        hypotheticalHitBox.cornerPosition = this.cornerPosition;
-        hypotheticalHitBox.centerPosition = hypotheticalPosition;
-        hypotheticalHitBox.frontOrientation = hypotheticalOrientation.getNose();
-        hypotheticalHitBox.roofOrientation = hypotheticalOrientation.getRoof();
+        return new HitBox(hypotheticalPosition, cornerPosition, hypotheticalOrientation);
+    }
 
-        return hypotheticalHitBox;
+    public HitBox generateHypotheticalHitBox(Vector3 hypotheticalPosition) {
+        return new HitBox(hypotheticalPosition, cornerPosition, new Orientation(roofOrientation, cornerPosition));
     }
 
     public Vector3 projectPointOnSurface(Vector3 pointToProject) {
@@ -64,6 +66,25 @@ public class HitBox {
         }
 
         return getGlobal(new Vector3(newXCoordinate, newYCoordinate, newZCoordinate));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof HitBox)) {
+            return false;
+        }
+        return ((HitBox)obj).centerPosition.minus(this.centerPosition).magnitudeSquared() < 0.1
+        && ((HitBox)obj).cornerPosition.minus(this.cornerPosition).magnitudeSquared() < 0.1
+        && ((HitBox)obj).frontOrientation.minus(this.frontOrientation).magnitudeSquared() < 0.1
+        && ((HitBox)obj).roofOrientation.minus(this.roofOrientation).magnitudeSquared() < 0.1;
+    }
+
+    @Override
+    public int hashCode() {
+        return centerPosition.hashCode()
+                + cornerPosition.hashCode()
+                + frontOrientation.hashCode()
+                + roofOrientation.hashCode();
     }
 
     private Vector3 getLocal(Vector3 globalPoint) {

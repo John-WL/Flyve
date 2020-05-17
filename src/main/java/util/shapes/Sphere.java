@@ -9,7 +9,7 @@ public class Sphere {
 
     public Sphere(final Vector3 center, final double radius) {
         this.center = center;
-        this.radius = radius;
+        this.radius = Math.abs(radius);
     }
 
     public boolean isCollidingWith(final Vector3 point) {

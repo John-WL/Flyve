@@ -24,8 +24,9 @@ public class DataPacket {
     public final List<CarData> allCars;
 
     public final BallData ball;
-    public final AdvancedBallPrediction ballPrediction;
     public final int team;
+
+    public final AdvancedBallPrediction ballPrediction;
 
     /** The index of your player */
     public final int playerIndex;
