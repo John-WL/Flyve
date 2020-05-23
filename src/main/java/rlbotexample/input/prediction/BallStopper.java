@@ -6,8 +6,6 @@ import util.vector.Vector3;
 
 public class BallStopper {
 
-    private static final double APPROXIMATED_SPIN_ACCELERATION_COEFFICIENT_DUE_TO_NON_NULL_VELOCITY_BETWEEN_BALL_SURFACE_AND_MAP = Math.PI/2000;
-
     private double amountOfTimeSinceCriticalSlowSpeedReached;
 
     public BallStopper() {
@@ -15,37 +13,6 @@ public class BallStopper {
     }
 
     public BallData compute(BallData ballData, double deltaTime) {
-        /*
-        this.initialPosition = ballData.position;
-        this.initialVelocity = ballData.velocity;
-        this.spin = ballData.spin;
-        this.surfaceNormal = surfaceNormal;
-        this.surfaceVelocity = spin.crossProduct(surfaceNormal).scaled(RlConstants.BALL_RADIUS);
-        this.amountOfTimeSinceCriticalSlowSpeedReached += deltaTime;
-
-        Vector3 deltaVelocity;
-        Vector3 newSpin = spin;
-        if(initialVelocity.magnitudeSquared() > speedThreshold * speedThreshold) {
-            double deltaFrictionMagnitude = -fastSpeedSurfaceFrictionForce * deltaTime;
-            Vector3 deltaFriction = initialVelocity.scaledToMagnitude(deltaFrictionMagnitude);
-            deltaVelocity = initialVelocity.scaled(deltaTime * airDragCoefficient).plus(deltaFriction);
-
-            Vector3 spinSurfaceAcceleration = initialVelocity.plus(surfaceVelocity).scaled(APPROXIMATED_SPIN_ACCELERATION_COEFFICIENT_DUE_TO_NON_NULL_VELOCITY_BETWEEN_BALL_SURFACE_AND_MAP);
-            Vector3 spinAcceleration = surfaceNormal.crossProduct(spinSurfaceAcceleration);
-            Vector3 deltaSpinAcceleration = spinAcceleration.scaled(deltaTime);
-            newSpin = spin.plus(deltaSpinAcceleration);
-            if(newSpin.magnitudeSquared() > square(RlConstants.BALL_MAX_SPIN)) {
-                newSpin.scaledToMagnitude(RlConstants.BALL_MAX_SPIN);
-            }
-        }
-        else {
-            deltaVelocity = initialVelocity.scaled(deltaTime * slowSpeedSurfaceFrictionCoefficient);
-        }
-
-        Vector3 newPosition = initialPosition.plus(deltaVelocity);
-        Vector3 newVelocity = deltaVelocity.scaled(1/deltaTime);
-        BallData newBallData = new BallData(newPosition, newVelocity, newSpin, 0);*/
-
         amountOfTimeSinceCriticalSlowSpeedReached += deltaTime;
 
         Vector3 newPosition = ballData.position;

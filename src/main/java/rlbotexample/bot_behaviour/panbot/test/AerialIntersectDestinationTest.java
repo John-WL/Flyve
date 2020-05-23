@@ -24,7 +24,7 @@ public class AerialIntersectDestinationTest extends PanBot {
 
     public AerialIntersectDestinationTest() {
         predictions = new Predictions();
-        aerialIntersectDestinationController = new AerialIntersectDestination(this, predictions);
+        aerialIntersectDestinationController = new AerialIntersectDestination(this);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());

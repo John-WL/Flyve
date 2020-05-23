@@ -169,7 +169,7 @@ public class DriveToDestination2 extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
         // instantiate new pid controllers based on the data files that corresponds
         throttlePid = PidSerializer.fromFileToPid(PidSerializer.THROTTLE_FILENAME, throttlePid);
         steerPid = PidSerializer.fromFileToPid(PidSerializer.STEERING_FILENAME, steerPid);

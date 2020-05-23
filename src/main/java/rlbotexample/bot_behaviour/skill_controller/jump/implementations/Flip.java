@@ -3,6 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.jump.implementations;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpType;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
+import util.vector.Vector2;
 import util.vector.Vector3;
 
 public class Flip extends JumpType {
@@ -18,12 +19,11 @@ public class Flip extends JumpType {
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
         updateCurrentJumpCallCounter();
 
-
         if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
-            Vector3 flipDirections = desiredFrontOrientation.normalized().scaled(10);
+            Vector2 flipDirections = desiredFrontOrientation.flatten().scaledToMagnitude(2);
             output.pitch(-flipDirections.x);
             output.yaw(-flipDirections.y);
-            //output.withRoll(desiredRoofOrientation.y);
+            output.roll(0);
         }
         if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[0] && !this.isJumpFinished()) {
             output.pitch(0);

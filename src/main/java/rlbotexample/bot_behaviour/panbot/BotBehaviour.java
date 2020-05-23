@@ -17,6 +17,17 @@ public abstract class BotBehaviour {
         return myBotOutput;
     }
 
+    public void setOutput(BotOutput output) {
+        myBotOutput.throttle(output.throttle());
+        myBotOutput.steer(output.steer());
+        myBotOutput.pitch(output.pitch());
+        myBotOutput.yaw(output.yaw());
+        myBotOutput.roll(output.roll());
+        myBotOutput.jump(output.jump());
+        myBotOutput.boost(output.boost());
+        myBotOutput.drift(output.drift());
+    }
+
     public abstract BotOutput processInput(DataPacket input, GameTickPacket packet);
 
     public abstract void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime);

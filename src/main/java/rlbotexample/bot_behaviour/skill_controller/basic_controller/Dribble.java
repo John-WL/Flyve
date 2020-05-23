@@ -268,7 +268,7 @@ public class Dribble extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
         /*
         ballDirectionOffsetXPid = PidSerializer.fromFileToPid(PidSerializer.DRIBBLE_FILENAME, ballDirectionOffsetXPid);
         ballDirectionOffsetYPid = PidSerializer.fromFileToPid(PidSerializer.DRIBBLE_FILENAME, ballDirectionOffsetYPid);

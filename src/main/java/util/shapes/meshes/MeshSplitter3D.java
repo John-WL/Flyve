@@ -4,6 +4,7 @@ import rlbotexample.input.dynamic_data.HitBox;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
 import util.shapes.Triangle3D;
+import util.vector.Ray3;
 import util.vector.Vector3;
 import util.vector.Vector3Int;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 
 public class MeshSplitter3D {
 
-    public static final double SPLIT_SIZE = 80;
+    public static final double SPLIT_SIZE = 100;
     public static final double OFFSET_POSITION_X = 2*RlConstants.WALL_DISTANCE_X;
     public static final double OFFSET_POSITION_Y = 1.2*RlConstants.WALL_DISTANCE_Y;
     public static final double OFFSET_POSITION_Z = 1000;
@@ -22,7 +23,7 @@ public class MeshSplitter3D {
 
     private final Mesh3D initialMesh;
     private final Mesh3D[][][] meshArray;
-    public static final List<Mesh3D> meshRegions = new ArrayList<>();
+    private static final List<Mesh3D> meshRegions = new ArrayList<>();
 
     public MeshSplitter3D(Mesh3D mesh) {
         this.initialMesh = mesh;
@@ -33,26 +34,27 @@ public class MeshSplitter3D {
         split(mesh);
     }
 
-    public Triangle3D getClosestTriangle(Sphere sphere) {
+    public Ray3 collideWith(Sphere sphere) {
+        Ray3 resultingRay = new Ray3();
         meshRegions.clear();
 
         // rasterize a sphere with voxels
         int searchSize = (int)(sphere.radius*2/SPLIT_SIZE);
-        int searchSizeSquared = searchSize*searchSize;
-        int searchSizeCubed = searchSize * searchSizeSquared;
+        int offset = 1;
         List<Vector3> indexToTest = new ArrayList<>();
-        for(int i = 0; i < searchSizeCubed; i++) {
-            final int x = ((int) (i % searchSize) - searchSize / 2);
-            final int y = ((int) ((i / searchSize) % searchSize) - searchSize / 2);
-            final int z = ((int) (i / searchSizeSquared) - searchSize / 2);
-            if(x*x + y*y + z*z < (sphere.radius/SPLIT_SIZE)*(sphere.radius/SPLIT_SIZE)*2) {
-                indexToTest.add(new Vector3(x, y, z));
+        for(int i = -offset-1; i < searchSize + offset+1; i++) {
+            for(int j = -offset-1; j < searchSize + offset+1; j++) {
+                for(int k = -offset-1; k < searchSize + offset+1; k++) {
+                    if(i*i + j*j + k*k < (sphere.radius/SPLIT_SIZE)*(sphere.radius/SPLIT_SIZE)*(1.5 * 1.5)) {
+                        indexToTest.add(new Vector3(i, j, k));
+                    }
+                }
             }
         }
 
         // add all regions that have been rasterized
         for(Vector3 index3D: indexToTest) {
-            final Vector3 centerOffset = new Vector3(1, 1, 1).scaled(SPLIT_SIZE/2);
+            final Vector3 centerOffset = new Vector3(1, 1, 1).scaled(SPLIT_SIZE/1.8);
             final Mesh3D meshRegion = queryMeshRegion(sphere.center.plus(centerOffset).plus(index3D.scaled(SPLIT_SIZE)));
 
             meshRegions.add(meshRegion);
@@ -66,18 +68,29 @@ public class MeshSplitter3D {
             }
         }
 
-        // search the closest triangle within these specific regions only
-        Triangle3D closestTriangle = new Triangle3D();
-        double bestDistanceFromTriangleSquared = Double.MAX_VALUE;
+        // do an average of all the ray normals that collide with the sphere
+        int numberOfCollidingTriangles = 0;
         for(Triangle3D triangle : removedTriangleDuplicates) {
-            final Vector3 projectedPointOnTriangle = sphere.center.projectOnto(triangle);
-            if(projectedPointOnTriangle.minus(sphere.center).magnitudeSquared() < bestDistanceFromTriangleSquared) {
-                closestTriangle = triangle;
-                bestDistanceFromTriangleSquared = projectedPointOnTriangle.minus(sphere.center).magnitudeSquared();
+            final Vector3 n = triangle.getNormal();
+            final Vector3 p = triangle.getCenterPosition();
+            final Vector3 pr = sphere.center.projectOnto(triangle);
+            final double separation = sphere.center.minus(p).dotProduct(n);
+            final Vector3 ballVectorFromTriangle = sphere.center.minus(pr);
+            if(ballVectorFromTriangle.magnitude() <= sphere.radius
+                && separation <= sphere.radius) {
+                numberOfCollidingTriangles++;
+                resultingRay.offset = resultingRay.offset.plus(sphere.center.minus(n.scaled(separation)));
+                resultingRay.direction = resultingRay.direction.plus(n.scaled(sphere.radius - separation));
             }
         }
 
-        return closestTriangle;
+        // finish the average
+        if(numberOfCollidingTriangles > 0) {
+            resultingRay.offset = resultingRay.offset.scaled(1.0/numberOfCollidingTriangles);
+            resultingRay.direction = resultingRay.direction.normalized();
+        }
+
+        return resultingRay;
     }
 
     public Mesh3D queryMeshRegion(Vector3 globalPosition) {

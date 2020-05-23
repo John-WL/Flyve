@@ -9,7 +9,7 @@ import rlbotexample.bot_behaviour.metagame.PossessionEvaluator;
 import rlbotexample.bot_behaviour.path.BallPositionPath;
 import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
 import rlbotexample.bot_behaviour.path.PathHandler;
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
@@ -96,8 +96,8 @@ public class Normal1sV2 extends PanBot {
 
 
             // find the threatening player
-            CarData closestCarToBall = input.allCars.get(0);
-            for(CarData car: input.allCars) {
+            ExtendedCarData closestCarToBall = input.allCars.get(0);
+            for(ExtendedCarData car: input.allCars) {
                 if(closestCarToBall.position.minus(input.ball.position).magnitude() > car.position.minus(input.ball.position).magnitude()) {
                     closestCarToBall = car;
                 }

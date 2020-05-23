@@ -3,9 +3,9 @@ package util.game_constants;
 public class RlConstants {
 
     public static final double BALL_RADIUS = 92.75;
-    public static final double BALL_MAX_SPEED = 6000;
+    public static final double BALL_MAX_SPEED = 4000;
     public static final double BALL_MAX_SPIN = 2*Math.PI;
-    public static final double BALL_AIR_DRAG_COEFFICIENT = 0.03;
+    public static final double BALL_AIR_DRAG_COEFFICIENT = 0.0305;
     public static final double BALL_FAST_SLIDING_FRICTION_FORCE = 230;
     public static final double BALL_SLOW_SLIDING_FRICTION_COEFFICIENT = 0.978;
     public static final double BALL_SPEED_THRESHOLD_TO_APPLY_SLIDING_FRICTION = 230;

@@ -9,9 +9,12 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
+import util.renderers.ShapeRenderer;
 import util.vector.Vector3;
 
 import java.awt.*;
@@ -19,7 +22,6 @@ import java.awt.*;
 public class AerialDirectionalHit extends SkillController {
 
     private BotBehaviour bot;
-    private Predictions predictions;
     private AerialOrientationHandler aerialOrientationHandler;
     private JumpHandler jumpHandler;
     private Vector3 ballDestination;
@@ -28,9 +30,8 @@ public class AerialDirectionalHit extends SkillController {
     private Vector3 hitPositionOnBall;
     private Vector3 ballFuturePosition;
 
-    public AerialDirectionalHit(BotBehaviour bot, Predictions predictions) {
+    public AerialDirectionalHit(BotBehaviour bot) {
         this.bot = bot;
-        this.predictions = predictions;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
         this.jumpHandler = new JumpHandler();
         this.ballDestination = new Vector3();
@@ -52,19 +53,20 @@ public class AerialDirectionalHit extends SkillController {
         Vector3 playerDistanceFromBall = input.ball.position.minus(playerPosition);
         Vector3 playerSpeedFromBall = input.ball.velocity.minus(playerSpeed);
 
-        double timeBeforeReachingBall = predictions.timeToReachAerialDestination(playerDistanceFromBall, playerSpeedFromBall);
+        double timeBeforeReachingBall = RlUtils.timeToReachAerialDestination(playerDistanceFromBall, playerSpeedFromBall);
 
         // get the future player and getNativeBallPrediction positions
         Vector3 playerFuturePosition = input.ball.position;
         if(input.ball.velocity.magnitude() > 0.1) {
-            playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
+            //playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
+            playerFuturePosition = new Parabola3D(playerPosition, playerSpeed, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeBeforeReachingBall);
         }
-        Vector3 ballFuturePosition = predictions.resultingBallTrajectoryFromAerialHit(input.car, input.ball, timeBeforeReachingBall).getPosition();
+        Vector3 ballFuturePosition = input.ballPrediction.ballAtTime(timeBeforeReachingBall).position;
 
         // get the getNativeBallPrediction offset so we actually hit the getNativeBallPrediction to make it go in the desired direction
         Vector3 ballOffset = ballFuturePosition.minus(ballDestination.plus(new Vector3(0, 0, 1000))).scaledToMagnitude(RlConstants.BALL_RADIUS);
 
-        // get the orientation we should have to hit the getNativeBallPrediction
+        // get the orientation we should have to hit the ball
         Vector3 orientation = ballFuturePosition.plus(ballOffset).minus(playerFuturePosition);
 
         // update variables so we can print them later in the debugger
@@ -73,7 +75,7 @@ public class AerialDirectionalHit extends SkillController {
         this.ballFuturePosition = ballFuturePosition;
 
         // boost to the destination
-        if(input.car.orientation.noseVector.dotProduct(orientation)/orientation.magnitude() > 0.6) {
+        if(input.car.orientation.noseVector.dotProduct(orientation)/orientation.magnitude() > 0.7) {
             output.boost(true);
         }
         else {
@@ -90,7 +92,7 @@ public class AerialDirectionalHit extends SkillController {
 
         // set the desired orientation and apply it
         aerialOrientationHandler.setDestination(orientation.plus(playerPosition));
-        aerialOrientationHandler.setRollOrientation(ballFuturePosition.z < hitPositionOnBall.z);
+        aerialOrientationHandler.setRollOrientation(ballFuturePosition);
         aerialOrientationHandler.updateOutput(input);
 
         // jump to the destination if we're on the ground
@@ -115,20 +117,14 @@ public class AerialDirectionalHit extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
-
+    public void setupController() {
     }
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-
         renderer.drawLine3d(Color.green, input.car.position, orientation.plus(input.car.position));
-        /* draw cool 3D X "hit" thingy */ {
-            renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(20, 20, 20)), hitPositionOnBall.plus(new Vector3(-20, -20, -20)));
-            renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(-20, 20, 20)), hitPositionOnBall.plus(new Vector3(20, -20, -20)));
-            renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(20, -20, 20)), hitPositionOnBall.plus(new Vector3(-20, 20, -20)));
-            renderer.drawLine3d(Color.red, hitPositionOnBall.plus(new Vector3(20, 20, -20)), hitPositionOnBall.plus(new Vector3(-20, -20, 20)));
-        }
+        ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
+        shapeRenderer.renderCross(hitPositionOnBall, Color.red);
         renderer.drawLine3d(Color.CYAN, ballFuturePosition, hitPositionOnBall);
     }
 }

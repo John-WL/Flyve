@@ -14,7 +14,7 @@ public class AerialOrientationHandler extends SkillController {
 
     private BotBehaviour bot;
     private Vector3 playerDestination;
-    private boolean isRollOrientationUp;
+    private Vector3 rollOrientation;
 
     private PidController pitchPid;
     private PidController yawPid;
@@ -23,7 +23,7 @@ public class AerialOrientationHandler extends SkillController {
     public AerialOrientationHandler(BotBehaviour bot) {
         this.bot = bot;
         this.playerDestination = new Vector3();
-        this.isRollOrientationUp = true;
+        this.rollOrientation = new Vector3();
 
         this.pitchPid = new PidController(2.6, 0, 21);
         this.yawPid = new PidController(2.6, 0, 21);
@@ -34,8 +34,8 @@ public class AerialOrientationHandler extends SkillController {
         playerDestination = globalDestination;
     }
 
-    public void setRollOrientation(boolean isUp) {
-        isRollOrientationUp = isUp;
+    public void setRollOrientation(Vector3 rollOrientation) {
+        this.rollOrientation = rollOrientation;
     }
 
     @Override
@@ -43,10 +43,7 @@ public class AerialOrientationHandler extends SkillController {
         BotOutput output = bot.output();
         Vector3 playerPosition = input.car.position;
         Vector3 localPlayerOrientationVector = CarDestination.getLocal(playerDestination, input);
-        Vector3 localRollDestination = CarDestination.getLocal(playerPosition.plus(new Vector3(0, 0, 5000)), input);
-        if(!isRollOrientationUp) {
-            localRollDestination = CarDestination.getLocal(playerPosition.plus(new Vector3(0, 0, -5000)), input);
-        }
+        Vector3 localRollDestination = CarDestination.getLocal(rollOrientation, input);
 
         double pitchAmount = pitchPid.process(new Vector2(localPlayerOrientationVector.x, -localPlayerOrientationVector.z).correctionAngle(new Vector2(1, 0)), 0);
         double yawAmount = yawPid.process(new Vector2(localPlayerOrientationVector.x, localPlayerOrientationVector.y).correctionAngle(new Vector2(1, 0)), 0);
@@ -58,7 +55,7 @@ public class AerialOrientationHandler extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 

@@ -17,14 +17,14 @@ public abstract class SkillController {
     }
 
     public abstract void updateOutput(DataPacket input);
-    public abstract void updatePidValuesAndArbitraries();
+    public abstract void setupController();
     public abstract void debug(Renderer renderer, DataPacket input);
 
     public void setupAndUpdateOutputs(DataPacket input) {
         // setup PIDs and other useful variables
         if(pidParamReloadTime.isTimeElapsed()) {
             pidParamReloadTime.start();
-            updatePidValuesAndArbitraries();
+            setupController();
         }
 
         // update the output states for the bot depending on

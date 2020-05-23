@@ -3,9 +3,8 @@ package rlbotexample.bot_behaviour.panbot.debug.player_values;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.HitBox;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;
 
@@ -25,7 +24,7 @@ public class DebugPlayerHitBox extends PanBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
-        CarData playerCar = input.car;
+        ExtendedCarData playerCar = input.car;
         Vector3 playerPosition = playerCar.position;
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 playerRoofOrientation = input.car.orientation.roofVector;

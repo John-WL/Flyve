@@ -24,7 +24,7 @@ public class AerialDirectionalHitPredictionTest extends PanBot {
 
     public AerialDirectionalHitPredictionTest() {
         predictions = new Predictions();
-        aerialDirectionalHitController = new AerialDirectionalHit(this, predictions);
+        aerialDirectionalHitController = new AerialDirectionalHit(this);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());

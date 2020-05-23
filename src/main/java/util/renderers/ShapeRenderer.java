@@ -2,6 +2,8 @@ package util.renderers;
 
 import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.prediction.Parabola3D;
 import util.shapes.Triangle3D;
 import util.vector.Vector3;
 
@@ -26,6 +28,15 @@ public class ShapeRenderer {
         renderer.drawLine3d(color, triangle.point0, triangle.point1);
         renderer.drawLine3d(color, triangle.point1, triangle.point2);
         renderer.drawLine3d(color, triangle.point2, triangle.point0);
+    }
+
+    public void renderParabola3D(Parabola3D parabola, double amountOfTimeToRender, Color color) {
+        Vector3 previousPosition = parabola.compute(0);
+        for(int i = 1; i < 40; i++) {
+            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/40);
+            renderer.drawLine3d(color, nextPosition, previousPosition);
+            previousPosition = nextPosition;
+        }
     }
 
     public void renderHitBox(HitBox hitBox, Color color) {

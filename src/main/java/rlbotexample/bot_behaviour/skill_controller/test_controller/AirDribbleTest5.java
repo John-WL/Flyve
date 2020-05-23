@@ -194,7 +194,7 @@ public class AirDribbleTest5 extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
         pitchPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, pitchPid);
         yawPid = PidSerializer.fromFileToPid(PidSerializer.PITCH_YAW_FILENAME, yawPid);

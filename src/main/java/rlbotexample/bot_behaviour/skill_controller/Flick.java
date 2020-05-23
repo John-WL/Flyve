@@ -107,7 +107,7 @@ public class Flick extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 

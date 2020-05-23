@@ -59,7 +59,7 @@ public class RefuelBoost extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 

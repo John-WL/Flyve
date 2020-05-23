@@ -17,16 +17,16 @@ public class Parabola3D {
     }
 
     public Vector3 compute(double deltaTime) {
-        Vector3 deltaVelocity = initialVelocity.scaled(deltaTime * (1-airDragCoefficient));
-        double accelerationFactor = deltaTime * deltaTime / 2;
-        Vector3 deltaDeltaAcceleration = acceleration.scaled(accelerationFactor);
+        final Vector3 deltaVelocity = initialVelocity.scaled(deltaTime * (1-airDragCoefficient));
+        final double accelerationFactor = deltaTime * deltaTime / 2;
+        final Vector3 deltaDeltaAcceleration = acceleration.scaled(accelerationFactor);
 
         return initialPosition.plus(deltaVelocity.plus(deltaDeltaAcceleration));
     }
 
     public Vector3 derivative(double deltaTime) {
-        Vector3 deltaAcceleration = acceleration.scaled(deltaTime);
-        Vector3 newVelocity = initialVelocity.minus(initialVelocity.scaled(airDragCoefficient * deltaTime));
+        final Vector3 deltaAcceleration = acceleration.scaled(deltaTime);
+        final Vector3 newVelocity = initialVelocity.minus(initialVelocity.scaled(airDragCoefficient * deltaTime));
         return newVelocity.plus(deltaAcceleration);
     }
 }

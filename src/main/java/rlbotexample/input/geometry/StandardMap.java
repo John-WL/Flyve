@@ -1,6 +1,7 @@
 package rlbotexample.input.geometry;
 
 import util.game_constants.RlConstants;
+import util.shapes.Sphere;
 import util.vector.Vector3;
 
 public class StandardMap extends MapMeshGeometry {
@@ -18,7 +19,10 @@ public class StandardMap extends MapMeshGeometry {
     private static final Vector3 POSITIVE_WALL_Y_HIT_NORMAL = new Vector3(0, 1, 0);
     private static final Vector3 NEGATIVE_WALL_Y_HIT_NORMAL = new Vector3(0, -1, 0);
 
-    public Vector3 getHitNormal(final Vector3 globalPoint, final double bevel) {
+    @Override
+    public Vector3 getCollisionNormalOrElse(final Sphere sphere, final Vector3 defaultValue) {
+        final Vector3 globalPoint = sphere.center;
+        final double bevel = sphere.radius;
 
         // basic ceiling and ground
         if(globalPoint.plus(GROUND_HIT_NORMAL.scaled(bevel)).z < 0) {
@@ -66,7 +70,7 @@ public class StandardMap extends MapMeshGeometry {
             }
         }
 
-        return new Vector3();
+        return defaultValue;
     }
 
     private boolean isInNet(Vector3 globalPoint, double bevel) {

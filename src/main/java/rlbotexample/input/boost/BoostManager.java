@@ -29,6 +29,10 @@ public class BoostManager {
         return smallBoosts;
     }
 
+    public static ArrayList<BoostPad> getOrderedBoosts() {
+        return orderedBoosts;
+    }
+
     private static void loadFieldInfo(FieldInfo fieldInfo) {
 
         synchronized (orderedBoosts) {

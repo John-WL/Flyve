@@ -8,6 +8,7 @@ import rlbot.flat.PredictionSlice;
 import rlbotexample.input.dynamic_data.*;
 import rlbotexample.input.geometry.StandardMap;
 import util.game_constants.RlConstants;
+import util.shapes.Sphere;
 import util.vector.Vector2;
 import util.vector.Vector3;
 
@@ -20,7 +21,7 @@ public class Predictions {
 
     public Predictions() {}
 
-    public KinematicPoint player(CarData carData, double secondsInTheFuture) {
+    public KinematicPoint player(ExtendedCarData carData, double secondsInTheFuture) {
         return null;
     }
 
@@ -96,7 +97,7 @@ public class Predictions {
     }
 
     // this is the circle path that the player is drawing while driving on ground
-    public KinematicPoint onGroundKinematicBody(CarData carData, double secondsInTheFuture) {
+    public KinematicPoint onGroundKinematicBody(ExtendedCarData carData, double secondsInTheFuture) {
         Vector3 playerPosition = carData.position;
         Vector3 playerSpeed = carData.velocity;
         Vector3 playerNoseOrientation = carData.orientation.noseVector;
@@ -221,7 +222,7 @@ public class Predictions {
     // get the exact time it'll take before reaching the ball with respect to the current trajectory
     // (WHICH MEANS that a lot of times, it'll return infinity, duh (uh~ I mean Double.MAX_VALUE seconds...).
     // Path don't always intersect with each other, einstein).
-    public double findIntersectionTimeBetweenAerialPlayerPositionAndBall(CarData carData, BallData ballData) {
+    public double findIntersectionTimeBetweenAerialPlayerPositionAndBall(ExtendedCarData carData, BallData ballData) {
         Vector3 playerPosition = carData.position;
         Vector3 playerSpeed = carData.velocity;
         HitBox playerHitBox = carData.hitBox;
@@ -276,7 +277,7 @@ public class Predictions {
         while(divisor > precision) {
             KinematicPoint futureBall = aerialKinematicBody(ballPosition, ballSpeed, futureTime);
 
-            if(standardMap.getHitNormal(futureBall.getPosition(), RlConstants.BALL_RADIUS).magnitude() < 0.1) {
+            if(standardMap.getCollisionNormalOrElse(new Sphere(futureBall.getPosition(), RlConstants.BALL_RADIUS), new Vector3()).magnitude() < 0.1) {
                 divisor /= 2;
                 futureTime += divisor;
             }
@@ -290,7 +291,7 @@ public class Predictions {
         return timeOfImpact + precision;
     }
 
-    public KinematicPoint resultingBallTrajectoryFromAerialHit(CarData carData, BallData ballData, double secondsInTheFuture) {
+    public KinematicPoint resultingBallTrajectoryFromAerialHit(ExtendedCarData carData, BallData ballData, double secondsInTheFuture) {
         Vector3 playerPosition = carData.position;
         Vector3 playerSpeed = carData.velocity;
         Vector3 ballPosition = ballData.position;
@@ -363,14 +364,14 @@ public class Predictions {
 
         StandardMap map = new StandardMap();
 
-        while(map.getHitNormal(futureBall.getPosition(), RlConstants.BALL_RADIUS).magnitude() > 0.01) {
+        while(map.getCollisionNormalOrElse(new Sphere(futureBall.getPosition(), RlConstants.BALL_RADIUS), new Vector3()).magnitude() > 0.01) {
 
             // find the ball to hit
             double timeToReachGround = findIntersectionTimeBetweenMapAndBall(ballPosition, ballSpeed);
             KinematicPoint nextBallToHit = aerialKinematicBody(ballPosition, ballSpeed, timeToReachGround);
 
             // hit normal
-            Vector3 hitNormal = map.getHitNormal(nextBallToHit.getPosition(), RlConstants.BALL_RADIUS);
+            Vector3 hitNormal = map.getCollisionNormalOrElse(new Sphere(nextBallToHit.getPosition(), RlConstants.BALL_RADIUS), new Vector3());
 
             System.out.println(hitNormal);
 

@@ -9,9 +9,11 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
+import util.renderers.ShapeRenderer;
 import util.vector.Vector3;
 
 import java.awt.*;
@@ -23,11 +25,9 @@ public class AerialIntersectDestination extends SkillController {
     private JumpHandler jumpHandler;
     private Vector3 destination;
     private Vector3 orientation;
-    private Predictions predictions;
 
-    public AerialIntersectDestination(BotBehaviour bot, Predictions predictions) {
+    public AerialIntersectDestination(BotBehaviour bot) {
         this.bot = bot;
-        this.predictions = predictions;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
         this.jumpHandler = new JumpHandler();
 
@@ -63,7 +63,8 @@ public class AerialIntersectDestination extends SkillController {
         }
 
         // get the future player position
-        Vector3 playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingDestination).getPosition();
+        //Vector3 playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingDestination).getPosition();
+        Vector3 playerFuturePosition = new Parabola3D(playerPosition, playerSpeed, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeBeforeReachingDestination);
 
         // get the orientation we should have to hit the getNativeBallPrediction
         Vector3 orientation = destination.minus(playerFuturePosition);
@@ -113,18 +114,14 @@ public class AerialIntersectDestination extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         renderer.drawLine3d(Color.green, input.car.position, orientation.plus(input.car.position));
-        /* draw cool 3D X "hit" thingy */ {
-            renderer.drawLine3d(Color.red, destination.plus(new Vector3(20, 20, 20)), destination.plus(new Vector3(-20, -20, -20)));
-            renderer.drawLine3d(Color.red, destination.plus(new Vector3(-20, 20, 20)), destination.plus(new Vector3(20, -20, -20)));
-            renderer.drawLine3d(Color.red, destination.plus(new Vector3(20, -20, 20)), destination.plus(new Vector3(-20, 20, -20)));
-            renderer.drawLine3d(Color.red, destination.plus(new Vector3(20, 20, -20)), destination.plus(new Vector3(-20, -20, 20)));
-        }
+        ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
+        shapeRenderer.renderCross(destination, Color.red);
     }
 }

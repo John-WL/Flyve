@@ -9,14 +9,15 @@ public class Timer
         this.secondsToCount = secondsToCount;
     }
 
-    public void start()
+    public Timer start()
     {
         timeOfStartMillis = System.currentTimeMillis();
+        return this;
     }
 
     public boolean isTimeElapsed()
     {
-        return (System.currentTimeMillis() - timeOfStartMillis)/(double)1000 > secondsToCount;
+        return (System.currentTimeMillis() - timeOfStartMillis)/(double)1000 >= secondsToCount;
     }
 
     public float timeRemaining()

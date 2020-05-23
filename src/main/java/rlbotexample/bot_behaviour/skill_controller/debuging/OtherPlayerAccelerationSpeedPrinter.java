@@ -37,7 +37,7 @@ public class OtherPlayerAccelerationSpeedPrinter extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
     }
 
     @Override

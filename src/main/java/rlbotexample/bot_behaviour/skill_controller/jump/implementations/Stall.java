@@ -5,12 +5,12 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.vector.Vector3;
 
-public class FlipCancel extends JumpType {
+public class Stall extends JumpType {
 
     private static final int JUMP_DURATION = 25;
     private static final int[] JUMP_TIME_FRAMES = {2};
 
-    public FlipCancel() {
+    public Stall() {
         super(JUMP_DURATION, JUMP_TIME_FRAMES);
     }
 

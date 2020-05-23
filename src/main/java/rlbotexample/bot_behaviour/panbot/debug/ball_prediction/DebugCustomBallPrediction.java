@@ -1,29 +1,13 @@
 package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 
-import rlbot.cppinterop.RLBotDll;
-import rlbot.cppinterop.RLBotInterfaceException;
-import rlbot.flat.BallPrediction;
 import rlbot.flat.GameTickPacket;
-import rlbot.render.NamedRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.BallData;
-import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.HitBox;
-import rlbotexample.input.prediction.AdvancedBallPrediction;
-import util.renderers.NativeBallPredictionRenderer;
 import rlbotexample.output.BotOutput;
-import util.renderers.ShapeRenderer;
-import util.shapes.Triangle3D;
-import util.shapes.meshes.Mesh3D;
-import util.shapes.meshes.Mesh3DBuilder;
-import util.shapes.meshes.MeshSplitter3D;
-import util.vector.Vector3;
-import util.vector.Vector3Int;
 
 import java.awt.*;
-import java.util.List;
 
 public class DebugCustomBallPrediction extends PanBot {
 
@@ -51,29 +35,30 @@ public class DebugCustomBallPrediction extends PanBot {
             divisor %= 8;
 
             if(divisor == 0) {
-                renderer.drawLine3d(new Color(6, 0, 229), previousBall.position, nextBall.position);
+                renderer.drawLine3d(new Color(229, 0, 229), previousBall.position, nextBall.position);
                 previousBall = nextBall;
             }
         }
 
-        AdvancedBallPrediction advancedBallPrediction = new AdvancedBallPrediction(input.ball, input.allCars, 0.01,120);
+        /*AdvancedBallPrediction advancedBallPrediction = new AdvancedBallPrediction(input.ball, input.allCars, 0.01,120);
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         for(Mesh3D mesh: advancedBallPrediction.standardMap.STANDARD_MAP_MESH.meshRegions) {
             if(mesh != null) {
                 for (Triangle3D triangle : mesh.triangleList) {
+                    renderer.drawLine3d(new Color(130, 207, 192), triangle.getCenterPosition(), triangle.getCenterPosition().plus(triangle.getNormal().scaledToMagnitude(100)));
                     shapeRenderer.renderTriangle(triangle, Color.CYAN);
                 }
             }
-        }
+        }*/
 
         // native ball prediction
-        try {
+        /*try {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();
             NativeBallPredictionRenderer.drawTillMoment(ballPrediction, input.car.elapsedSeconds + 6, Color.red, renderer);
         } catch (RLBotInterfaceException e) {
             e.printStackTrace();
-        }
+        }*/
 
         // mesh splitter
 

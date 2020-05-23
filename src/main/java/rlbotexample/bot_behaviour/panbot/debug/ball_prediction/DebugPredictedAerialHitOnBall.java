@@ -9,8 +9,12 @@ import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPred
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.HitBox;
 import rlbotexample.input.dynamic_data.Orientation;
+import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
+import util.game_constants.RlConstants;
+import util.renderers.ShapeRenderer;
 import util.vector.Vector3;
 
 import java.awt.*;
@@ -18,15 +22,9 @@ import java.awt.*;
 public class DebugPredictedAerialHitOnBall extends PanBot {
 
     private Predictions predictions;
-    private DebugPlayerPredictedTrajectory debugPlayerPredictedTrajectory;
-    private DebugPlayerHitBox debugPlayerHitBox;
-    private DebugFuturePlayerHitBox debugFuturePlayerHitBox;
 
     public DebugPredictedAerialHitOnBall() {
         this.predictions = new Predictions();
-        this.debugPlayerPredictedTrajectory = new DebugPlayerPredictedTrajectory();
-        this.debugPlayerHitBox = new DebugPlayerHitBox();
-        this.debugFuturePlayerHitBox = new DebugFuturePlayerHitBox();
     }
 
     @Override
@@ -36,33 +34,32 @@ public class DebugPredictedAerialHitOnBall extends PanBot {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
+        ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
-        debugPlayerPredictedTrajectory.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-
-        debugPlayerHitBox.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        shapeRenderer.renderParabola3D(new Parabola3D(input.car.position, input.car.velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0),
+                RlUtils.BALL_PREDICTION_TIME,
+                Color.ORANGE);
+        shapeRenderer.renderHitBox(input.car.hitBox, Color.yellow);
 
         double timeOfIntersection = predictions.findIntersectionTimeBetweenAerialPlayerPositionAndBall(input.car, input.ball);
         if(timeOfIntersection < 6) {
             Orientation playerOrientation = new Orientation(input.car.orientation.noseVector, input.car.orientation.roofVector);
             HitBox playerHitBox = input.car.hitBox;
-            Vector3 futurePlayerPosition = predictions.aerialKinematicBody(input.car.position, input.car.velocity, timeOfIntersection).getPosition();
-            Vector3 futureBallPosition = predictions.getNativeBallPrediction(input.ball.position, timeOfIntersection).getPosition();
+            Vector3 futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeOfIntersection);
+            Vector3 futureBallPosition = input.ballPrediction.ballAtTime(timeOfIntersection).position;
 
             HitBox futurePlayerHitBox = playerHitBox.generateHypotheticalHitBox(futurePlayerPosition, playerOrientation);
             Vector3 hitPoint = futurePlayerHitBox.projectPointOnSurface(futureBallPosition);
-            renderer.drawLine3d(Color.CYAN, hitPoint.plus(new Vector3(20, 20, 20)), hitPoint.plus(new Vector3(-20, -20, -20)));
-            renderer.drawLine3d(Color.CYAN, hitPoint.plus(new Vector3(-20, 20, 20)), hitPoint.plus(new Vector3(20, -20, -20)));
-            renderer.drawLine3d(Color.CYAN, hitPoint.plus(new Vector3(20, -20, 20)), hitPoint.plus(new Vector3(-20, 20, -20)));
-            renderer.drawLine3d(Color.CYAN, hitPoint.plus(new Vector3(20, 20, -20)), hitPoint.plus(new Vector3(-20, -20, 20)));
-            debugFuturePlayerHitBox.setHitBox(futurePlayerHitBox);
-            debugFuturePlayerHitBox.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+
+            shapeRenderer.renderCross(hitPoint, Color.CYAN);
+            shapeRenderer.renderHitBox(futurePlayerHitBox, Color.LIGHT_GRAY);
         }
 
         Vector3 previousBallPosition = input.ball.position;
         int resolution = 30;
         for(int i = 0; i < resolution; i++) {
-            double secondsInTheFuture = (6.0*i)/resolution;
-            Vector3 futureBallPosition = predictions.resultingBallTrajectoryFromAerialHit(input.car, input.ball, secondsInTheFuture).getPosition();
+            double secondsInTheFuture = (RlUtils.BALL_PREDICTION_TIME*i)/resolution;
+            Vector3 futureBallPosition = input.ballPrediction.ballAtTime(secondsInTheFuture).position;
             renderer.drawLine3d(Color.red, previousBallPosition, futureBallPosition);
             previousBallPosition = futureBallPosition;
         }

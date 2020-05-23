@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_constants.RlConstants;
 import util.vector.Vector3;
@@ -38,8 +38,8 @@ public class ShadowDefense extends SkillController {
         }
 
         // find the threatening player
-        CarData closestCarToBall = input.allCars.get(0);
-        for(CarData car: input.allCars) {
+        ExtendedCarData closestCarToBall = input.allCars.get(0);
+        for(ExtendedCarData car: input.allCars) {
             if(closestCarToBall.position.minus(ballPosition).magnitude() > car.position.minus(ballPosition).magnitude()) {
                 closestCarToBall = car;
             }
@@ -94,7 +94,7 @@ public class ShadowDefense extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 

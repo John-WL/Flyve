@@ -18,7 +18,7 @@ public class ShortJump extends JumpType {
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
         updateCurrentJumpCallCounter();
 
-        if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
+        if(this.getCurrentJumpCallCounter() < JUMP_TIME_FRAMES[0]) {
             output.pitch(0);
             output.yaw(0);
             output.roll(0);

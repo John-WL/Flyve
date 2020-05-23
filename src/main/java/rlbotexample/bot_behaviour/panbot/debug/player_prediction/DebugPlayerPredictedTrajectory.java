@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.panbot.debug.player_prediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
@@ -30,7 +30,7 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
         // get the car
-        CarData playerCar = input.car;
+        ExtendedCarData playerCar = input.car;
 
         // draw predicted parabola
         int resolution = 30;

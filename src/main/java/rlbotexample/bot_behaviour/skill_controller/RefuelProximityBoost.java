@@ -80,7 +80,7 @@ public class RefuelProximityBoost extends SkillController {
     }
 
     @Override
-    public void updatePidValuesAndArbitraries() {
+    public void setupController() {
 
     }
 

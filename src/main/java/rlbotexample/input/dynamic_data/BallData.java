@@ -2,12 +2,8 @@ package rlbotexample.input.dynamic_data;
 
 
 import rlbot.flat.BallInfo;
-import rlbotexample.input.prediction.AdvancedBallPrediction;
-import rlbotexample.input.prediction.Predictions;
 import util.game_constants.RlConstants;
 import util.vector.Vector3;
-
-import java.util.List;
 
 /**
  * Basic information about the getNativeBallPrediction.

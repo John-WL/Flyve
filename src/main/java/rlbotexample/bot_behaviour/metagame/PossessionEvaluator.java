@@ -1,9 +1,6 @@
 package rlbotexample.bot_behaviour.metagame;
 
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
-import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import util.vector.Vector2;
 import util.vector.Vector3;
 
 public class PossessionEvaluator {
