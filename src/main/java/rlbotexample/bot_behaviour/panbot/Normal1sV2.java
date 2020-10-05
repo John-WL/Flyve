@@ -3,12 +3,16 @@ package rlbotexample.bot_behaviour.panbot;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.*;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.Dribble;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.boost_management.RefuelProximityBoost;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.defense.ShadowDefense;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
-import rlbotexample.bot_behaviour.metagame.PossessionEvaluator;
+import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
 import rlbotexample.bot_behaviour.path.BallPositionPath;
 import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
 import rlbotexample.bot_behaviour.path.PathHandler;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flick;
+import rlbotexample.bot_behaviour.skill_controller.trash.DriveToDestination;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -102,7 +106,7 @@ public class Normal1sV2 extends PanBot {
                     closestCarToBall = car;
                 }
             }
-            if(closestCarToBall != input.car && closestCarToBall.position.minus(input.ball.position).magnitude() < 400) {
+            if(closestCarToBall != input.car && closestCarToBall.position.minus(input.ball.position).magnitude() < 400 && input.car.position.minus(input.ball.position).magnitude() > 200) {
                 skillController = shadowDefenseController;
                 isRefueling = false;
                 //System.out.println("shadowD");

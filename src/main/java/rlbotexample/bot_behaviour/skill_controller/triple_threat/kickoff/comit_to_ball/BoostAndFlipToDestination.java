@@ -23,9 +23,12 @@ public class BoostAndFlipToDestination extends SkillController {
     private JumpHandler jumpHandler;
     private boolean hasJumped;
 
+    private int callCounter;
+
     public BoostAndFlipToDestination(BotBehaviour bot) {
         this.bot = bot;
         this.jumpHandler = new JumpHandler();
+        this.callCounter = 0;
     }
 
     public void setDestination(Vector3 destination) {
@@ -44,7 +47,7 @@ public class BoostAndFlipToDestination extends SkillController {
         Vector3 playerRoofVector = input.car.orientation.roofVector;
         Vector3 ballPosition = input.ball.position;
 
-        if (jumpHandler.isJumpFinished() && input.car.velocity.magnitude() > 500) {
+        if (jumpHandler.isJumpFinished() && input.car.velocity.magnitude() > 500 && callCounter > 10) {
             if(input.car.hasWheelContact) {
                 jumpHandler.setJumpType(new ShortJump());
                 output.boost(true);
@@ -62,7 +65,7 @@ public class BoostAndFlipToDestination extends SkillController {
                 hasJumped = false;
             }
         }
-        Vector3 localDestination = ballPosition.minus(playerPosition).normalized().minusAngle(playerNoseVector);
+        Vector3 localDestination = ballPosition.minus(playerPosition).minusAngle(playerNoseVector);
 
         jumpHandler.updateJumpState(
                 input,
@@ -71,6 +74,7 @@ public class BoostAndFlipToDestination extends SkillController {
                 playerRoofVector.minusAngle(new Vector3(0, 0, 1))
         );
         output.jump(jumpHandler.getJumpState());
+        callCounter++;
     }
 
     @Override

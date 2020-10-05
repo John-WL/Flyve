@@ -2,8 +2,8 @@ package rlbotexample.bot_behaviour.panbot.triple_threat;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.metagame.PlayerRole;
-import rlbotexample.bot_behaviour.metagame.PlayerRoleHandler3V3;
+import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
+import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -29,7 +29,7 @@ public class TripleThreatV0 extends PanBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        final PlayerRoleHandler3V3 playerRoleHandler = new PlayerRoleHandler3V3(input);
+        final PlayerRoleHandler3V3 playerRoleHandler = new PlayerRoleHandler3V3(input, input.team);
 
         if(isKickoffState(input)) {
             resetKickoffBehaviourIfNeeded();

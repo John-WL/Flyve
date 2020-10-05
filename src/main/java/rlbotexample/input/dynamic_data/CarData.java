@@ -1,5 +1,6 @@
 package rlbotexample.input.dynamic_data;
 
+import util.game_constants.RlConstants;
 import util.vector.Vector3;
 
 public class CarData {
@@ -28,5 +29,9 @@ public class CarData {
         final CarOrientation orientation = CarOrientation.fromFlatbuffer(playerInfo);
         this.hitBox = new HitBox(position, playerInfo.hitboxOffset(), playerInfo.hitbox(), orientation.noseVector, orientation.roofVector);
         this.elapsedSeconds = elapsedSeconds;
+    }
+
+    public final Vector3 surfaceVelocity(final Vector3 normal) {
+        return spin.crossProduct(normal).scaled(hitBox.projectPointOnSurface(normal.scaled(100)).minus(hitBox.centerPosition).magnitude());
     }
 }

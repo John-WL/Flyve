@@ -5,7 +5,7 @@ import util.vector.Vector3;
 
 public class HitBox {
     public final Vector3 centerPosition;
-    private final Vector3 cornerPosition;
+    public final Vector3 cornerPosition;
     public final Vector3 frontOrientation;
     public final Vector3 roofOrientation;
 

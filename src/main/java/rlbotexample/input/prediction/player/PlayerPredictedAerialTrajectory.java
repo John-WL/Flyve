@@ -17,8 +17,17 @@ public class PlayerPredictedAerialTrajectory {
 
     public CarData compute(double deltaTime) {
         final Vector3 newPosition = ballTrajectory.compute(deltaTime);
-        final Vector3 newVelocity = ballTrajectory.derivative(deltaTime);
+        final Vector3 newVelocityUncapped = ballTrajectory.derivative(deltaTime);
 
-        return new CarData(newPosition, newVelocity, initialCarData.spin, initialCarData.boost, initialCarData.hitBox, 0);
+        // make sure to take into consideration that the car can't exceed 2300 uu/s
+        final Vector3 newVelocity;
+        if(newVelocityUncapped.magnitudeSquared() > RlConstants.CAR_MAX_SPEED * RlConstants.CAR_MAX_SPEED) {
+            newVelocity = newVelocityUncapped.scaledToMagnitude(RlConstants.CAR_MAX_SPEED);
+        }
+        else {
+            newVelocity = newVelocityUncapped;
+        }
+
+        return new CarData(newPosition, newVelocity, initialCarData.spin, initialCarData.boost, initialCarData.hitBox.generateHypotheticalHitBox(newPosition), 0);
     }
 }

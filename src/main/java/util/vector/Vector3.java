@@ -3,6 +3,8 @@ package util.vector;
 import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
 import rlbot.render.Renderer;
+import rlbotexample.input.dynamic_data.CarOrientation;
+import rlbotexample.input.dynamic_data.Orientation;
 import util.shapes.Triangle3D;
 
 import java.awt.*;
@@ -15,6 +17,8 @@ import java.util.Objects;
  * as you want, or delete it.
  */
 public class Vector3 extends rlbot.vector.Vector3 {
+
+    public static final Vector3 UP_VECTOR = new Vector3(0, 0, 1);
 
     public Vector3(double x, double y, double z) {
         super((float) x, (float) y, (float) z);
@@ -148,6 +152,44 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
         result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
         result = result.plusAngle(new Vector3(forwardFacingVector.flatten(), 0));
+
+        return result;
+    }
+
+    public Vector3 matrixRotation(Orientation orientation) {
+        Vector3 result = new Vector3(this);
+
+        // roll
+        Vector3 rotatedRoll = orientation.getRoof().minusAngle(orientation.getNose());
+        Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
+        Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
+        result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
+
+        // computing global pitch and yaw
+        Vector2 pitchProjection = new Vector2(orientation.getNose().flatten().magnitude(), -orientation.getNose().z);
+        Vector2 localPointProjection = new Vector2(result.x, result.z);
+        Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
+        result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
+        result = result.plusAngle(new Vector3(orientation.getNose().flatten(), 0));
+
+        return result;
+    }
+
+    public Vector3 matrixRotation(CarOrientation orientation) {
+        Vector3 result = new Vector3(this);
+
+        // roll
+        Vector3 rotatedRoll = orientation.roofVector.minusAngle(orientation.noseVector);
+        Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
+        Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
+        result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
+
+        // computing global pitch and yaw
+        Vector2 pitchProjection = new Vector2(orientation.noseVector.flatten().magnitude(), -orientation.noseVector.z);
+        Vector2 localPointProjection = new Vector2(result.x, result.z);
+        Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
+        result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
+        result = result.plusAngle(new Vector3(orientation.noseVector.flatten(), 0));
 
         return result;
     }

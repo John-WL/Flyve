@@ -17,7 +17,7 @@ public class PwmController {
         boolean result;
         threshold = (int)(period*dutyCycle);
 
-        result = callCounter > threshold;
+        result = callCounter < threshold;
         callCounter++;
         callCounter %= period;
 

@@ -2,10 +2,10 @@ package util.controllers;
 
 public class BoostController {
 
-    private final static PwmController pwmController = new PwmController(8);
+    private final static PwmController pwmController = new PwmController(4);
 
-    public static double process(double accelerationRatio) {
-        return booelanToDouble(pwmController.process(accelerationRatio));
+    public static boolean process(double accelerationRatio) {
+        return pwmController.process(accelerationRatio);
     }
 
     private static double booelanToDouble(boolean valueToConvert) {

@@ -1,8 +1,6 @@
 package rlbotexample.input.dynamic_data;
 
 
-import rlbotexample.bot_behaviour.metagame.PlayerRole;
-
 /**
  * Basic information about the car.
  *

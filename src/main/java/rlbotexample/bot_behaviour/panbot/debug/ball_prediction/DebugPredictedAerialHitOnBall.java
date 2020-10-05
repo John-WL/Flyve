@@ -34,18 +34,32 @@ public class DebugPredictedAerialHitOnBall extends PanBot {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
+        super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
-        shapeRenderer.renderParabola3D(new Parabola3D(input.car.position, input.car.velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0),
+        // print player traj (in-air, parabola, no drive prediction)
+        /*
+        shapeRenderer.renderParabola3D(new Parabola3D(input.allCars.get(1-input.playerIndex).position, input.allCars.get(1-input.playerIndex).velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0),
                 RlUtils.BALL_PREDICTION_TIME,
-                Color.ORANGE);
-        shapeRenderer.renderHitBox(input.car.hitBox, Color.yellow);
+                Color.BLUE);
+        */
+        Vector3 previousCarPosition = input.allCars.get(input.playerIndex).position;
+        int resolutionForCar = 100;
+        for(int i = 0; i < resolutionForCar; i++) {
+            double secondsInTheFuture = (RlUtils.BALL_PREDICTION_TIME*i)/resolutionForCar;
+            Vector3 futureCarPosition = input.ballPrediction.carsAtTime(secondsInTheFuture).get(input.playerIndex).position;
+            renderer.drawLine3d(Color.YELLOW, previousCarPosition, futureCarPosition);
+            previousCarPosition = futureCarPosition;
+        }
+        // shapeRenderer.renderHitBox(input.allCars.get(1-input.playerIndex).hitBox, Color.yellow);
 
-        double timeOfIntersection = predictions.findIntersectionTimeBetweenAerialPlayerPositionAndBall(input.car, input.ball);
-        if(timeOfIntersection < 6) {
-            Orientation playerOrientation = new Orientation(input.car.orientation.noseVector, input.car.orientation.roofVector);
-            HitBox playerHitBox = input.car.hitBox;
-            Vector3 futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeOfIntersection);
+        // print the predicted hit on the ball
+        /*double timeOfIntersection = predictions.findIntersectionTimeBetweenAerialPlayerPositionAndCustomBallPrediction(input.allCars.get(input.playerIndex), input.ball, input.ballPrediction);
+        if(timeOfIntersection < 5) {
+            Orientation playerOrientation = new Orientation(input.allCars.get(input.playerIndex).orientation.noseVector, input.allCars.get(input.playerIndex).orientation.roofVector);
+            HitBox playerHitBox = input.allCars.get(input.playerIndex).hitBox;
+            Vector3 futurePlayerPosition = new Parabola3D(input.allCars.get(input.playerIndex).position, input.allCars.get(input.playerIndex).velocity, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeOfIntersection);
             Vector3 futureBallPosition = input.ballPrediction.ballAtTime(timeOfIntersection).position;
 
             HitBox futurePlayerHitBox = playerHitBox.generateHypotheticalHitBox(futurePlayerPosition, playerOrientation);
@@ -53,10 +67,10 @@ public class DebugPredictedAerialHitOnBall extends PanBot {
 
             shapeRenderer.renderCross(hitPoint, Color.CYAN);
             shapeRenderer.renderHitBox(futurePlayerHitBox, Color.LIGHT_GRAY);
-        }
+        }*/
 
         Vector3 previousBallPosition = input.ball.position;
-        int resolution = 30;
+        int resolution = 100;
         for(int i = 0; i < resolution; i++) {
             double secondsInTheFuture = (RlUtils.BALL_PREDICTION_TIME*i)/resolution;
             Vector3 futureBallPosition = input.ballPrediction.ballAtTime(secondsInTheFuture).position;

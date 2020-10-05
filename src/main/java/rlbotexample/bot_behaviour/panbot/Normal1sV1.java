@@ -2,12 +2,12 @@ package rlbotexample.bot_behaviour.panbot;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.skill_controller.DriveToDestination;
-import rlbotexample.bot_behaviour.skill_controller.Flick;
+import rlbotexample.bot_behaviour.skill_controller.trash.DriveToDestination;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flick;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.Dribble;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
 import rlbotexample.bot_behaviour.car_destination.CarDestination;
-import rlbotexample.bot_behaviour.metagame.PossessionEvaluator;
+import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
 import rlbotexample.bot_behaviour.path.BallPositionPath;
 import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
 import rlbotexample.bot_behaviour.path.PathHandler;

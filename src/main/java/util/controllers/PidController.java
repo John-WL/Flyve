@@ -71,6 +71,10 @@ public class PidController {
         return kd;
     }
 
+    public double getIntegralAmount() {
+        return ki*(largeTotalError + smallTotalError);
+    }
+
     public void transferInternalMemoryTo(PidController valuesToTransfer) {
         valuesToTransfer.currentError = this.currentError;
         valuesToTransfer.previousError = this.previousError;

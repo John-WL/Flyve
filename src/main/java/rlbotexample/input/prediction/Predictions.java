@@ -7,6 +7,7 @@ import rlbot.flat.Physics;
 import rlbot.flat.PredictionSlice;
 import rlbotexample.input.dynamic_data.*;
 import rlbotexample.input.geometry.StandardMap;
+import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
 import util.vector.Vector2;
@@ -235,6 +236,7 @@ public class Predictions {
 
         // make sure we compute on a not empty array
         if(loadedBallPath.size() == 0) {
+            System.out.println(loadedBallPath.size());
             return timeToReachAerialDestination(playerPosition.minus(ballPosition), playerSpeed.minus(ballSpeed));
         }
 
@@ -245,6 +247,43 @@ public class Predictions {
             KinematicPoint futureBall = getNativeBallPrediction(ballPosition, secondsInTheFuture);
             KinematicPoint futurePlayer = aerialKinematicBody(playerPosition, playerSpeed, secondsInTheFuture);
             Vector3 futureBallPosition = futureBall.getPosition();
+            Vector3 futurePlayerPosition = futurePlayer.getPosition();
+            double futurePlayerDistanceFromFutureBall = futureBallPosition.minus(futurePlayerPosition).magnitude();
+
+            if(bestPlayerDistanceFromBall > futurePlayerDistanceFromFutureBall) {
+                bestPlayerDistanceFromBall = futurePlayerDistanceFromFutureBall;
+            }
+            double playerRadius = playerHitBox.projectPointOnSurface(futureBallPosition).minus(playerPosition).magnitude();
+            if(bestPlayerDistanceFromBall < RlConstants.BALL_RADIUS + playerRadius) {
+                timeOfImpact = secondsInTheFuture;
+                break;
+            }
+        }
+
+        return timeOfImpact;
+    }
+
+    // get the exact time it'll take before reaching the ball with respect to the current trajectory
+    // (WHICH MEANS that a lot of times, it'll return infinity, duh (uh~ I mean Double.MAX_VALUE seconds...).
+    // Path don't always intersect with each other, einstein).
+    public double findIntersectionTimeBetweenAerialPlayerPositionAndCustomBallPrediction(ExtendedCarData carData, BallData ballData, AdvancedBallPrediction ballPrediction) {
+        Vector3 playerPosition = carData.position;
+        Vector3 playerSpeed = carData.velocity;
+        HitBox playerHitBox = carData.hitBox;
+        Vector3 ballPosition = ballData.position;
+        Vector3 ballSpeed = ballData.velocity;
+
+        // assume we don't have an intersection and that it takes
+        // virtually an infinite amount of time to reach that point
+        double timeOfImpact = Double.MAX_VALUE;
+
+        // find the next time we'll hit the getNativeBallPrediction
+        double bestPlayerDistanceFromBall = Double.MAX_VALUE;
+        for(int i = 0; i < ballPrediction.balls.size(); i++) {
+            double secondsInTheFuture = 6.0*(((double)i)/ballPrediction.balls.size());
+            BallData futureBall = ballPrediction.ballAtTime(secondsInTheFuture);
+            KinematicPoint futurePlayer = aerialKinematicBody(playerPosition, playerSpeed, secondsInTheFuture);
+            Vector3 futureBallPosition = futureBall.position;
             Vector3 futurePlayerPosition = futurePlayer.getPosition();
             double futurePlayerDistanceFromFutureBall = futureBallPosition.minus(futurePlayerPosition).magnitude();
 

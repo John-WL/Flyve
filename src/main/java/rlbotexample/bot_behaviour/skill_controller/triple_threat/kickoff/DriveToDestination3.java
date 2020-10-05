@@ -98,7 +98,7 @@ public class DriveToDestination3 extends SkillController {
 
         // send the result to the botOutput controller
         output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > 7);
+        output.drift(Math.abs(steerAmount) > 9);
     }
 
     private void pitchYawRoll(DataPacket input) {

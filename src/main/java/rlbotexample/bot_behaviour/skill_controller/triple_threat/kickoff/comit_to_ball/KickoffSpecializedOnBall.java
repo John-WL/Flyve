@@ -52,7 +52,7 @@ public class KickoffSpecializedOnBall extends SkillController {
         double bestCloseness = Double.MAX_VALUE;
         for (BoostPad boostPad : boostPads) {
             double closeness = boostPad.getLocation().minus(playerPosition).magnitude()
-                    * playerNoseVector.dotProduct(ballPosition.minus(playerPosition).normalized());
+                    * playerNoseVector.dotProduct(ballPosition.minus(boostPad.getLocation()).normalized());
             if (closeness < bestCloseness) {
                 bestCloseness = closeness;
                 closestAlignedBoostPad = boostPad;

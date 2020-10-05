@@ -1,13 +1,16 @@
 package util.renderers;
 
 import rlbot.render.Renderer;
+import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
+import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.shapes.Triangle3D;
 import util.vector.Vector3;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class ShapeRenderer {
 
@@ -34,6 +37,18 @@ public class ShapeRenderer {
         Vector3 previousPosition = parabola.compute(0);
         for(int i = 1; i < 40; i++) {
             Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/40);
+            renderer.drawLine3d(color, nextPosition, previousPosition);
+            previousPosition = nextPosition;
+        }
+    }
+
+    public void render3DSplineFunction(Function<Double, Vector3> function, double amountOfTimeToRender, Color color) {
+    }
+
+    public void renderBallPrediction(AdvancedBallPrediction ballPrediction, double amountOfTimeToRender, Color color) {
+        Vector3 previousPosition = ballPrediction.ballAtTime(0).position;
+        for(int i = 1; i < amountOfTimeToRender*RlUtils.BALL_PREDICTION_REFRESH_RATE; i++) {
+            Vector3 nextPosition = ballPrediction.ballAtTime(i/RlUtils.BALL_PREDICTION_REFRESH_RATE).position;
             renderer.drawLine3d(color, nextPosition, previousPosition);
             previousPosition = nextPosition;
         }

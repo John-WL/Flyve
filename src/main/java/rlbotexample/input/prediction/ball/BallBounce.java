@@ -21,7 +21,9 @@ public class BallBounce {
     private final Vector3 perpendicularVelocityComponent;
 
 
-    // best execution up to now (only balls rolling up walls are a problem)
+    // best execution up to now
+    // (still a lot of glitches, but it seems to work for like 99% of bounces.
+    // Only high-speed bounces on curved walls seem to put a lot of noise into the predicted ball path)
 
     public BallBounce(final BallData ballData, final Ray3 rayNormal) {
         this.initialPosition = ballData.position;
@@ -81,7 +83,7 @@ public class BallBounce {
         final Vector3 slipSpeed = perpendicularVelocityComponent.minus(surfaceVelocity);
         final double surfaceSpeedRatio = parallelVelocityComponent.magnitude()/slipSpeed.magnitude();
 
-        final Vector3 newParallelVelocity = parallelVelocityComponent.scaled(-0.6);
+        final Vector3 newParallelVelocity = parallelVelocityComponent.scaled(-BALL_BOUNCE_RESTITUTION);
         Vector3 perpendicularDeltaVelocity = slipSpeed.scaled(-Math.min(1.0, 2*surfaceSpeedRatio) * 0.285);
 
         Vector3 newVelocity = newParallelVelocity.plus(perpendicularVelocityComponent.plus(perpendicularDeltaVelocity));

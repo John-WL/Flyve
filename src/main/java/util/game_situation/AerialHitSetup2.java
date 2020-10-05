@@ -6,7 +6,7 @@ import util.timer.FrameTimer;
 public class AerialHitSetup2 extends GameSituation {
 
     public AerialHitSetup2() {
-        super(new FrameTimer(10*30));
+        super(new FrameTimer(6*30));
     }
 
     @Override

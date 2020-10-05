@@ -1,5 +1,6 @@
 package rlbotexample.input.geometry;
 
+import rlbotexample.input.dynamic_data.HitBox;
 import util.parameter_configuration.ObjFileReader;
 import util.shapes.Sphere;
 import util.shapes.Triangle3D;
@@ -16,6 +17,16 @@ public class StandardMapSplitMesh {
 
     public Ray3 getCollisionRayOrElse(final Sphere sphere, final Ray3 defaultRay) {
         final Ray3 collisionRay = STANDARD_MAP_MESH.collideWith(sphere);
+
+        if(collisionRay.direction.magnitude() > 0) {
+            return collisionRay;
+        }
+
+        return defaultRay;
+    }
+
+    public Ray3 getCollisionRayOrElse(final HitBox hitBox, final Ray3 defaultRay) {
+        final Ray3 collisionRay = STANDARD_MAP_MESH.collideWith(hitBox);
 
         if(collisionRay.direction.magnitude() > 0) {
             return collisionRay;

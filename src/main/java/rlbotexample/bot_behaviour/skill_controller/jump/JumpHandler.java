@@ -12,10 +12,12 @@ public class JumpHandler {
     private int flipCounter;
     private boolean firstJumpOccurred;
     private JumpType jumpType;
+    private boolean wasJumping;
 
     public JumpHandler() {
         firstJumpOccurred = false;
         jumpType = new Wait();
+        wasJumping = false;
     }
 
     public void updateJumpState(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
@@ -30,17 +32,20 @@ public class JumpHandler {
         // update the jump variable in the current jumpType
         jumpType.jump(input, output, desiredFrontOrientation, desiredRoofOrientation);
         if(jumpType.getJumpState()) {
-            if(!firstJumpOccurred) {
+            if(!wasJumping) {
                 // If the first jump is from the ceiling, then it hasn't happened at all,
                 // but the second has, and so that's why the first must have happened at some point.
                 // This is just a convention though. We could have let the first jump un-occurred,
                 // but it's practical this way.
                 firstJumpOccurred = true;
+                if(!input.car.hasWheelContact) {
+                    flipCounter = NUMBER_OF_FRAMES_AT_30_FPS_BEFORE_LOOSING_2ND_JUMP;
+                }
             }
-            else {
-                // notify we can't jump anymore (see "hasSecondJump()" function)
-                flipCounter = NUMBER_OF_FRAMES_AT_30_FPS_BEFORE_LOOSING_2ND_JUMP;
-            }
+            wasJumping = true;
+        }
+        else {
+            wasJumping = false;
         }
 
 
@@ -65,8 +70,8 @@ public class JumpHandler {
         return jumpType.isJumpFinished();
     }
 
-    boolean hasFirstJumpOccured() {
-        return firstJumpOccurred;
+    public boolean hasFirstJump() {
+        return !firstJumpOccurred;
     }
 
     public boolean hasSecondJump() {

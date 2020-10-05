@@ -18,24 +18,20 @@ public class Flip extends JumpType {
     @Override
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation, Vector3 desiredRoofOrientation) {
         updateCurrentJumpCallCounter();
+        setJumpState(false);
 
         if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
-            Vector2 flipDirections = desiredFrontOrientation.flatten().scaledToMagnitude(2);
+            Vector2 flipDirections = desiredFrontOrientation.flatten().normalized();
             output.pitch(-flipDirections.x);
             output.yaw(-flipDirections.y);
             output.roll(0);
+            setJumpState(true);
+            //System.out.println(flipDirections);
         }
-        if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[0] && !this.isJumpFinished()) {
+        else if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[0] && !this.isJumpFinished()) {
             output.pitch(0);
             output.yaw(0);
             output.roll(0);
-        }
-        if(this.getCurrentJumpCallCounter() + 1 == JUMP_TIME_FRAMES[0]) {
-            // send a "no-jump" so we can jump a second time the next frame
-            setJumpState(false);
-        }
-        else {
-            setJumpState(getCurrentJumpCallCounter() <= JUMP_DURATION);
         }
     }
 }

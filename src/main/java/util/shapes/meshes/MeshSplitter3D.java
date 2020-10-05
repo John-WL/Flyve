@@ -77,10 +77,75 @@ public class MeshSplitter3D {
             final double separation = sphere.center.minus(p).dotProduct(n);
             final Vector3 ballVectorFromTriangle = sphere.center.minus(pr);
             if(ballVectorFromTriangle.magnitude() <= sphere.radius
-                && separation <= sphere.radius) {
+                    && separation <= sphere.radius) {
                 numberOfCollidingTriangles++;
                 resultingRay.offset = resultingRay.offset.plus(sphere.center.minus(n.scaled(separation)));
                 resultingRay.direction = resultingRay.direction.plus(n.scaled(sphere.radius - separation));
+            }
+        }
+
+        // finish the average
+        if(numberOfCollidingTriangles > 0) {
+            resultingRay.offset = resultingRay.offset.scaled(1.0/numberOfCollidingTriangles);
+            resultingRay.direction = resultingRay.direction.normalized();
+        }
+
+        return resultingRay;
+    }
+
+    // very ugly method duplicate, there is a better way to do this...
+    public Ray3 collideWith(HitBox hitBox) {
+        Ray3 resultingRay = new Ray3();
+        meshRegions.clear();
+
+        // rasterize a sphere with voxels
+        final double hitBoxMaxRadius = hitBox.cornerPosition.magnitude();
+        final Vector3 hitBoxCenter = hitBox.centerPosition;
+        int searchSize = (int)(hitBoxMaxRadius*2/SPLIT_SIZE);
+        int offset = 1;
+        List<Vector3> indexToTest = new ArrayList<>();
+        for(int i = -offset-1; i < searchSize + offset+1; i++) {
+            for(int j = -offset-1; j < searchSize + offset+1; j++) {
+                for(int k = -offset-1; k < searchSize + offset+1; k++) {
+                    if(i*i + j*j + k*k < (hitBoxMaxRadius/SPLIT_SIZE)*(hitBoxMaxRadius/SPLIT_SIZE)*(1.5 * 1.5)) {
+                        indexToTest.add(new Vector3(i, j, k));
+                    }
+                }
+            }
+        }
+
+        // add all regions that have been rasterized
+        for(Vector3 index3D: indexToTest) {
+            final Vector3 centerOffset = new Vector3(1, 1, 1).scaled(SPLIT_SIZE/1.8);
+            final Mesh3D meshRegion = queryMeshRegion(hitBoxCenter.plus(centerOffset).plus(index3D.scaled(SPLIT_SIZE)));
+
+            meshRegions.add(meshRegion);
+        }
+
+        // remove duplicate triangles from the calculations because hey, this is expensive, you know?
+        Set<Triangle3D> removedTriangleDuplicates = new HashSet<>();
+        for(Mesh3D mesh: meshRegions) {
+            if(mesh != null) {
+                removedTriangleDuplicates.addAll(mesh.triangleList);
+            }
+        }
+
+        // do an average of all the ray normals that collide with the sphere
+        int numberOfCollidingTriangles = 0;
+        for(Triangle3D triangle : removedTriangleDuplicates) {
+            final Vector3 p = triangle.getCenterPosition();
+            final Vector3 pr = hitBoxCenter.projectOnto(triangle);
+            final Vector3 hitPointOnHitBox = hitBox.projectPointOnSurface(pr.plus(pr.minus(hitBoxCenter).scaledToMagnitude(10000)));
+            final Vector3 n = triangle.getNormal();
+            final double separation = hitBoxCenter.minus(p).dotProduct(n);
+            final Vector3 hitBoxVectorFromTriangle = hitBoxCenter.minus(pr);
+
+            final double hitBoxDynamicRadius = hitPointOnHitBox.minus(hitBoxCenter).magnitude();
+            if(hitBoxVectorFromTriangle.magnitude() <= hitBoxDynamicRadius
+                    && separation <= hitBoxDynamicRadius) {
+                numberOfCollidingTriangles++;
+                resultingRay.offset = resultingRay.offset.plus(hitBoxCenter.minus(n.scaled(separation)));
+                resultingRay.direction = resultingRay.direction.plus(n.scaled(hitBoxDynamicRadius - separation));
             }
         }
 
