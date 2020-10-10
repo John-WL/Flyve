@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;
@@ -14,14 +13,11 @@ import java.util.List;
 
 public class RefuelBoost extends SkillController {
 
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
     private SkillController driveToDestination;
 
     public RefuelBoost(BotBehaviour bot) {
-        this.desiredDestination = new CarDestination();
         this.bot = bot;
-        this.driveToDestination = new DriveToDestination(desiredDestination, bot);
     }
 
     @Override
@@ -50,8 +46,6 @@ public class RefuelBoost extends SkillController {
         }
 
         // update the destination
-        desiredDestination.setThrottleDestination(closestNotTakenPad.getLocation());
-        desiredDestination.setSteeringDestination(closestNotTakenPad.getLocation());
 
         // got to destination
         driveToDestination.setupAndUpdateOutputs(input);
@@ -65,6 +59,5 @@ public class RefuelBoost extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.LIGHT_GRAY, input.car.position, desiredDestination.getThrottleDestination());
     }
 }

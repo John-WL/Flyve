@@ -1,10 +1,7 @@
 package rlbotexample.bot_behaviour.skill_controller.basic_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
-import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
-import rlbotexample.bot_behaviour.path.PathHandler;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
 import rlbotexample.input.dynamic_data.BallData;
@@ -26,7 +23,6 @@ public class DriveToPredictedBallBounceController extends SkillController {
     GroundOrientationController groundOrientationController;
     DrivingSpeedController drivingSpeedController;
 
-    PathHandler enemyNetPositionPath;
     Dribble dribbleController;
     Vector3 ballDestination;
 
@@ -36,9 +32,7 @@ public class DriveToPredictedBallBounceController extends SkillController {
         speedToReach = 1410;
         groundOrientationController = new GroundOrientationController(bot);
         drivingSpeedController = new DrivingSpeedController(bot);
-        CarDestination carDestination = new CarDestination();
-        enemyNetPositionPath = new EnemyNetPositionPath(carDestination);
-        dribbleController = new Dribble(carDestination, bot);
+        dribbleController = new Dribble(bot);
         ballDestination = new Vector3();
     }
 
@@ -87,7 +81,6 @@ public class DriveToPredictedBallBounceController extends SkillController {
         output.boost(speedToReach > 1410 && input.car.velocity.magnitude() < speedToReach && input.car.orientation.noseVector.dotProduct(ballDestination) > 0);
 
         if(input.car.position.minus(input.ball.position).magnitude() < 180) {
-            enemyNetPositionPath.updateDestination(input);
             dribbleController.updateOutput(input);
         }
 

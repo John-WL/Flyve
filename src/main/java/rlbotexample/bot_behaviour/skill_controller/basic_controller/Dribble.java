@@ -7,7 +7,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.HalfFlip;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
@@ -26,7 +25,6 @@ public class Dribble extends SkillController {
     private static final double MAXIMUM_BALL_OFFSET = 50;
     private static final double PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST = 120;
 
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
 
     private PidController ballDirectionOffsetXPid;
@@ -50,9 +48,8 @@ public class Dribble extends SkillController {
 
     private JumpHandler jumpHandler;
 
-    public Dribble(CarDestination desiredDestination, BotBehaviour bot) {
+    public Dribble(BotBehaviour bot) {
         super();
-        this.desiredDestination = desiredDestination;
         this.bot = bot;
 
         ballDirectionOffsetXPid = new PidController(0.05, 0, 0.01);
@@ -94,11 +91,8 @@ public class Dribble extends SkillController {
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getThrottleDestination();
 
         Vector2 cappedTargetBallSpeed = new Vector2(
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
         );
 
         // compute the desired offset from the getNativeBallPrediction to be able to accelerate or slow down, turn left or right accordingly...
@@ -123,18 +117,11 @@ public class Dribble extends SkillController {
         dribblingDestination = playerDestination;
 
         // transform it into the player's local coordinate system
-        Vector3 localDestination = CarDestination.getLocal(playerDestination, input);
 
         // compute the throttle value
-        double throttleAmount = -throttlePid.process(playerSpeed.minus(ballSpeed).minusAngle(playerNoseOrientation).x, localDestination.x*10);
         // YAMETEEE
         if(playerPosition.minus(ballPosition).magnitude() > 400) {
-            throttleAmount = Math.abs(throttleAmount);
         }
-        throttleAmount = ThrottleController.process(throttleAmount);
-
-        output.throttle(throttleAmount);
-        output.boost(throttleAmount > boostForThrottleThreshold);
     }
 
     private void steer(DataPacket input) {
@@ -144,11 +131,8 @@ public class Dribble extends SkillController {
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getSteeringDestination();
 
         Vector2 cappedTargetBallSpeed = new Vector2(
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).x)),
-                Math.max(-MAXIMUM_TARGET_BALL_SPEED, Math.min(MAXIMUM_TARGET_BALL_SPEED, ballPosition.minus(ballDestination).y))
         );
 
         // compute the desired offset from the getNativeBallPrediction to be able to accelerate or slow down, turn left or right accordingly...
@@ -168,13 +152,6 @@ public class Dribble extends SkillController {
                 || ballSpeed.magnitude() < 1) {
                 Vector3 alternativeDesiredPlayerOffset;
                 // should the player go to the right or to the left of the getNativeBallPrediction's velocity vector?
-                if(playerPosition.minus(ballPosition).minusAngle(ballDestination.minus(ballPosition)).y < 0) {
-                    alternativeDesiredPlayerOffset = new Vector3(0, PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST, 0);
-                }
-                else {
-                    alternativeDesiredPlayerOffset = new Vector3(0, -PLAYER_GET_AROUND_THE_BALL_DISTANCE_WHEN_DRIBBLING_LOST, 0);
-                }
-                playerDestination = ballPosition.plus(alternativeDesiredPlayerOffset.plusAngle(ballSpeed.plus(new Vector3(0, 0.1, 0))));
             }
         }
 
@@ -182,18 +159,11 @@ public class Dribble extends SkillController {
         dribblingSteeringDestination = steeringDestination;
 
         // transform it into the player's local coordinate system
-        Vector3 localSteeringDestination = CarDestination.getLocal(steeringDestination, input);
 
         // transform the destination into an angle so it's easier to handle with the pid
-        Vector2 myLocalSteeringDestination2D = localSteeringDestination.flatten();
-        Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
-        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
 
         // compute the steer value
-        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
 
-        output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
     }
 
     private void preventUselessBoost(DataPacket input) {
@@ -225,17 +195,8 @@ public class Dribble extends SkillController {
 
         Vector3 ballPosition = input.ball.position;
         Vector3 playerOrientationVector = ballPosition;
-        Vector3 localPlayerOrientationVector = CarDestination.getLocal(playerOrientationVector, input);
-        Vector3 localRollDestination = CarDestination.getLocal(playerPosition.plus(new Vector3(0, 0, 5000)), input);
-
-        double pitchAmount = pitchPid.process(new Vector2(localPlayerOrientationVector.x, -localPlayerOrientationVector.z).correctionAngle(new Vector2(1, 0)), 0);
-        double yawAmount = yawPid.process(new Vector2(localPlayerOrientationVector.x, localPlayerOrientationVector.y).correctionAngle(new Vector2(1, 0)), 0);
-        double rollAmount = rollPid.process(new Vector2(localRollDestination.z, localRollDestination.y).correctionAngle(new Vector2(1, 0)), 0);
 
         // send the result to the botOutput controller
-        output.pitch(pitchAmount);
-        output.yaw(yawAmount);
-        output.roll(rollAmount);
     }
 
     private void updateJumpBehaviour(DataPacket input) {
@@ -258,13 +219,6 @@ public class Dribble extends SkillController {
                 jumpHandler.setJumpType(new Wait());
             }
         }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(ballPosition, input),
-                myRoofVector.minusAngle(new Vector3(0, 0, 1))
-        );
-        output.jump(jumpHandler.getJumpState());
     }
 
     @Override

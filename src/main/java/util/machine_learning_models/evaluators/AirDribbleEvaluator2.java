@@ -1,13 +1,10 @@
 package util.machine_learning_models.evaluators;
 
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 
 public class AirDribbleEvaluator2 extends BotEvaluator {
 
-    public AirDribbleEvaluator2(CarDestination desiredDestination) {
-        super(desiredDestination);
-    }
+    public AirDribbleEvaluator2() { }
 
     @Override
     public void updateEvaluation(DataPacket input) {
@@ -16,7 +13,6 @@ public class AirDribbleEvaluator2 extends BotEvaluator {
 
         currentEvaluation -= input.ball.position.minus(input.car.position).magnitude();
         currentEvaluation += 2*input.ball.position.z;
-        currentEvaluation -= 4*getDesiredDestination().getThrottleDestination().minus(input.ball.position).magnitude();
 
 
         setEvaluation(currentEvaluation/1000 + getEvaluation());

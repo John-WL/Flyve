@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.AerialOrientationHandler;
@@ -105,15 +104,6 @@ public class AerialDirectionalHit2 extends SkillController {
                 jumpHandler.setJumpType(new SimpleJump());
             }
         }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(
-                        orientation.minus(playerPosition),
-                        input
-                ),
-                new Vector3()
-        );
         output.jump(jumpHandler.getJumpState());
     }
 

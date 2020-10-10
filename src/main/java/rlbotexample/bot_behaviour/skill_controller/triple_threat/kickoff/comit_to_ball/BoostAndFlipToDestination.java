@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.triple_threat.kickoff.comit_to_ball;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;

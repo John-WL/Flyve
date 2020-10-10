@@ -22,18 +22,22 @@ public class Dribble2 extends SkillController {
     private Vector3 neutralBallDestination;
     private Vector3 desiredBallPositionOnPlayerCar;
 
-    private PidController playerThrottlingPid;
-    private PidController playerSteeringPid;
+    PidController steerPid;
+
+    private DrivingSpeedController drivingSpeedController;
+    private GroundOrientationController groundOrientationController;
 
     public Dribble2(BotBehaviour bot) {
         botBehaviour = bot;
         ballDestination = new Vector3();
-        ballTargetSpeed = 800;
+        ballTargetSpeed = 1200;
         neutralBallDestination = new Vector3();
         desiredBallPositionOnPlayerCar = new Vector3();
 
-        playerThrottlingPid = new PidController(0.01, 0, 0.005);
-        playerSteeringPid = new PidController(0.01, 0, 0.004);
+        steerPid = new PidController(2, 0, 20);
+
+        drivingSpeedController = new DrivingSpeedController(bot);
+        groundOrientationController = new GroundOrientationController(bot);
     }
 
     public void setBallDestination(Vector3 ballDestination) {
@@ -49,19 +53,26 @@ public class Dribble2 extends SkillController {
         desiredBallPositionOnPlayerCar = findOptimalBallPositionOnPlayerCar(input);
         final Vector3 playerDeltaDestination = input.ball.position.minus(desiredBallPositionOnPlayerCar);
 
-        final double rawSteeringAmount = playerDeltaDestination.dotProduct(input.car.orientation.rightVector);
-        final double processedSteeringAmount = playerSteeringPid.process(rawSteeringAmount, 0);
-        botBehaviour.output().steer(processedSteeringAmount);
-        botBehaviour.output().drift(Math.abs(processedSteeringAmount) > 10);
+        final double rawSteeringAmount = playerDeltaDestination.plus(input.car.orientation.noseVector.scaled(200)).flatten().correctionAngle(input.car.orientation.noseVector.flatten());
+        /*steeringDestination =
+        groundOrientationController.setDestination(steeringDestination);
+        groundOrientationController.updateOutput(input);*/
+        double steerAmount = steerPid.process(rawSteeringAmount, 0);
+        botBehaviour.output().steer(steerAmount);
+        //botBehaviour.output().drift(steerAmount > 2.5);
 
-        final double rawThrottlingAmount = playerDeltaDestination.dotProduct(input.car.orientation.noseVector);
-        final double processedThrottlingAmount = playerThrottlingPid.process(rawThrottlingAmount, 0);
-        botBehaviour.output().throttle(ThrottleController.process(processedThrottlingAmount));
-        botBehaviour.output().boost(processedThrottlingAmount > 1);
+
+        double rawThrottlingAmount = playerDeltaDestination.dotProduct(input.car.orientation.noseVector)*10;
+        if(rawThrottlingAmount < 0) {
+            //rawThrottlingAmount = Math.min(-rawThrottlingAmount, 100);
+        }
+        drivingSpeedController.setSpeed(input.ball.velocity.flatten().magnitude() + rawThrottlingAmount);
+        drivingSpeedController.updateOutput(input);
+        botBehaviour.output().boost(rawThrottlingAmount > 100);
     }
 
     private Vector3 findOptimalBallPositionOnPlayerCar(DataPacket input) {
-        neutralBallDestination = input.car.position.plus(new Vector3(0, 0, 100));
+        neutralBallDestination = input.car.position.plus(new Vector3(0, 0, 50));
         Vector3 optimalLeftAndRightOffset = findLeftAndRightBallOffsetFromCar(input);
         Vector3 optimalFrontAndBackOffset = findFrontAndBackBallOffsetFromCar(input);
         return neutralBallDestination.plus(optimalLeftAndRightOffset).plus(optimalFrontAndBackOffset);
@@ -69,10 +80,10 @@ public class Dribble2 extends SkillController {
 
     private Vector3 findLeftAndRightBallOffsetFromCar(DataPacket input) {
         // right is positive, and left is negative. Just a convention
-        double maximumTuringDistance = 20;
+        double maximumTuringDistance = 200;
         double optimalLeftAndRightOffsetAmount = -input.car.orientation.noseVector.flatten().correctionAngle(ballDestination.minus(input.car.position).flatten());
-        optimalLeftAndRightOffsetAmount /= 2*Math.PI;   // normalize
-        optimalLeftAndRightOffsetAmount *= 190;         // arbitrary max offset (we need a scaling anyway, this needs tweaking)
+        optimalLeftAndRightOffsetAmount /= Math.PI*2;   // normalize
+        optimalLeftAndRightOffsetAmount *= 250;         // arbitrary max offset (we need a scaling anyway, this needs tweaking)
         optimalLeftAndRightOffsetAmount = clamp(optimalLeftAndRightOffsetAmount, -maximumTuringDistance, maximumTuringDistance);
 
         return input.car.orientation.rightVector.scaled(optimalLeftAndRightOffsetAmount);
@@ -80,7 +91,7 @@ public class Dribble2 extends SkillController {
 
     private Vector3 findFrontAndBackBallOffsetFromCar(DataPacket input) {
         // front is positive, back negative
-        double sensitivityOfSpeedDifference = 50;      // this value is arbitrary, and is tweakable to the desired "aggressivity" of corrections
+        double sensitivityOfSpeedDifference = 200;      // this value is arbitrary, and is tweakable to the desired "aggressivity" of corrections
         double optimalFrontAndBackOffsetAmount = clamp(ballTargetSpeed - input.ball.velocity.magnitude(), -sensitivityOfSpeedDifference, sensitivityOfSpeedDifference);
         optimalFrontAndBackOffsetAmount /= sensitivityOfSpeedDifference;    // normalize
         optimalFrontAndBackOffsetAmount *= 20;                              // arbitrary offset, needs tweaking
@@ -108,5 +119,7 @@ public class Dribble2 extends SkillController {
         renderer.drawLine3d(Color.CYAN, ballDestination, input.ball.position);
 
         renderer.drawLine3d(Color.CYAN, ballDestination, input.ball.position);
+
+        //renderer.drawLine3d(Color.red, steeringDestination, input.car.position);
     }
 }

@@ -6,13 +6,8 @@ import rlbotexample.bot_behaviour.skill_controller.*;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.boost_management.RefuelProximityBoost;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.defense.ShadowDefense;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
-import rlbotexample.bot_behaviour.path.BallPositionPath;
-import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
-import rlbotexample.bot_behaviour.path.PathHandler;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flick;
-import rlbotexample.bot_behaviour.skill_controller.trash.DriveToDestination;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -24,8 +19,6 @@ import java.awt.*;
 
 public class Normal1sV2 extends PanBot {
 
-    private CarDestination desiredDestination;
-
     private SkillController dribbleController;
     private SkillController flickController;
     private SkillController driveToDestinationController;
@@ -33,27 +26,14 @@ public class Normal1sV2 extends PanBot {
     private SkillController refuelProximityBoostController;
     private SkillController skillController;
 
-    private PathHandler pathHandler;
-    private PathHandler enemyNetPositionPath;
-    private PathHandler ballPositionPath;
-
     private PidController playerPossessionPid;
 
     private boolean isRefueling;
 
     public Normal1sV2() {
-        desiredDestination = new CarDestination();
-
-        dribbleController = new Dribble(desiredDestination, this);
-        flickController = new Flick(desiredDestination, this);
-        driveToDestinationController = new DriveToDestination(desiredDestination, this);
         shadowDefenseController = new ShadowDefense(this);
         refuelProximityBoostController = new RefuelProximityBoost(this);
         skillController = driveToDestinationController;
-
-        enemyNetPositionPath = new EnemyNetPositionPath(desiredDestination);
-        ballPositionPath = new BallPositionPath(desiredDestination);
-        pathHandler = ballPositionPath;
 
         playerPossessionPid = new PidController(1, 0, 10);
 
@@ -73,27 +53,19 @@ public class Normal1sV2 extends PanBot {
         // is it the kickoff...?
         if(input.ball.velocity.magnitude() < 0.1) {
             // destination on getNativeBallPrediction
-            pathHandler = ballPositionPath;
 
             // drive to it
             skillController = driveToDestinationController;
         }
         else {
-            // destination on enemy net
-            pathHandler = enemyNetPositionPath;
-
             // simply dribble and refuel if no threat
             if (predictivePlayerPossessionRatio > 400) {
-                // destination on enemy net
-                pathHandler = enemyNetPositionPath;
 
                 skillController = dribbleController;
                 //System.out.println("dribble");
             }
             // flick the getNativeBallPrediction if threat
             else {
-                // destination on enemy net
-                pathHandler = enemyNetPositionPath;
 
                 skillController = flickController;
             }
@@ -126,9 +98,6 @@ public class Normal1sV2 extends PanBot {
             }*/
         }
 
-        // calculate next desired destination
-        pathHandler.updateDestination(input);
-
         // do something about it
         skillController.setupAndUpdateOutputs(input);
 
@@ -155,15 +124,10 @@ public class Normal1sV2 extends PanBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         Vector3 playerPosition = input.car.position;
-        Vector3 destination = desiredDestination.getThrottleDestination();
-        Vector3 steeringPosition = desiredDestination.getSteeringDestination();
 
         // dribbleController.debug(renderer, input);
         shadowDefenseController.debug(renderer, input);
 
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.LIGHT_GRAY, playerPosition, destination);
-        renderer.drawLine3d(Color.MAGENTA, playerPosition, steeringPosition);
-        BezierDebugger.renderPath(desiredDestination.getPath(), Color.blue, renderer);
     }
 }

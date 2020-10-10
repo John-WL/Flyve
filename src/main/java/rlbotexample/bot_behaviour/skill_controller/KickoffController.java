@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;

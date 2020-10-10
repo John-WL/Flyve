@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -11,15 +10,12 @@ import util.vector.Vector3;
 import java.awt.*;
 
 public class ShadowDefense extends SkillController {
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
     private SkillController driveToDestinationController;
     private boolean isShadowDefenseSchmidtTriggerThresholdReached;
 
     public ShadowDefense(BotBehaviour bot) {
-        this.desiredDestination = new CarDestination();
         this.bot = bot;
-        this.driveToDestinationController = new DriveToDestination2(desiredDestination, bot);
         this.isShadowDefenseSchmidtTriggerThresholdReached = false;
     }
 
@@ -86,8 +82,6 @@ public class ShadowDefense extends SkillController {
             shadowPosition = new Vector3(-RlConstants.WALL_DISTANCE_X + 400, shadowPosition.y, shadowPosition.z);
         }
 
-        desiredDestination.setThrottleDestination(shadowPosition);
-        desiredDestination.setSteeringDestination(shadowPosition.plus(closestCarToBall.orientation.noseVector.scaled(500)));
 
         driveToDestinationController.setupAndUpdateOutputs(input);
         bot.output().jump(false);
@@ -100,7 +94,5 @@ public class ShadowDefense extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.CYAN, desiredDestination.getThrottleDestination(), input.car.position);
-        renderer.drawLine3d(Color.ORANGE, desiredDestination.getSteeringDestination(), input.car.position);
     }
 }

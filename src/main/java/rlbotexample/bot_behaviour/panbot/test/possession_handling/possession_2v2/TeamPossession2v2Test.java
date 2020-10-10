@@ -6,10 +6,9 @@ import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler2V2;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.AerialOrientationHandler;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToDestination2Controller;
+import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToPredictedBallBounceController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
@@ -27,11 +26,11 @@ public class TeamPossession2v2Test extends PanBot {
     private AerialOrientationHandler aerialRecoveryController;
 
     private DriveToPredictedBallBounceController driveToPredictedBallBounceController;
-    private DriveToDestination2Controller driveToDestination2Controller;
+    private DriveToDestination driveToDestination2Controller;
 
     public TeamPossession2v2Test() {
         driveToPredictedBallBounceController = new DriveToPredictedBallBounceController(this);
-        driveToDestination2Controller = new DriveToDestination2Controller(this);
+        driveToDestination2Controller = new DriveToDestination(this);
         aerialSetupController = new AerialSetupController2(this);
         aerialRecoveryController = new AerialOrientationHandler(this);
     }

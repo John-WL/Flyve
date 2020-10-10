@@ -1,10 +1,8 @@
 package rlbotexample.bot_behaviour.skill_controller.advanced_controller.boost_management;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.trash.DriveToDestination;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -16,14 +14,11 @@ import java.util.List;
 
 public class RefuelProximityBoost extends SkillController {
 
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
     private SkillController driveToDestination;
 
     public RefuelProximityBoost(BotBehaviour bot) {
-        this.desiredDestination = new CarDestination();
         this.bot = bot;
-        this.driveToDestination = new DriveToDestination(desiredDestination, bot);
     }
 
     @Override
@@ -70,10 +65,6 @@ public class RefuelProximityBoost extends SkillController {
         // if there was at least one pad in range, then go to it.
         if(closestNotTakenPad != null) {
 
-            // update the destination
-            desiredDestination.setThrottleDestination(closestNotTakenPad.getLocation());
-            desiredDestination.setSteeringDestination(closestNotTakenPad.getLocation());
-
             // got to destination
             driveToDestination.setupAndUpdateOutputs(input);
             bot.output().boost(false);
@@ -88,6 +79,5 @@ public class RefuelProximityBoost extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.LIGHT_GRAY, input.car.position, desiredDestination.getThrottleDestination());
     }
 }

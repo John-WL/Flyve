@@ -11,7 +11,7 @@ import util.vector.Vector3;
 
 import java.awt.*;
 
-public class DriveToDestination2Controller extends SkillController {
+public class DriveToDestination extends SkillController {
 
     private final BotBehaviour bot;
     private final DrivingSpeedController drivingSpeedController;
@@ -20,7 +20,7 @@ public class DriveToDestination2Controller extends SkillController {
     private double speedToReach;
     private Vector3 destination;
 
-    public DriveToDestination2Controller(BotBehaviour bot) {
+    public DriveToDestination(BotBehaviour bot) {
         this.bot = bot;
         this.drivingSpeedController = new DrivingSpeedController(bot);
         this.groundOrientationController = new GroundOrientationController(bot);

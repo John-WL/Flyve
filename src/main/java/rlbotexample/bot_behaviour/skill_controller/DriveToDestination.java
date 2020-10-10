@@ -6,7 +6,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.HalfFlip;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.parameter_configuration.ArbitraryValueSerializer;
@@ -26,15 +25,13 @@ public class DriveToDestination extends SkillController {
 
     private JumpHandler jumpHandler;
 
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
 
     private double boostForThrottleThreshold = 1;
     private double driftForSteerThreshold = 1;
 
-    public DriveToDestination(CarDestination desiredDestination, BotBehaviour bot) {
+    public DriveToDestination(BotBehaviour bot) {
         super();
-        this.desiredDestination = desiredDestination;
         this.bot = bot;
 
         throttlePid = new PidController(5, 0, 10);
@@ -69,53 +66,30 @@ public class DriveToDestination extends SkillController {
         // get useful variables
         BotOutput output = bot.output();
         Vector3 playerSpeed = input.car.velocity;
-        Vector3 playerDestination = desiredDestination.getThrottleDestination();
-        Vector3 lastPlayerDestination = desiredDestination.getThrottleDestination();
-        Vector3 playerLocalDestination = CarDestination.getLocal(playerDestination, input);
-        Vector3 lastPlayerLocalDestination = CarDestination.getLocal(lastPlayerDestination, input);
-        Vector3 playerDestinationSpeed = playerLocalDestination.minus(lastPlayerLocalDestination).scaled(30);
 
         // compute the pid value for throttle
-        double throttleAmount = -throttlePid.process(playerSpeed.minus(playerDestinationSpeed).x, playerLocalDestination.x*10);
 
         // send the result to the botOutput controller
-        output.throttle(throttleAmount);
-        output.boost(throttleAmount > boostForThrottleThreshold);
     }
 
     private void steer(DataPacket input) {
         // get useful variables
         BotOutput output = bot.output();
-        Vector3 mySteeringDestination = desiredDestination.getSteeringDestination();
-        Vector3 myLocalSteeringDestination = CarDestination.getLocal(mySteeringDestination, input);
 
         // transform the destination into an angle so it's easier to handle with the pid
-        Vector2 myLocalSteeringDestination2D = myLocalSteeringDestination.flatten();
         Vector2 desiredLocalSteeringVector = new Vector2(1, 0);
-        double steeringCorrectionAngle = myLocalSteeringDestination2D.correctionAngle(desiredLocalSteeringVector);
 
         // compute the pid value for steering
-        double steerAmount = steerPid.process(steeringCorrectionAngle, 0);
 
         // send the result to the botOutput controller
-        output.steer(steerAmount);
-        output.drift(Math.abs(steerAmount) > driftForSteerThreshold);
     }
 
     private void pitchYawRoll(DataPacket input) {
         // get useful variables
         BotOutput output = bot.output();
-        Vector3 mySteeringDestination = desiredDestination.getSteeringDestination();
-        Vector3 myLocalSteeringDestination = CarDestination.getLocal(mySteeringDestination, input);
 
         // compute the pitch, roll, and yaw pid values
-        double pitchAmount = pitchPid.process(myLocalSteeringDestination.z, 0);
-        double yawAmount = yawPid.process(-myLocalSteeringDestination.y, 0);
-        double rollAmount = rollPid.process(myLocalSteeringDestination.x, 0);
-
         // send the result to the botOutput controller
-        output.pitch(pitchAmount);
-        output.yaw(yawAmount);
         //output.roll(rollAmount);
     }
 
@@ -150,15 +124,6 @@ public class DriveToDestination extends SkillController {
                 jumpHandler.setJumpType(new Wait());
             }
         }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(
-                        desiredDestination.getThrottleDestination(),
-                        input
-                ),
-                myRoofVector.minusAngle(new Vector3(0, 0, 1))
-        );
         output.jump(jumpHandler.getJumpState());
     }
 

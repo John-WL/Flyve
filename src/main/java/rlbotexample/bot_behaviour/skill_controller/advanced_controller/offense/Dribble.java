@@ -8,7 +8,6 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.HalfFlip;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.output.BotOutput;
@@ -26,7 +25,6 @@ public class Dribble extends SkillController {
     private static final double STRENGTH_OF_MINIMUM_TARGET_BALL_SPEED_FACTOR = 0.12;
     private static final double MAXIMUM_BALL_OFFSET = 50;
 
-    private CarDestination desiredDestination;
     private BotBehaviour bot;
     private AerialOrientationHandler aerialOrientationHandler;
 
@@ -43,8 +41,7 @@ public class Dribble extends SkillController {
     private PidController yawPid;
     private PidController rollPid;
 
-    private Vector3 dribblingDestination;
-    private Vector3 dribblingSteeringDestination;
+    private Vector3 ballDestination;
 
     private double boostForThrottleThreshold;
     private double driftForSteerThreshold;
@@ -57,9 +54,8 @@ public class Dribble extends SkillController {
 
     private JumpHandler jumpHandler;
 
-    public Dribble(CarDestination desiredDestination, BotBehaviour bot) {
+    public Dribble(BotBehaviour bot) {
         super();
-        this.desiredDestination = desiredDestination;
         this.bot = bot;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
 
@@ -81,12 +77,16 @@ public class Dribble extends SkillController {
 
         jumpHandler = new JumpHandler();
 
-        dribblingDestination = new Vector3();
-        dribblingSteeringDestination = new Vector3();
+        ballDestination = new Vector3();
+        ballDestination = new Vector3();
         maximumTargetBallSpeed = 1410;
 
         hadLossDribbling = false;
         isRegainingDribblingOnRight = true;
+    }
+
+    public void setBallDestination(Vector3 ballDestination) {
+        this.ballDestination = ballDestination;
     }
 
     @Override
@@ -108,7 +108,6 @@ public class Dribble extends SkillController {
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getThrottleDestination();
 
         Vector2 cappedTargetBallSpeed = new Vector2(
                 Math.max(-maximumTargetBallSpeed, Math.min(maximumTargetBallSpeed, ballPosition.minus(ballDestination).x)),
@@ -134,10 +133,10 @@ public class Dribble extends SkillController {
         }
         Vector3 playerDestination = ballPosition.plus(desiredPlayerOffset);
 
-        dribblingDestination = playerDestination;
+        this.ballDestination = playerDestination;
 
         // transform it into the player's local coordinate system
-        Vector3 localDestination = CarDestination.getLocal(playerDestination, input);
+        Vector3 localDestination = playerDestination.minus(input.car.position).toFrameOfReference(input.car.orientation);
 
         // compute the throttle value
         double throttleAmount = -throttlePid.process(playerSpeed.minus(ballSpeed).minusAngle(playerNoseOrientation).x, localDestination.x*10);
@@ -158,7 +157,6 @@ public class Dribble extends SkillController {
         Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 ballSpeed = input.ball.velocity;
-        Vector3 ballDestination = desiredDestination.getSteeringDestination();
 
         Vector2 cappedTargetBallSpeed = new Vector2(
                 Math.max(-maximumTargetBallSpeed, Math.min(maximumTargetBallSpeed, ballPosition.minus(ballDestination).x)),
@@ -205,10 +203,10 @@ public class Dribble extends SkillController {
         }
 
         Vector3 steeringDestination = playerDestination.plus(ballSpeed.scaled(0.28));
-        dribblingSteeringDestination = steeringDestination;
+        this.ballDestination = steeringDestination;
 
         // transform it into the player's local coordinate system
-        Vector3 localSteeringDestination = CarDestination.getLocal(steeringDestination, input);
+        Vector3 localSteeringDestination = new Vector3();
 
         // transform the destination into an angle so it's easier to handle with the pid
         Vector2 myLocalSteeringDestination2D = localSteeringDestination.flatten();
@@ -270,35 +268,6 @@ public class Dribble extends SkillController {
         output.roll(rollAmount);*/
     }
 
-    private void updateJumpBehaviour(DataPacket input) {
-        BotOutput output = bot.output();
-        Vector3 mySpeed = input.car.velocity;
-        Vector3 myNoseVector = input.car.orientation.noseVector;
-        Vector3 myRoofVector = input.car.orientation.roofVector;
-        Vector3 ballPosition = input.ball.position;
-
-        if (jumpHandler.isJumpFinished()) {
-            if(mySpeed.minusAngle(myNoseVector).x < -400) {
-                if(input.car.hasWheelContact) {
-                    jumpHandler.setJumpType(new SimpleJump());
-                }
-                else {
-                    jumpHandler.setJumpType(new HalfFlip());
-                }
-            }
-            else {
-                jumpHandler.setJumpType(new Wait());
-            }
-        }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(ballPosition, input),
-                myRoofVector.minusAngle(new Vector3(0, 0, 1))
-        );
-        output.jump(jumpHandler.getJumpState());
-    }
-
     @Override
     public void setupController() {
         /*
@@ -319,8 +288,8 @@ public class Dribble extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.ORANGE, new Vector3(dribblingDestination.flatten().x, dribblingDestination.flatten().y, input.ball.position.z + 100), new Vector3(input.ball.position.flatten().x, input.ball.position.flatten().y, input.ball.position.z + 100));
-        renderer.drawCenteredRectangle3d(Color.ORANGE, new Vector3(dribblingDestination.flatten().x, dribblingDestination.flatten().y, input.ball.position.z + 100), 10, 10, true);
-        renderer.drawLine3d(Color.red, dribblingSteeringDestination, input.car.position);
+        renderer.drawLine3d(Color.ORANGE, new Vector3(ballDestination.flatten().x, ballDestination.flatten().y, input.ball.position.z + 100), new Vector3(input.ball.position.flatten().x, input.ball.position.flatten().y, input.ball.position.z + 100));
+        renderer.drawCenteredRectangle3d(Color.ORANGE, new Vector3(ballDestination.flatten().x, ballDestination.flatten().y, input.ball.position.z + 100), 10, 10, true);
+        renderer.drawLine3d(Color.red, ballDestination, input.car.position);
     }
 }

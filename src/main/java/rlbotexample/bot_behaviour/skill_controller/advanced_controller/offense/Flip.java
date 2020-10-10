@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
@@ -45,12 +44,6 @@ public class Flip extends SkillController {
                 jumpHandler.setJumpType(new rlbotexample.bot_behaviour.skill_controller.jump.implementations.Flip());
             }
         }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(destination, input),
-                new Vector3()
-        );
         output.jump(jumpHandler.getJumpState());
     }
 

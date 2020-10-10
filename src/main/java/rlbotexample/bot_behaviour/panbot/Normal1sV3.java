@@ -2,28 +2,23 @@ package rlbotexample.bot_behaviour.panbot;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
-import rlbotexample.bot_behaviour.path.BallPositionPath;
-import rlbotexample.bot_behaviour.path.EnemyNetPositionPath;
-import rlbotexample.bot_behaviour.path.PathHandler;
-import rlbotexample.bot_behaviour.path.PlayerNetPositionPath;
 import rlbotexample.bot_behaviour.skill_controller.*;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController;
+import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.boost_management.RefuelProximityBoost;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.defense.ShadowDefense;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flick;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flip;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToDestination2Controller;
+import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToPredictedBallBounceController;
-import rlbotexample.bot_behaviour.skill_controller.trash.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.triple_threat.kickoff.comit_to_ball.KickoffSpecializedOnBall;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
-import util.debug.BezierDebugger;
+import util.game_constants.RlConstants;
 import util.vector.Vector3;
 
 import java.awt.*;
@@ -31,24 +26,16 @@ import java.util.ArrayList;
 
 public class Normal1sV3 extends PanBot {
 
-    private CarDestination desiredDestination;
-
-    private SkillController dribbleController;
-    private SkillController flickController;
+    private Dribble dribbleController;
+    private Flick flickController;
     private Flip flipController;
-    private SkillController driveToDestinationController;
-    private DriveToDestination2Controller improvisedDriveToDestinationController;
-    private SkillController shadowDefenseController;
-    private SkillController refuelProximityBoostController;
+    private DriveToDestination driveToDestinationController;
+    private ShadowDefense shadowDefenseController;
+    private RefuelProximityBoost refuelProximityBoostController;
     private KickoffSpecializedOnBall kickoffController;
     private DriveToPredictedBallBounceController driveToPredictedBallBounceController;
-    private AerialSetupController aerialSetupController;
+    private AerialSetupController2 aerialSetupController;
     private SkillController skillController;
-
-    private PathHandler pathHandler;
-    private PathHandler enemyNetPositionPath;
-    private PathHandler playerNetPositionPath;
-    private PathHandler ballPositionPath;
 
     private PidController playerPossessionPid;
 
@@ -57,31 +44,28 @@ public class Normal1sV3 extends PanBot {
     private boolean isInCriticalPosition;
     private int kickoffCallCounter;
 
-    public Normal1sV3() {
-        desiredDestination = new CarDestination();
+    private String controllerLabel;
 
-        dribbleController = new Dribble(desiredDestination, this);
-        flickController = new Flick(desiredDestination, this);
+    public Normal1sV3() {
+
+        dribbleController = new Dribble(this);
+        flickController = new Flick(this);
         flipController = new Flip(this);
-        driveToDestinationController = new DriveToDestination(desiredDestination, this);
-        improvisedDriveToDestinationController = new DriveToDestination2Controller(this);
+        driveToDestinationController = new DriveToDestination(this);
         shadowDefenseController = new ShadowDefense(this);
         refuelProximityBoostController = new RefuelProximityBoost(this);
         kickoffController = new KickoffSpecializedOnBall(this);
         driveToPredictedBallBounceController = new DriveToPredictedBallBounceController(this);
-        aerialSetupController = new AerialSetupController(this);
+        aerialSetupController = new AerialSetupController2(this);
         skillController = driveToDestinationController;
-
-        enemyNetPositionPath = new EnemyNetPositionPath(desiredDestination);
-        playerNetPositionPath = new PlayerNetPositionPath(desiredDestination);
-        ballPositionPath = new BallPositionPath(desiredDestination);
-        pathHandler = ballPositionPath;
 
         playerPossessionPid = new PidController(1, 0, 10);
 
         isRefueling = false;
         isAerialing = false;
         kickoffCallCounter = 0;
+
+        controllerLabel = "kickoff";
     }
 
     // called every frame
@@ -98,11 +82,9 @@ public class Normal1sV3 extends PanBot {
 
         // is it the kickoff...?
         if(input.ball.velocity.magnitude() < 0.1) {
-            // destination on getNativeBallPrediction
-            pathHandler = ballPositionPath;
-
             // drive to it
             skillController = kickoffController;
+            controllerLabel = "kickoff";
 
             if(kickoffCallCounter < 15) {
                 output().jump(false);
@@ -113,42 +95,34 @@ public class Normal1sV3 extends PanBot {
             // reset kickoff counter
             kickoffCallCounter = 0;
 
-            // destination on enemy net
-            pathHandler = enemyNetPositionPath;
-
             // if the ball is bouncing and we're not directly dribbling, we need to go get the next bounce
             if(input.car.position.minus(input.ball.position).magnitude() > 300 /*&& (Math.abs(input.ball.velocity.z) > 200 || input.ball.position.z > 160)*/) {
                 driveToPredictedBallBounceController.setDestination(allyNetPosition.scaled(-1));
                 skillController = driveToPredictedBallBounceController;
+                controllerLabel = "driveToBounce";
 
                 if(input.ball.position.minus(input.car.position).normalized().dotProduct(input.car.velocity) > 700 && input.ball.position.minus(input.car.position).magnitude() > 1200) {
                     flipController.setDestination(input.ballPrediction.ballAtTime(input.car.position.minus(input.ball.position).magnitude()/input.car.velocity.minus(input.ball.velocity).magnitude()).position);
                     skillController = flipController;
+                    controllerLabel = "flip";
                 }
             }
             else {
                 // simply dribble and refuel if no threat
-                // destination on enemy net
-                pathHandler = enemyNetPositionPath;
-
                 skillController = flickController;
 
                 // flick the getNativeBallPrediction if threat
                 if (input.ballPrediction.timeOfCollisionBetweenCarAndBall(1-input.playerIndex) > 2) {
-                    // destination on enemy net
-                    pathHandler = enemyNetPositionPath;
-
                     skillController = dribbleController;
+                    controllerLabel = "dribble";
                     //System.out.println("dribble");
                 }
                 else {
                 }
 
                 if(input.car.position.minus(input.ball.position).magnitude() < 160 && input.car.position.minus(allyNetPosition.scaled(-1)).magnitude() < input.ball.velocity.magnitude()*3) {
-                    // destination on enemy net
-                    pathHandler = enemyNetPositionPath;
-
                     skillController = flickController;
+                    controllerLabel = "flick";
                 }
             }
 
@@ -163,12 +137,15 @@ public class Normal1sV3 extends PanBot {
             if(closestCarToBall != input.car && closestCarToBall.position.minus(input.ball.position).magnitude() < 160 && closestCarToBall.position.minus(input.ball.position).z < -50 && input.car.position.minus(input.ball.position).magnitude() > 300) {
                 if(input.allCars.size() <= 2) {
                     skillController = shadowDefenseController;
+                    controllerLabel = "shadowDefense";
                     isRefueling = false;
                     //System.out.println("shadowD");
                 }
                 else {
-                    pathHandler = playerNetPositionPath;
+                    driveToDestinationController.setDestination(input.ball.position);
+                    driveToDestinationController.setSpeed(RlConstants.CAR_MAX_SPEED);
                     skillController = driveToDestinationController;
+                    controllerLabel = "driveToDestination";
                     isRefueling = true;
                 }
             }
@@ -189,8 +166,9 @@ public class Normal1sV3 extends PanBot {
             if(allyNetPosition.minus(input.car.position).dotProduct(input.car.position.minus(input.ball.position.plus(new Vector3(0, 100*(input.team == 0 ? 1 : -1), 0)))) < 0) {
                 isInCriticalPosition = true;
                 final Vector3 defenseDirection = allyNetPosition.minus(input.ball.position);
-                improvisedDriveToDestinationController.setDestination(allyNetPosition);
-                improvisedDriveToDestinationController.setSpeed(Math.max(input.ball.velocity.magnitude()*2, 1400));
+                driveToDestinationController.setDestination(allyNetPosition);
+                driveToDestinationController.setSpeed(Math.max(input.ball.velocity.magnitude()*2, 1400));
+                controllerLabel = "weirdDefense";
                 /*
                 if(Math.abs(input.car.position.y) > 4800) {
                     improvisedDriveToDestinationController.setDestination(new Vector3(0, -5400 * (input.team == 0 ? 1 : -1), 100));
@@ -218,9 +196,6 @@ public class Normal1sV3 extends PanBot {
             }*/
         }
 
-        // calculate next desired destination
-        pathHandler.updateDestination(input);
-
         // do something about it
         skillController.setupAndUpdateOutputs(input);
 
@@ -231,6 +206,7 @@ public class Normal1sV3 extends PanBot {
         if(isRefueling) {
             // refuels boost if there is a pad near by
             refuelProximityBoostController.setupAndUpdateOutputs(input);
+            controllerLabel = "refuelProximity";
             //System.out.println("refueling");
         }
         if(input.car.boost > 90) {
@@ -258,16 +234,9 @@ public class Normal1sV3 extends PanBot {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
-        Vector3 playerPosition = input.car.position;
-        Vector3 destination = desiredDestination.getThrottleDestination();
-        Vector3 steeringPosition = desiredDestination.getSteeringDestination();
-
-        dribbleController.debug(renderer, input);
-        shadowDefenseController.debug(renderer, input);
+        skillController.debug(renderer, input);
+        renderer.drawString3d(controllerLabel, Color.YELLOW, input.car.position, 10, 10);
 
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.LIGHT_GRAY, playerPosition, destination);
-        renderer.drawLine3d(Color.MAGENTA, playerPosition, steeringPosition);
-        BezierDebugger.renderPath(desiredDestination.getPath(), Color.blue, renderer);
     }
 }

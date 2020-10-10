@@ -4,10 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.test_controller.AirDribbleTest5;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.path.PathHandler;
-import rlbotexample.bot_behaviour.path.test_paths.RandomAerialPoint;
 import util.machine_learning_models.evaluators.AirDribbleEvaluatorLogger2;
 import util.machine_learning_models.evaluators.BotEvaluator;
 import util.game_situation.*;
@@ -21,10 +18,8 @@ import java.awt.*;
 
 public class AirDribbleParameterSearcher extends PanBot {
 
-    private CarDestination desiredDestination;
     private SkillController skillController;
     private GameSituationHandler trainingPack;
-    private PathHandler pathHandler;
     private BotEvaluator botEvaluator;
     private BinarySearchHandler binarySearchHandler;
     private AirDribbleParameterSearcherFileData dataRepresentation;
@@ -34,14 +29,7 @@ public class AirDribbleParameterSearcher extends PanBot {
         trainingPack.add(new RemoveResidualVelocity());
         trainingPack.add(new AirDribbleSetup1());
 
-        desiredDestination = new CarDestination();
-
-        pathHandler = new RandomAerialPoint(desiredDestination);
-        pathHandler.generateNewPath(null);
-        skillController = new AirDribbleTest5(desiredDestination, this);
-
         dataRepresentation = new AirDribbleParameterSearcherFileData();
-        botEvaluator = new AirDribbleEvaluatorLogger2(dataRepresentation.getAirDribbleEvaluatorFileParameter(), desiredDestination);
         binarySearchHandler = new BinarySearchHandler<>(dataRepresentation);
     }
 
@@ -90,6 +78,5 @@ public class AirDribbleParameterSearcher extends PanBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         skillController.debug(renderer, input);
-        renderer.drawRectangle3d(Color.blue, desiredDestination.getThrottleDestination(), 10, 10, true);
     }
 }

@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.advanced_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.AerialOrientationHandler;
@@ -53,15 +52,11 @@ public class AerialDirectionalHit extends SkillController {
         Vector3 playerDistanceFromBall = input.ball.position.minus(playerPosition);
         Vector3 playerSpeedFromBall = input.ball.velocity.minus(playerSpeed);
 
-        double timeBeforeReachingBall = RlUtils.timeToReachAerialDestination(playerDistanceFromBall, playerSpeedFromBall);
-
         // get the future player and getNativeBallPrediction positions
         Vector3 playerFuturePosition = input.ball.position;
         if(input.ball.velocity.magnitude() > 0.1) {
             //playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingBall).getPosition();
-            playerFuturePosition = new Parabola3D(playerPosition, playerSpeed, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeBeforeReachingBall);
         }
-        Vector3 ballFuturePosition = input.ballPrediction.ballAtTime(timeBeforeReachingBall).position;
 
         // get the getNativeBallPrediction offset so we actually hit the getNativeBallPrediction to make it go in the desired direction
         Vector3 ballOffset = ballFuturePosition.minus(ballDestination.plus(new Vector3(0, 0, 1000))).scaledToMagnitude(RlConstants.BALL_RADIUS);
@@ -104,15 +99,6 @@ public class AerialDirectionalHit extends SkillController {
                 jumpHandler.setJumpType(new SimpleJump());
             }
         }
-        jumpHandler.updateJumpState(
-                input,
-                output,
-                CarDestination.getLocal(
-                        orientation.minus(playerPosition),
-                        input
-                ),
-                new Vector3()
-        );
         output.jump(jumpHandler.getJumpState());
     }
 

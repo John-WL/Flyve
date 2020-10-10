@@ -1,7 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.basic_controller;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.car_destination.CarDestination;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -42,8 +41,8 @@ public class AerialOrientationHandler extends SkillController {
     public void updateOutput(DataPacket input) {
         BotOutput output = bot.output();
         Vector3 playerPosition = input.car.position;
-        Vector3 localPlayerOrientationVector = CarDestination.getLocal(playerDestination, input);
-        Vector3 localRollDestination = CarDestination.getLocal(rollOrientation, input);
+        Vector3 localPlayerOrientationVector = playerDestination.minus(input.car.position).toFrameOfReference(input.car.orientation);
+        Vector3 localRollDestination = rollOrientation.minus(input.car.position).toFrameOfReference(input.car.orientation);
 
         double pitchAmount = pitchPid.process(new Vector2(localPlayerOrientationVector.x, -localPlayerOrientationVector.z).correctionAngle(new Vector2(1, 0)), 0);
         double yawAmount = yawPid.process(new Vector2(localPlayerOrientationVector.x, localPlayerOrientationVector.y).correctionAngle(new Vector2(1, 0)), 0);

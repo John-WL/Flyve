@@ -194,6 +194,16 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return result;
     }
 
+    public Vector3 toFrameOfReference(Orientation orientation)
+    {
+        return toFrameOfReference(orientation.getNose(), orientation.getRoof());
+    }
+
+    public Vector3 toFrameOfReference(CarOrientation orientation)
+    {
+        return toFrameOfReference(orientation.noseVector, orientation.roofVector);
+    }
+
     public Vector3 toFrameOfReference(Vector3 frontDirection, Vector3 topDirection)
     {
         // Calculate the vector without any roll yet (the roll is calculated from the topDirection vector)
