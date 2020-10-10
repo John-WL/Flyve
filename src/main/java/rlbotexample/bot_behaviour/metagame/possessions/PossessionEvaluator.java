@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.metagame.possessions;
 
 import rlbotexample.input.dynamic_data.DataPacket;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class PossessionEvaluator {
 

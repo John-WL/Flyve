@@ -9,11 +9,10 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJum
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Parabola3D;
-import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

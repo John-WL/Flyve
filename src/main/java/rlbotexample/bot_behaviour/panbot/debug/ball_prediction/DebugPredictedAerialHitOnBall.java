@@ -3,19 +3,12 @@ package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugFuturePlayerHitBox;
-import rlbotexample.bot_behaviour.panbot.debug.player_values.DebugPlayerHitBox;
-import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.HitBox;
-import rlbotexample.input.dynamic_data.Orientation;
 import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
-import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

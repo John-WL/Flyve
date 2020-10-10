@@ -5,9 +5,7 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_constants.RlConstants;
-import util.vector.Vector3;
-
-import java.awt.*;
+import util.math.vector.Vector3;
 
 public class ShadowDefense extends SkillController {
     private BotBehaviour bot;

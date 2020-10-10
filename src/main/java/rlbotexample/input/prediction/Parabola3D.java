@@ -1,6 +1,6 @@
 package rlbotexample.input.prediction;
 
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class Parabola3D {
 

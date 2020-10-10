@@ -6,7 +6,7 @@ import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

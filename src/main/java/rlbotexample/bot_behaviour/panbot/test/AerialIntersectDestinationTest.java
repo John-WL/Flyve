@@ -14,7 +14,7 @@ import util.game_situation.AerialHitSetup3;
 import util.game_situation.RemoveResidualVelocity;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class AerialIntersectDestinationTest extends PanBot {
 

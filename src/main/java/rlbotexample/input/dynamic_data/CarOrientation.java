@@ -2,7 +2,7 @@ package rlbotexample.input.dynamic_data;
 
 
 import rlbot.flat.PlayerInfo;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 /**
  * The car's orientation in space, a.k.a. what direction it's pointing.

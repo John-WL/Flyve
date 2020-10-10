@@ -5,13 +5,9 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.triple_threat.kickoff.comit_to_ball.BoostAndFlipToDestination;
 import rlbotexample.bot_behaviour.skill_controller.triple_threat.kickoff.DriveToDestination3;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
-
-import java.util.List;
+import util.math.vector.Vector3;
 
 public class KickoffSpecializedOnBoost extends SkillController {
 

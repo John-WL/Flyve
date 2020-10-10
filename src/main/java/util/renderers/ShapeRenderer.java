@@ -1,13 +1,12 @@
 package util.renderers;
 
 import rlbot.render.Renderer;
-import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.shapes.Triangle3D;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 import java.util.function.Function;

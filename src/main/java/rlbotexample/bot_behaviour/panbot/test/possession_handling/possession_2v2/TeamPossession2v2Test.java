@@ -13,7 +13,7 @@ import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToPredi
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

@@ -5,7 +5,6 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugCustomBallPrediction;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialDirectionalHit2;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialDirectionalHit3;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
@@ -13,7 +12,7 @@ import rlbotexample.output.BotOutput;
 import util.game_situation.*;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class AerialDirectionalHit3Test extends PanBot {
 

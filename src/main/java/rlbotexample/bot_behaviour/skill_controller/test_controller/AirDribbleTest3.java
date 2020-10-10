@@ -9,12 +9,10 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
-import util.game_constants.RlConstants;
 import util.parameter_configuration.ArbitraryValueSerializer;
 import util.parameter_configuration.PidSerializer;
 import parameter_search.air_dribbling.AirDribbleParameterSearcherFileData;
-import util.vector.Vector2;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

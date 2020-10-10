@@ -12,7 +12,7 @@ import rlbotexample.output.BotOutput;
 import util.game_situation.*;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 // this implementation NEEDS at least 2 bots to work!
 // else it just crashes lul

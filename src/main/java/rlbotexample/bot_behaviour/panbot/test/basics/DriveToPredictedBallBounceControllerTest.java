@@ -5,10 +5,9 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToPredictedBallBounceController;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.DrivingSpeedController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class DriveToPredictedBallBounceControllerTest extends PanBot {
 

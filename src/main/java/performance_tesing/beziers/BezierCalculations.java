@@ -1,14 +1,5 @@
 package performance_tesing.beziers;
 
-import util.bezier_curve.BezierCurve;
-import util.bezier_curve.CubicBezier;
-import util.bezier_curve.QuadraticBezier;
-import util.timer.Clock;
-import util.vector.Vector3;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class BezierCalculations {
 
     /*

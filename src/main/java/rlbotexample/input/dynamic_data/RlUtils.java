@@ -3,7 +3,7 @@ package rlbotexample.input.dynamic_data;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.game_constants.RlConstants;
 import util.timer.Timer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;

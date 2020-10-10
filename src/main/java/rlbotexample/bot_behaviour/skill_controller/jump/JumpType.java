@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.skill_controller.jump;
 
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public abstract class JumpType {
     private int jumpDuration;

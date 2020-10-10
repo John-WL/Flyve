@@ -1,7 +1,7 @@
 package rlbotexample.input.boost;
 
 
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 /**
  * Representation of one of the boost pads on the field.

@@ -1,6 +1,6 @@
 package util.shapes;
 
-import util.vector.Vector2;
+import util.math.vector.Vector2;
 
 public class Circle {
 

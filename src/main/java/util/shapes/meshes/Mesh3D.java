@@ -2,7 +2,7 @@ package util.shapes.meshes;
 
 import util.shapes.Sphere;
 import util.shapes.Triangle3D;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;

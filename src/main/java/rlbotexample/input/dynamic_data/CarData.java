@@ -1,7 +1,6 @@
 package rlbotexample.input.dynamic_data;
 
-import util.game_constants.RlConstants;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class CarData {
 

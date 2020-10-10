@@ -1,6 +1,6 @@
 package util.shapes;
 
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class Sphere {
 

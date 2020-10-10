@@ -8,10 +8,7 @@ import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.bezier_curve.PathComposite;
-import util.controllers.PidController;
-import util.controllers.ThrottleController;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.util.List;
 

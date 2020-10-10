@@ -3,13 +3,8 @@ package rlbotexample.input.geometry;
 import rlbotexample.input.dynamic_data.HitBox;
 import util.parameter_configuration.ObjFileReader;
 import util.shapes.Sphere;
-import util.shapes.Triangle3D;
-import util.shapes.meshes.Mesh3D;
 import util.shapes.meshes.MeshSplitter3D;
-import util.vector.Ray3;
-import util.vector.Vector3;
-
-import java.util.List;
+import util.math.vector.Ray3;
 
 public class StandardMapSplitMesh {
 

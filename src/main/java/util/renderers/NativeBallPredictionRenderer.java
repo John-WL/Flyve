@@ -3,7 +3,7 @@ package util.renderers;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.PredictionSlice;
 import rlbot.render.Renderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

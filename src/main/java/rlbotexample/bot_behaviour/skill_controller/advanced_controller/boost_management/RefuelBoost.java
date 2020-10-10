@@ -6,9 +6,8 @@ import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

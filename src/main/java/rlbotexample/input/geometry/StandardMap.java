@@ -2,7 +2,7 @@ package rlbotexample.input.geometry;
 
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class StandardMap extends MapMeshGeometry {
 

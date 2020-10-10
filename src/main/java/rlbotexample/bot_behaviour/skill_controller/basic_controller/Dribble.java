@@ -10,9 +10,8 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
-import util.controllers.ThrottleController;
-import util.vector.Vector2;
-import util.vector.Vector3;
+import util.math.vector.Vector2;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

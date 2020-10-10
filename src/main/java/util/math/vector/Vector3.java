@@ -1,13 +1,11 @@
-package util.vector;
+package util.math.vector;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
-import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.CarOrientation;
 import rlbotexample.input.dynamic_data.Orientation;
 import util.shapes.Triangle3D;
 
-import java.awt.*;
 import java.util.Objects;
 
 /**

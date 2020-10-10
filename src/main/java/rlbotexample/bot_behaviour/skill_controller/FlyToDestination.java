@@ -3,14 +3,10 @@ package rlbotexample.bot_behaviour.skill_controller;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
-import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
-import rlbotexample.bot_behaviour.skill_controller.jump.implementations.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.output.BotOutput;
 import util.parameter_configuration.PidSerializer;
 import util.controllers.PidController;
-import util.vector.Vector2;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class FlyToDestination extends SkillController {
 

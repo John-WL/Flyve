@@ -8,12 +8,11 @@ import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.output.BotOutput;
 import util.controllers.BoostController;
 import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

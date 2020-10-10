@@ -1,7 +1,4 @@
-package util.vector;
-
-import com.google.flatbuffers.FlatBufferBuilder;
-import rlbot.flat.Rotator;
+package util.math.vector;
 
 /**
  * A simple 3d vector class with the most essential operations.

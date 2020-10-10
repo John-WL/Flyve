@@ -3,21 +3,14 @@ package rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.basic_controller.GroundOrientationController;
-import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
-import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
-import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
-import util.renderers.ShapeRenderer;
-import util.vector.Vector2;
-import util.vector.Vector3;
-
-import java.awt.*;
+import util.math.vector.Vector2;
+import util.math.vector.Vector3;
 
 public class AerialSetupController extends SkillController {
 

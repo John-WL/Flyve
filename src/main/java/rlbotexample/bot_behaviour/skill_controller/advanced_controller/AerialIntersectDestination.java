@@ -12,7 +12,7 @@ import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

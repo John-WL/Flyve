@@ -2,7 +2,7 @@ package rlbotexample.input.prediction;
 
 import rlbotexample.input.dynamic_data.BallData;
 import util.game_constants.RlConstants;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class BallStopper {
 

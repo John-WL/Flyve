@@ -1,4 +1,4 @@
-package util.vector;
+package util.math.vector;
 
 public class Ray3 {
     public Vector3 offset;

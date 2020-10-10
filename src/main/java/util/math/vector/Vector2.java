@@ -1,4 +1,4 @@
-package util.vector;
+package util.math.vector;
 
 /**
  * A vector that only knows about x and y components.

@@ -3,7 +3,7 @@ package rlbotexample.input.prediction.ball;
 import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.prediction.Parabola3D;
 import util.game_constants.RlConstants;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class BallAerialTrajectory {
 

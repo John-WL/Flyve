@@ -4,7 +4,6 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
 import rlbotexample.bot_behaviour.skill_controller.*;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.boost_management.RefuelProximityBoost;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.defense.ShadowDefense;
@@ -19,7 +18,7 @@ import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
 import util.game_constants.RlConstants;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 import java.util.ArrayList;

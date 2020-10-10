@@ -3,7 +3,7 @@ package rlbotexample.input.dynamic_data;
 
 import rlbot.flat.BallInfo;
 import util.game_constants.RlConstants;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 /**
  * Basic information about the getNativeBallPrediction.

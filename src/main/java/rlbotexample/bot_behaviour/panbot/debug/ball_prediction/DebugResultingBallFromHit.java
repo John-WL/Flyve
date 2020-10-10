@@ -9,9 +9,6 @@ import rlbotexample.output.BotOutput;
 import util.game_situation.ball_hit.*;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
-
-import java.awt.*;
 
 public class DebugResultingBallFromHit extends PanBot {
 

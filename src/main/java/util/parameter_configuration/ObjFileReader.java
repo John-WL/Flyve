@@ -2,8 +2,8 @@ package util.parameter_configuration;
 
 import util.shapes.meshes.Mesh3DBuilder;
 import util.shapes.meshes.Mesh3D;
-import util.vector.Vector3;
-import util.vector.Vector3Int;
+import util.math.vector.Vector3;
+import util.math.vector.Vector3Int;
 
 import java.util.Arrays;
 import java.util.List;

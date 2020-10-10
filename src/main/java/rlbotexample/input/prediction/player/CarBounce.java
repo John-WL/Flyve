@@ -1,11 +1,10 @@
 package rlbotexample.input.prediction.player;
 
-import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.dynamic_data.CarData;
 import rlbotexample.input.dynamic_data.HitBox;
 import util.game_constants.RlConstants;
-import util.vector.Ray3;
-import util.vector.Vector3;
+import util.math.vector.Ray3;
+import util.math.vector.Vector3;
 
 public class CarBounce {
 

@@ -1,7 +1,7 @@
 package rlbotexample.input.dynamic_data;
 
 import rlbot.flat.BoxShape;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class HitBox {
     public final Vector3 centerPosition;

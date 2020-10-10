@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.jump.implementations;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpType;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class ShortJump extends JumpType {
 

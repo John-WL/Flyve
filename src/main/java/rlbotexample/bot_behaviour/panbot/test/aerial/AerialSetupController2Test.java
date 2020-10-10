@@ -4,7 +4,6 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController2;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -14,7 +13,7 @@ import util.game_situation.AerialHitSetup3;
 import util.game_situation.RemoveResidualVelocity;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class AerialSetupController2Test extends PanBot {
 

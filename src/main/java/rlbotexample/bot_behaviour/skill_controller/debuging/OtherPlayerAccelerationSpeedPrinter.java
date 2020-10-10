@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.debuging;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class OtherPlayerAccelerationSpeedPrinter extends SkillController {
 

@@ -4,7 +4,7 @@ import util.parameter_configuration.ObjFileReader;
 import util.shapes.meshes.Mesh3D;
 import util.shapes.Sphere;
 import util.shapes.Triangle3D;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class NotOptimizedStandardMapMesh {
 

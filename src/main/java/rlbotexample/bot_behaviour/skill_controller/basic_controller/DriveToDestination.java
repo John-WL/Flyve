@@ -5,11 +5,7 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.controllers.PidController;
-import util.controllers.ThrottleController;
-import util.vector.Vector3;
-
-import java.awt.*;
+import util.math.vector.Vector3;
 
 public class DriveToDestination extends SkillController {
 

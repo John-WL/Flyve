@@ -10,12 +10,10 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.SimpleJu
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
-import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import rlbotexample.output.BotOutput;
-import util.controllers.BoostController;
 import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
 

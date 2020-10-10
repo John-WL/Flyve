@@ -1,15 +1,12 @@
 package util.debug;
 
-import rlbot.render.NamedRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.bezier_curve.PathIterator;
 import util.bezier_curve.CurveSegment;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BezierDebugger {
 

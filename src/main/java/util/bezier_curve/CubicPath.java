@@ -1,6 +1,6 @@
 package util.bezier_curve;
 
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;

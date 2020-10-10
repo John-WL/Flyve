@@ -7,7 +7,7 @@ import util.timer.Timer;
 public class GroundDribbleSetup1 extends GameSituation {
 
     public GroundDribbleSetup1() {
-        super(new FrameTimer(100000*30));
+        super(new FrameTimer(30*30));
     }
 
     @Override

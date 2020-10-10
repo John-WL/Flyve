@@ -2,7 +2,7 @@ package rlbotexample.input.prediction.object_collisions;
 
 import rlbotexample.input.dynamic_data.BallData;
 import rlbotexample.input.dynamic_data.CarData;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class BallCollisionWithCar {
 

@@ -8,7 +8,7 @@ import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 import java.util.List;
 

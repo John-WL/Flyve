@@ -8,7 +8,7 @@ import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJum
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class Flick extends SkillController {
 

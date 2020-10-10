@@ -4,16 +4,14 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugPredictedAerialHitOnBall;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialDirectionalHit;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialIntersectDestination;
 import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 import util.game_situation.*;
 import util.game_situation.handlers.CircularTrainingPack;
 import util.game_situation.handlers.GameSituationHandler;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 // this implementation NEEDS at least 2 bots to work!
 // else it just crashes lul

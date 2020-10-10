@@ -9,8 +9,8 @@ import rlbotexample.input.prediction.player.CarBounce;
 import rlbotexample.input.prediction.player.PlayerPredictedAerialTrajectory;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
-import util.vector.Ray3;
-import util.vector.Vector3;
+import util.math.vector.Ray3;
+import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;

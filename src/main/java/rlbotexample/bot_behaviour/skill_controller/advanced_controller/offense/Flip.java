@@ -5,10 +5,9 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.jump.JumpHandler;
 import rlbotexample.bot_behaviour.skill_controller.jump.implementations.MiddleJump;
-import rlbotexample.bot_behaviour.skill_controller.jump.implementations.ShortJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.vector.Vector3;
+import util.math.vector.Vector3;
 
 public class Flip extends SkillController {
 

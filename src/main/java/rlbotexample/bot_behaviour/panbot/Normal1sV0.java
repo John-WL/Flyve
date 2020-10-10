@@ -2,14 +2,10 @@ package rlbotexample.bot_behaviour.panbot;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.debug.BezierDebugger;
-import util.vector.Vector3;
-
-import java.awt.*;
+import util.math.vector.Vector3;
 
 public class Normal1sV0 extends PanBot {
 

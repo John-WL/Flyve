@@ -10,8 +10,8 @@ import rlbotexample.input.geometry.StandardMap;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
-import util.vector.Vector2;
-import util.vector.Vector3;
+import util.math.vector.Vector2;
+import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
