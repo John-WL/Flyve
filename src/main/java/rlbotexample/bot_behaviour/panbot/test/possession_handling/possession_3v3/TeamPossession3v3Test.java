@@ -6,12 +6,12 @@ import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.aerials.AerialSetupController2;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Dribble;
-import rlbotexample.bot_behaviour.skill_controller.advanced_controller.offense.Flick;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.AerialOrientationHandler;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToDestination;
-import rlbotexample.bot_behaviour.skill_controller.basic_controller.DriveToPredictedBallBounceController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Flick;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ExtendedCarData;
 import rlbotexample.output.BotOutput;
@@ -32,7 +32,7 @@ public class TeamPossession3v3Test extends PanBot {
     private DriveToDestination driveToDestination2ControllerForLastMan;
     private AerialSetupController2 aerialSetupController;
     private AerialOrientationHandler aerialRecoveryController;
-    private Dribble dribbleController;
+    private Dribble2 dribbleController;
     private Flick flickController;
 
     public TeamPossession3v3Test() {

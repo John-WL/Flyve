@@ -2,10 +2,8 @@ package parameter_search.air_dribbling;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.skill_controller.test_controller.AirDribbleTest5;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import util.machine_learning_models.evaluators.AirDribbleEvaluatorLogger2;
 import util.machine_learning_models.evaluators.BotEvaluator;
 import util.game_situation.*;
 import util.game_situation.handlers.FiniteTrainingPack;
@@ -13,8 +11,6 @@ import util.game_situation.handlers.GameSituationHandler;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.machine_learning_models.binary_search.BinarySearchHandler;
-
-import java.awt.*;
 
 public class AirDribbleParameterSearcher extends PanBot {
 

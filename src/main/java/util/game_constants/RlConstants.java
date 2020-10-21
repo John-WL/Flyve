@@ -26,4 +26,7 @@ public class RlConstants {
     public static final double WALL_DISTANCE_Y = 5120;
     public static final double GOAL_SIZE_X = 1786;
 
+    public static final double AMOUNT_OF_TIME_BEFORE_LOSING_SECOND_JUMP = 1.25;
+
+    public static final double BOT_REFRESH_RATE = 30;
 }

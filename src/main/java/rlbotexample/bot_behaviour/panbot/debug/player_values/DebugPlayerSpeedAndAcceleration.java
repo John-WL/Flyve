@@ -3,10 +3,9 @@ package rlbotexample.bot_behaviour.panbot.debug.player_values;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.debuging.OtherPlayerAccelerationSpeedPrinter;
+import rlbotexample.bot_behaviour.skill_controller.debug.OtherPlayerAccelerationSpeedPrinter;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
 
 public class DebugPlayerSpeedAndAcceleration extends PanBot {

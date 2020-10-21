@@ -29,7 +29,7 @@ public class JavaExample {
             return DEFAULT_PORT;
         });
 
-        // cap refresh rates so the bot can run smoothly on low level pc
+        // cap refresh rates so the bot can run smoothly on cheap pc
         botManager.setRefreshRate(30);
 
         SamplePythonInterface pythonInterface = new SamplePythonInterface(port, botManager);

@@ -17,6 +17,7 @@ import java.util.Objects;
 public class Vector3 extends rlbot.vector.Vector3 {
 
     public static final Vector3 UP_VECTOR = new Vector3(0, 0, 1);
+    public static final Vector3 DOWN_VECTOR = new Vector3(0, 0, -1);
 
     public Vector3(double x, double y, double z) {
         super((float) x, (float) y, (float) z);

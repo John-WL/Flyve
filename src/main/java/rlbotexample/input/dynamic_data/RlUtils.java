@@ -5,8 +5,8 @@ import util.game_constants.RlConstants;
 import util.timer.Timer;
 import util.math.vector.Vector3;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class RlUtils {
 
@@ -16,12 +16,37 @@ public class RlUtils {
     private static Timer ballPredictionReloadTimeout = new Timer(0).start();
     private static AdvancedBallPrediction ballPrediction = new AdvancedBallPrediction(new BallData(new Vector3(), new Vector3(), new Vector3(), 0), new ArrayList<CarData>(), 0, BALL_PREDICTION_REFRESH_RATE);
 
+    private static final List<Integer> amountOfFramesSinceFirstJumpOccurredForAllPlayers = new ArrayList<>();
+
     public static AdvancedBallPrediction ballPrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
         if(playerIndex == 0 && ballPredictionReloadTimeout.isTimeElapsed()) {
-            ballPredictionReloadTimeout = new Timer(0.0333333).start();
+            ballPredictionReloadTimeout = new Timer(1.0/RlConstants.BOT_REFRESH_RATE).start();
             ballPrediction = new AdvancedBallPrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
         }
         return ballPrediction;
+    }
+
+    public static int getPreviousAmountOfFramesSinceFirstJumpOccurred(int playerIndex) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                return amountOfFramesSinceFirstJumpOccurredForAllPlayers.get(playerIndex);
+            } catch (Exception e) {
+                amountOfFramesSinceFirstJumpOccurredForAllPlayers.add(0);
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    public static void setPreviousAmountOfFramesSinceFirstJumpOccurred(int playerIndex, int framesSinceFirstJumpOccurred) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                amountOfFramesSinceFirstJumpOccurredForAllPlayers.set(playerIndex, framesSinceFirstJumpOccurred);
+                return;
+            } catch (Exception e) {
+                amountOfFramesSinceFirstJumpOccurredForAllPlayers.add(0);
+            }
+        }
+        throw new RuntimeException();
     }
 
     // good enough approximation of time before aerial hit for now.
