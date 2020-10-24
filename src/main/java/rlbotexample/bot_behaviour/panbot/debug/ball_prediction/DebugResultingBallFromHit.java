@@ -6,14 +6,14 @@ import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
-import util.game_situation.ball_hit.*;
-import util.game_situation.handlers.CircularTrainingPack;
-import util.game_situation.handlers.GameSituationHandler;
+import util.game_situation.situations.ball_hit.*;
+import util.game_situation.trainning_pack.CircularTrainingPack;
+import util.game_situation.trainning_pack.TrainingPack;
 
 public class DebugResultingBallFromHit extends PanBot {
 
     private Predictions predictions;
-    private GameSituationHandler gameSituationHandler;
+    private TrainingPack gameSituationHandler;
 
     public DebugResultingBallFromHit() {
         gameSituationHandler = new CircularTrainingPack();

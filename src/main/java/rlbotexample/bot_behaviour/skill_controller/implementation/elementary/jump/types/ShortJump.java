@@ -7,8 +7,8 @@ import util.math.vector.Vector3;
 
 public class ShortJump extends JumpType {
 
-    private static final int JUMP_DURATION = 2;
-    private static final int[] JUMP_TIME_FRAMES = {2};
+    private static final int JUMP_DURATION = 1;
+    private static final int[] JUMP_TIME_FRAMES = {1};
 
     public ShortJump() {
         super(JUMP_DURATION);
@@ -18,17 +18,11 @@ public class ShortJump extends JumpType {
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation) {
         updateCurrentJumpCallCounter();
 
-        if(this.getCurrentJumpCallCounter() < JUMP_TIME_FRAMES[0]) {
+        if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
             output.pitch(0);
             output.yaw(0);
             output.roll(0);
-        }
-
-        if(this.getCurrentJumpCallCounter() + 1 == JUMP_TIME_FRAMES[0]) {
-            output.jump(false);
-        }
-        else {
-            output.jump(getCurrentJumpCallCounter() <= JUMP_DURATION);
+            output.jump(true);
         }
     }
 }

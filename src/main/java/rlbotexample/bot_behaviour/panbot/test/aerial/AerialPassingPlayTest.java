@@ -8,9 +8,10 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aeria
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.game_situation.*;
-import util.game_situation.handlers.CircularTrainingPack;
-import util.game_situation.handlers.GameSituationHandler;
+import util.game_situation.situations.aerial_hit.AerialPassingPlaySetup1;
+import util.game_situation.miscellaneous.RemoveResidualVelocity;
+import util.game_situation.trainning_pack.CircularTrainingPack;
+import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
 // this implementation NEEDS at least 2 bots to work!
@@ -20,7 +21,7 @@ public class AerialPassingPlayTest extends PanBot {
     private AerialSetupController aerialDirectionalHitControllerBot0;
     private AerialSetupController aerialDirectionalHitControllerBot1;
     private AerialIntersectDestination aerialIntersectDestinationBot1;
-    private GameSituationHandler gameSituationHandler;
+    private TrainingPack gameSituationHandler;
 
     public AerialPassingPlayTest() {
         aerialDirectionalHitControllerBot0 = new AerialSetupController(this);

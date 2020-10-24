@@ -2,8 +2,8 @@ package util.math.vector;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
-import rlbotexample.input.dynamic_data.CarOrientation;
-import rlbotexample.input.dynamic_data.Orientation;
+import rlbotexample.input.dynamic_data.car.CarOrientation;
+import rlbotexample.input.dynamic_data.car.Orientation;
 import util.shapes.Triangle3D;
 
 import java.util.Objects;

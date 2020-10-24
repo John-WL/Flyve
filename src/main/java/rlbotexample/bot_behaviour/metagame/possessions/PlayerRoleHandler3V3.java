@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.metagame.possessions;
 
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 
 import java.util.ArrayList;
 import java.util.List;

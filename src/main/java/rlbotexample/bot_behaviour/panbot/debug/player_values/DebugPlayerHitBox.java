@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.panbot.debug.player_values;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;

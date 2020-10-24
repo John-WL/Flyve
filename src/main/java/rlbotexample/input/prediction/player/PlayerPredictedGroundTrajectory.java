@@ -1,6 +1,6 @@
 package rlbotexample.input.prediction.player;
 
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.car.CarData;
 import util.math.vector.Vector3;
 
 public class PlayerPredictedGroundTrajectory {

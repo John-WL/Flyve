@@ -1,6 +1,6 @@
 package rlbotexample.input.prediction.player;
 
-import rlbotexample.input.dynamic_data.CarData;
+import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.prediction.Parabola3D;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;

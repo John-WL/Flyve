@@ -1,6 +1,6 @@
 package util.shapes.meshes;
 
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.car.HitBox;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
 import util.shapes.Triangle3D;

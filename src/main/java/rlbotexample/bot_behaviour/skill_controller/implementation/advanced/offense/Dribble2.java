@@ -77,7 +77,7 @@ public class Dribble2 extends SkillController {
     private Vector3 findFrontAndBackBallOffsetFromCar(DataPacket input) {
         // front is positive, back negative
         double sensitivityOfSpeedError = 1300;      // this value is arbitrary, and is tweakable to the desired "aggressivity" of corrections
-        double allowedRangeOfBallPositionOnCar = input.car.hitBox.cornerPosition.x + RlConstants.BALL_RADIUS/2;
+        double allowedRangeOfBallPositionOnCar = input.car.hitBox.cornerPosition.x;// + RlConstants.BALL_RADIUS/2;
         double optimalFrontAndBackOffsetAmount = clamp((ballTargetSpeed - input.ball.velocity.magnitude())*speedFactorToConvergeToDestination(input), -sensitivityOfSpeedError, sensitivityOfSpeedError);
         optimalFrontAndBackOffsetAmount /= sensitivityOfSpeedError;    // normalize
         optimalFrontAndBackOffsetAmount *= allowedRangeOfBallPositionOnCar;

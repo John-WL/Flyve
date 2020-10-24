@@ -8,7 +8,7 @@ import util.math.vector.Vector3;
 public class FishDash extends JumpType {
 
     private static final int JUMP_DURATION = 1;
-    private static final int[] JUMP_TIME_FRAMES = {};
+    private static final int[] JUMP_TIME_FRAMES = {1};
 
     public FishDash() {
         super(JUMP_DURATION);
@@ -17,8 +17,10 @@ public class FishDash extends JumpType {
     @Override
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation) {
         updateCurrentJumpCallCounter();
-        output.jump(getCurrentJumpCallCounter() <= JUMP_DURATION);
 
+        if(getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
+            output.jump(true);
+        }
         if(!this.isJumpFinished()) {
             output.drift(true);
         }

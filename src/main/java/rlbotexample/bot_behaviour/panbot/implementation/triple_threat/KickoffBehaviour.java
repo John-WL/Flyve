@@ -10,7 +10,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.get_bo
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 

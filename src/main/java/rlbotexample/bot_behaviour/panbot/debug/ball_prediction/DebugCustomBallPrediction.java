@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.input.dynamic_data.BallData;
+import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 

@@ -8,8 +8,8 @@ import util.math.vector.Vector3;
 
 public class HalfFlip extends JumpType {
 
-    private static final int JUMP_DURATION = 20;
-    private static final int[] JUMP_TIME_FRAMES = {2};
+    private static final int JUMP_DURATION = 28;
+    private static final int[] JUMP_TIME_FRAMES = {1, 10, 11, 22};
 
     public HalfFlip() {
         super(JUMP_DURATION);
@@ -19,19 +19,28 @@ public class HalfFlip extends JumpType {
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation) {
         updateCurrentJumpCallCounter();
 
-
-        if(this.getCurrentJumpCallCounter() >= JUMP_TIME_FRAMES[0]) {
-            Vector2 flipDirections = desiredFrontOrientation.flatten().scaledToMagnitude(2);
-            output.pitch(-flipDirections.x);
-            output.yaw(-flipDirections.y);
+        if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
+            output.pitch(1);
+            output.yaw(0);
+            output.roll(0);
+            output.jump(true);
+        }
+        if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[1]
+                && this.getCurrentJumpCallCounter() <= JUMP_TIME_FRAMES[2]) {
+            output.pitch(-1);
+            output.yaw(0);
             output.roll(0);
         }
-        if(this.getCurrentJumpCallCounter() + 1 == JUMP_TIME_FRAMES[0]) {
-            // send a "no-jump" so we can jump a second time the next frame
-            output.jump(false);
+        if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[2]
+                && this.getCurrentJumpCallCounter() <= JUMP_TIME_FRAMES[3]) {
+            output.pitch(-1);
+            output.yaw(0);
+            output.roll(-1);
         }
-        else {
-            output.jump(getCurrentJumpCallCounter() <= JUMP_DURATION);
+        if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[3]) {
+            output.pitch(0);
+            output.yaw(0);
+            output.roll(-1);
         }
     }
 }

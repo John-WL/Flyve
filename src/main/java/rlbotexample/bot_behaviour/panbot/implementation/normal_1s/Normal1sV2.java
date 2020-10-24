@@ -7,7 +7,7 @@ import rlbotexample.bot_behaviour.skill_controller.*;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boost_management.RefuelProximityBoost;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defense.ShadowDefense;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;

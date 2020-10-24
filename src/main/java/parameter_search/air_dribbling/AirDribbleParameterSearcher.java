@@ -4,10 +4,11 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.panbot.PanBot;
+import util.game_situation.situations.air_dribble.AirDribbleSetup1;
+import util.game_situation.miscellaneous.RemoveResidualVelocity;
 import util.machine_learning_models.evaluators.BotEvaluator;
-import util.game_situation.*;
-import util.game_situation.handlers.FiniteTrainingPack;
-import util.game_situation.handlers.GameSituationHandler;
+import util.game_situation.trainning_pack.FiniteTrainingPack;
+import util.game_situation.trainning_pack.TrainingPack;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.machine_learning_models.binary_search.BinarySearchHandler;
@@ -15,7 +16,7 @@ import util.machine_learning_models.binary_search.BinarySearchHandler;
 public class AirDribbleParameterSearcher extends PanBot {
 
     private SkillController skillController;
-    private GameSituationHandler trainingPack;
+    private TrainingPack trainingPack;
     private BotEvaluator botEvaluator;
     private BinarySearchHandler binarySearchHandler;
     private AirDribbleParameterSearcherFileData dataRepresentation;

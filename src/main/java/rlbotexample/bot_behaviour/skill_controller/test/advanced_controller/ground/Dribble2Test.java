@@ -6,15 +6,16 @@ import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.game_situation.*;
-import util.game_situation.handlers.CircularTrainingPack;
-import util.game_situation.handlers.GameSituationHandler;
+import util.game_situation.situations.ground_dribble.GroundDribbleSetup1;
+import util.game_situation.situations.ground_dribble.GroundDribbleSetup2;
+import util.game_situation.trainning_pack.CircularTrainingPack;
+import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
 public class Dribble2Test extends PanBot {
 
     private Dribble2 dribbleController;
-    private GameSituationHandler gameSituationHandler;
+    private TrainingPack gameSituationHandler;
 
     public Dribble2Test() {
         gameSituationHandler = new CircularTrainingPack();

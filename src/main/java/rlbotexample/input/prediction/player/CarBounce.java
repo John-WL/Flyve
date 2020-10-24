@@ -1,7 +1,7 @@
 package rlbotexample.input.prediction.player;
 
-import rlbotexample.input.dynamic_data.CarData;
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.HitBox;
 import util.game_constants.RlConstants;
 import util.math.vector.Ray3;
 import util.math.vector.Vector3;

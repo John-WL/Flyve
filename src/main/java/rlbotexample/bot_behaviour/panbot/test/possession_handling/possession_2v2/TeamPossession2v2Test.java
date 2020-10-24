@@ -11,7 +11,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aer
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 

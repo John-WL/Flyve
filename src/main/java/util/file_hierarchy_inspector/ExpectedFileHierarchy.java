@@ -6,9 +6,9 @@ import java.util.List;
 
 public class ExpectedFileHierarchy {
 
-    private String hierarchyRoot;
-    private List<ExpectedFileHierarchy> expectedFileHierarchyList;
-    private List<String> expectedFileList;
+    public String hierarchyRoot;
+    public List<ExpectedFileHierarchy> expectedFileHierarchyList;
+    public List<String> expectedFileList;
 
     public ExpectedFileHierarchy(String hierarchyRoot) {
         this.hierarchyRoot = hierarchyRoot;
@@ -35,14 +35,14 @@ public class ExpectedFileHierarchy {
         if(!root.exists()) {
             isInRule = false;
         }
-        // test all files
+        // test all files in the root folder
         for(String fileName: expectedFileList) {
             File fileToTest = new File(hierarchyRoot + "\\" + fileName);
             if(!fileToTest.exists()) {
                 isInRule = false;
             }
         }
-        // test all folders (and all files and folders recursively)
+        // test all nested folders (and all nested files and folders recursively)
         for(ExpectedFileHierarchy folder: expectedFileHierarchyList) {
             if(!folder.inspect()) {
                 isInRule = false;
@@ -74,32 +74,9 @@ public class ExpectedFileHierarchy {
 
     @Override
     public String toString() {
+        FileHierarchySerializer serializer = new FileHierarchySerializer(this);
         return "Expected file hierarchy:\n"
-                + toString(0);
-    }
-
-    private String toString(int numberOfTabulations) {
-        StringBuilder result;
-
-        // put n tabulations if we're in the nth folder deep down from root
-        StringBuilder tabulations = new StringBuilder();
-        for(int i = 0; i < numberOfTabulations; i++) {
-            tabulations.append("\t");
-        }
-
-        // add root folder name
-        result = new StringBuilder(tabulations + hierarchyRoot + "\n");
-
-        // add all file names
-        for(String fileName: expectedFileList) {
-            result.append("\t").append(tabulations).append(fileName).append("\n");
-        }
-        // test all files and folders recursively in the folders
-        for(ExpectedFileHierarchy folder: expectedFileHierarchyList) {
-            result.append(folder.toString(numberOfTabulations + 1));
-        }
-
-        return result.toString();
+                + serializer.serialize();
     }
 }
 

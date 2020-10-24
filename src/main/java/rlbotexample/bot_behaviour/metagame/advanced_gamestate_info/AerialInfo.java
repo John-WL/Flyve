@@ -1,8 +1,8 @@
 package rlbotexample.bot_behaviour.metagame.advanced_gamestate_info;
 
-import rlbotexample.input.dynamic_data.BallData;
+import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;

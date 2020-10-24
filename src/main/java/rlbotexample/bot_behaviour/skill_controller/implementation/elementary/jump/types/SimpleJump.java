@@ -8,7 +8,7 @@ import util.math.vector.Vector3;
 public class SimpleJump extends JumpType {
 
     private static final int JUMP_DURATION = 8;
-    private static final int[] JUMP_TIME_FRAMES = {2};
+    private static final int[] JUMP_TIME_FRAMES = {1, 8};
 
     public SimpleJump() {
         super(JUMP_DURATION);
@@ -20,13 +20,14 @@ public class SimpleJump extends JumpType {
 
 
         if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
-            output.jump(true);
             output.pitch(0);
             output.yaw(0);
             output.roll(0);
         }
 
-        output.jump(getCurrentJumpCallCounter() <= JUMP_DURATION
-                && this.getCurrentJumpCallCounter() >= JUMP_TIME_FRAMES[0]);
+        if(getCurrentJumpCallCounter() >= JUMP_TIME_FRAMES[0] &&
+                getCurrentJumpCallCounter() <= JUMP_TIME_FRAMES[1]) {
+            output.jump(true);
+        }
     }
 }

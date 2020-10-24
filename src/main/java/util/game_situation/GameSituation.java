@@ -26,7 +26,7 @@ public abstract class GameSituation {
         return gameStateDuration.isTimeElapsed();
     }
 
-    public void frameHappend() {
+    public void frameHappened() {
         gameStateDuration.countFrame();
     }
 

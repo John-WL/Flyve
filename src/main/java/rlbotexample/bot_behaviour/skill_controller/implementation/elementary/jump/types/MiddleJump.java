@@ -17,19 +17,12 @@ public class MiddleJump extends JumpType {
     @Override
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation) {
         updateCurrentJumpCallCounter();
-        output.jump(false);
 
         if(this.getCurrentJumpCallCounter() < JUMP_TIME_FRAMES[0]) {
             output.pitch(0);
             output.yaw(0);
             output.roll(0);
             output.jump(true);
-        }
-
-        if(this.getCurrentJumpCallCounter() + 1 == JUMP_TIME_FRAMES[0]) {
-        }
-        else {
-            //setJumpState(getCurrentJumpCallCounter() <= JUMP_DURATION);
         }
     }
 }

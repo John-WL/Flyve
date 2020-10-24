@@ -26,4 +26,8 @@ public abstract class JumpType {
     public boolean isJumpFinished() {
         return currentJumpCallCounter > jumpDuration;
     }
+
+    public boolean canBeReloaded() {
+        return currentJumpCallCounter > 2 || isJumpFinished();
+    }
 }

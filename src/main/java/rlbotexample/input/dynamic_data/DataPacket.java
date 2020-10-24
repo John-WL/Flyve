@@ -2,6 +2,9 @@ package rlbotexample.input.dynamic_data;
 
 import rlbot.flat.GameTickPacket;
 import rlbotexample.input.boost.BoostManager;
+import rlbotexample.input.dynamic_data.ball.BallData;
+import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 
 import java.util.ArrayList;

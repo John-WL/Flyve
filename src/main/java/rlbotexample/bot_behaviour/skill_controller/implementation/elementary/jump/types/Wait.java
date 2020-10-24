@@ -17,6 +17,5 @@ public class Wait extends JumpType {
     @Override
     public void jump(DataPacket input, BotOutput output, Vector3 desiredFrontOrientation) {
         updateCurrentJumpCallCounter();
-        output.jump(false);
     }
 }

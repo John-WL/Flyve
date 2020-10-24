@@ -15,7 +15,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.gen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.comit_to_ball.KickoffSpecializedOnBall;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
 import util.game_constants.RlConstants;

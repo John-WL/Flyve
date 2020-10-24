@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defe
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.input.dynamic_data.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;

@@ -6,6 +6,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Flip;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
@@ -15,58 +16,60 @@ public class Flick extends SkillController {
     private static final double PLAYER_DISTANCE_FROM_BALL_WHEN_CONSIDERED_FLICKING = 130;
 
     private BotBehaviour bot;
-    private Dribble2 dribbleController;
-    private JumpController jumpHandler;
+    private Dribble3 dribbleController;
+    private JumpController jumpController;
+    private Vector3 ballDestination;
+    private double ballSpeed;
     private boolean isFlicking;
-    private boolean isLastFlickingFrame;
 
     public Flick(BotBehaviour bot) {
         this.bot = bot;
-        this.dribbleController = new Dribble2(bot);
-        this.jumpHandler = new JumpController(bot);
+        this.dribbleController = new Dribble3(bot);
+        this.jumpController = new JumpController(bot);
+        this.ballDestination = new Vector3();
+        this.ballSpeed = 1200;
         this.isFlicking = false;
-        this.isLastFlickingFrame = false;
+    }
+
+    public void setBallDestination(Vector3 ballDestination) {
+        this.ballDestination = ballDestination;
+    }
+
+    public void setBallSpeed(double speed) {
+        this.ballSpeed = speed;
     }
 
     @Override
     public void updateOutput(DataPacket input) {
-        // get useful values
-        Vector3 playerPosition = input.car.position;
-        Vector3 playerNoseOrientation = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
         Vector3 localBallPosition = ballPosition.minus(input.car.position).toFrameOfReference(input.car.orientation);
-        //Vector3 nonUniformScaledPlayerDistanceFromBall = ((aerialKinematicBody.minus(getNativeBallPrediction)).minusAngle(playerNoseOrientation)).scaled(1, 1, 1);
-
-        /*
-        // if the bot can flick
-        if(nonUniformScaledPlayerDistanceFromBall.magnitude() < PLAYER_DISTANCE_FROM_BALL_WHEN_CONSIDERED_FLICKING) {
-            // flick
-            isFlicking = true;
-        } */
 
         // if the bot can flick
-        if(Math.abs(localBallPosition.z) < 160
-                && Math.abs(localBallPosition.x) < 120
-                && Math.abs(localBallPosition.y) < 155
+        if(Math.abs(localBallPosition.z) < 180
+                && Math.abs(localBallPosition.x) < 90
+                && Math.abs(localBallPosition.y) < 90
                 && !isFlicking) {
             // flick
             isFlicking = true;
-            //System.out.println("flick");
+            System.out.println("flick");
+        }
+        else {
+            isFlicking = false;
         }
 
         if(isFlicking) {
-            updateJumpBehaviour(input);
+            jumpController.setJumpDestination(ballDestination);
+            jumpController.setFirstJumpType(new SimpleJump(), input);
+            jumpController.setSecondJumpType(new Flip(), input);
+            jumpController.updateOutput(input);
         }
         else {
             // try to dribble so we can flick afterwards
+            bot.output().jump(false);
+            dribbleController.setBallDestination(ballDestination);
+            dribbleController.setBallSpeed(ballSpeed);
             dribbleController.updateOutput(input);
         }
-    }
-
-    private void updateJumpBehaviour(DataPacket input) {
-        // get useful values
-        BotOutput output = bot.output();
-        Vector3 ballPosition = input.ball.position;
     }
 
     @Override

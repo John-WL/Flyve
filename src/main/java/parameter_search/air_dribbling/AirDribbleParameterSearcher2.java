@@ -7,16 +7,16 @@ import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.machine_learning_models.evaluators.BotEvaluator;
-import util.game_situation.AirDribbleSetup1;
-import util.game_situation.RemoveResidualVelocity;
-import util.game_situation.handlers.FiniteTrainingPack;
-import util.game_situation.handlers.GameSituationHandler;
+import util.game_situation.situations.air_dribble.AirDribbleSetup1;
+import util.game_situation.miscellaneous.RemoveResidualVelocity;
+import util.game_situation.trainning_pack.FiniteTrainingPack;
+import util.game_situation.trainning_pack.TrainingPack;
 import util.machine_learning_models.hyperparameter_search.ParameterBruteForce3;
 
 public class AirDribbleParameterSearcher2 extends PanBot {
 
     private SkillController skillController;
-    private GameSituationHandler trainingPack;
+    private TrainingPack trainingPack;
     private BotEvaluator botEvaluator;
     private ParameterBruteForce3 hyperParameterBruteForce;
     private AirDribbleParameterSearcherFileData dataRepresentation;

@@ -1,6 +1,6 @@
 package rlbotexample.input.prediction.ball;
 
-import rlbotexample.input.dynamic_data.BallData;
+import rlbotexample.input.dynamic_data.ball.BallData;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 

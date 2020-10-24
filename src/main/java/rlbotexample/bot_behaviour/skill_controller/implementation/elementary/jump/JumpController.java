@@ -29,13 +29,13 @@ public class JumpController extends SkillController {
     }
 
     public void setFirstJumpType(JumpType jumpType, DataPacket input) {
-        if(hasFirstJump(input) && firstJumpType.isJumpFinished()) {
+        if(hasFirstJump(input) && firstJumpType.canBeReloaded()) {
             this.firstJumpType = jumpType;
         }
     }
 
     public void setSecondJumpType(JumpType jumpType, DataPacket input) {
-        if(hasSecondJump(input) && hasFirstJump(input) && secondJumpType.isJumpFinished()) {
+        if(hasSecondJump(input) && secondJumpType.canBeReloaded()) {
             this.secondJumpType = jumpType;
         }
     }
@@ -62,7 +62,7 @@ public class JumpController extends SkillController {
             jumpType = new Wait();
         }
         bot.output().jump(false);
-        jumpType.jump(input, bot.output(), jumpDestination.minus(input.car.position).toFrameOfReference(input.car.orientation));
+        jumpType.jump(input, bot.output(), jumpDestination.minus(input.car.position).normalized().minusAngle(input.car.orientation.noseVector.scaled(-1)));
     }
 
     private boolean hasFirstJump(DataPacket input) {

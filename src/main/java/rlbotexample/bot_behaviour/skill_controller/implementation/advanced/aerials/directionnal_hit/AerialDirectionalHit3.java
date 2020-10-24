@@ -92,7 +92,11 @@ public class AerialDirectionalHit3 extends SkillController {
         }
         aerialOrientationHandler.updateOutput(input);
 
+
         // jump to the destination if we're on the ground
+        this.jumpHandler.setFirstJumpType(new SimpleJump(), input);
+        this.jumpHandler.setSecondJumpType(new ShortJump(), input);
+        this.jumpHandler.updateOutput(input);
     }
 
     private double findClosestTimeBetweenPlayerAndBallTrajectory(DataPacket input) {

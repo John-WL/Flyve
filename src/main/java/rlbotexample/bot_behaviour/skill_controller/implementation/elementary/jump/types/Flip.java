@@ -9,7 +9,7 @@ import util.math.vector.Vector3;
 public class Flip extends JumpType {
 
     private static final int JUMP_DURATION = 20;
-    private static final int[] JUMP_TIME_FRAMES = {2};
+    private static final int[] JUMP_TIME_FRAMES = {1, 20};
 
     public Flip() {
         super(JUMP_DURATION);
@@ -21,13 +21,13 @@ public class Flip extends JumpType {
 
         if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
             Vector2 flipDirections = desiredFrontOrientation.flatten().normalized();
-            output.pitch(-flipDirections.x);
-            output.yaw(-flipDirections.y);
+            output.pitch(flipDirections.x);
+            output.yaw(flipDirections.y);
             output.roll(0);
             output.jump(true);
-            //System.out.println(flipDirections);
         }
-        else if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[0] && !this.isJumpFinished()) {
+        else if(this.getCurrentJumpCallCounter() > JUMP_TIME_FRAMES[0]
+                && this.getCurrentJumpCallCounter() <= JUMP_TIME_FRAMES[1]) {
             output.pitch(0);
             output.yaw(0);
             output.roll(0);

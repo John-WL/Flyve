@@ -4,7 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 

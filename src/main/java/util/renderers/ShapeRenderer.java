@@ -1,7 +1,7 @@
 package util.renderers;
 
 import rlbot.render.Renderer;
-import rlbotexample.input.dynamic_data.HitBox;
+import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;

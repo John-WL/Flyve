@@ -5,7 +5,7 @@ import util.machine_learning_models.generic_data_structure.generic_data.LogFileP
 import util.machine_learning_models.generic_data_structure.generic_data.SafeLineIncrementFileParameter;
 import util.machine_learning_models.generic_data_structure.list.GenericDataList;
 import util.file_hierarchy_inspector.ExpectedFileHierarchy;
-import util.file_hierarchy_inspector.UnexpectedFileHierarchy;
+import util.file_hierarchy_inspector.UnexpectedFileHierarchyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,7 @@ public class AirDribbleParameterSearcherFileData extends GenericDataList<FilePar
         try {
             inspectFileHierarchy();
         }
-        catch(UnexpectedFileHierarchy e) {
+        catch(UnexpectedFileHierarchyException e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
@@ -115,7 +115,7 @@ public class AirDribbleParameterSearcherFileData extends GenericDataList<FilePar
         return fileParameters;
     }
 
-    private static void inspectFileHierarchy() throws UnexpectedFileHierarchy {
+    private static void inspectFileHierarchy() throws UnexpectedFileHierarchyException {
         // build expected internal file hierarchy composition.
         // if some folders or some files (some files?) are missing, then throw.
         ExpectedFileHierarchy expectedFileTree = new ExpectedFileHierarchy(ROOT);
@@ -135,6 +135,6 @@ public class AirDribbleParameterSearcherFileData extends GenericDataList<FilePar
         );
         boolean isTreeAsExpected = expectedFileTree.inspect();
 
-        if(!isTreeAsExpected) throw new UnexpectedFileHierarchy(expectedFileTree);
+        if(!isTreeAsExpected) throw new UnexpectedFileHierarchyException(expectedFileTree);
     }
 }

@@ -26,9 +26,10 @@ public class JumpTest extends PanBot {
 
         //if(System.currentTimeMillis() % 1600 < 800) {
             jumpController.setFirstJumpType(new SimpleJump(), input);
-            jumpController.setSecondJumpType(new ShortJump(), input);
+            jumpController.setSecondJumpType(new Stall(), input);
             jumpController.setJumpDestination(new Vector3());
             jumpController.updateOutput(input);
+            output().drift(true);
         //}
 
         //System.out.println("First Jump: " + input.allCars.get(1-input.car.playerIndex).hasFirstJump);
