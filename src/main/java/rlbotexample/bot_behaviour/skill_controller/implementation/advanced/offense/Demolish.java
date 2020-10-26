@@ -3,6 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offe
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialIntersectDestination2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
@@ -11,6 +12,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
+import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
 import java.awt.*;
@@ -21,10 +23,10 @@ public class Demolish extends SkillController {
     private int indexOfPlayerToDemolish;
     private ExtendedCarData carToDemo;
     private Vector3 carDestination;
-    private JumpController jumpController;
 
     private DrivingSpeedController drivingSpeedController;
     private GroundOrientationController groundOrientationController;
+    private JumpController jumpController;
 
     public Demolish(BotBehaviour bot) {
         this.bot = bot;
@@ -34,7 +36,6 @@ public class Demolish extends SkillController {
 
         this.drivingSpeedController = new DrivingSpeedController(bot);
         this.groundOrientationController = new GroundOrientationController(bot);
-
         this.jumpController = new JumpController(bot);
     }
 
@@ -59,8 +60,10 @@ public class Demolish extends SkillController {
             bot.output().boost(!input.car.isSupersonic);
         }
 
-        if(input.car.position.minus(carToDemo.position).magnitude() > 4000
-                && input.car.position.minus(carDestination).magnitude() > 4000
+        if(input.car.position.minus(carToDemo.position).magnitude() > 3000
+                && input.car.position.minus(carDestination).magnitude() > 3000
+                && input.car.velocity.dotProduct(input.car.orientation.noseVector) > 800
+                && !input.car.isSupersonic
                 && input.car.orientation.noseVector.dotProduct(carDestination.minus(input.car.position).normalized()) > 0.9) {
             jumpController.setFirstJumpType(new ShortJump(), input);
             jumpController.setSecondJumpType(new SpeedFlip(), input);

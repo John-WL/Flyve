@@ -30,7 +30,6 @@ public class GroundDirectionalHitTest extends PanBot {
         } else {
             groundDirectionalHit.setBallDestination(new Vector3(0, 5200, 100));
         }
-        groundDirectionalHit.setBallDestination(input.allCars.get(1-input.playerIndex).position);
         groundDirectionalHit.updateOutput(input);
 
         return super.output();

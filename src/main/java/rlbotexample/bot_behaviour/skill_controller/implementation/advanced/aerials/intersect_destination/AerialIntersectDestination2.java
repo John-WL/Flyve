@@ -59,6 +59,9 @@ public class AerialIntersectDestination2 extends SkillController {
         aerialOrientationHandler.updateOutput(input);
 
         // jump to the destination if we're on the ground
+        jumpHandler.setFirstJumpType(new SimpleJump(), input);
+        jumpHandler.setSecondJumpType(new ShortJump(), input);
+        jumpHandler.updateOutput(input);
     }
 
     @Override

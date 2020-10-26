@@ -5,6 +5,10 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Flip;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.MiddleJump;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.HitBox;
@@ -26,6 +30,7 @@ public class GroundDirectionalHit extends SkillController {
 
     private DrivingSpeedController drivingSpeedController;
     private GroundOrientationController groundOrientationController;
+    private JumpController jumpController;
 
     public GroundDirectionalHit(BotBehaviour bot) {
         this.botBehaviour = bot;
@@ -36,6 +41,8 @@ public class GroundDirectionalHit extends SkillController {
 
         this.drivingSpeedController = new DrivingSpeedController(bot);
         this.groundOrientationController = new GroundOrientationController(bot);
+        this.jumpController = new JumpController(bot);
+
     }
 
     public void setBallDestination(Vector3 ballDestination) {
@@ -44,37 +51,70 @@ public class GroundDirectionalHit extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
-        playerDestinationOnBall = findOptimalPlayerDestinationOnBall(input);
-        playerTimeBeforeHittingTheBall = findOptimalTimeBeforeHittingTheBall(input);
-        playerDestinationOnBall = findOptimalPlayerDestinationOnBall(input);
+        int resolution = 50;
+        for(int i = 0; i < resolution; i++) {
+            playerTimeBeforeHittingTheBall = findOptimalTimeBeforeHittingTheBall(input);
+            playerDestinationOnBall = findOptimalPlayerDestinationOnBall(input);
+        }
 
-        double driveSpeed = input.ball.velocity.magnitude() + input.car.position.minus(playerDestinationOnBall).dotProduct(input.car.position.minus(input.ball.position).normalized())*1.5;
+        double driveSpeed = 2300;
         drivingSpeedController.setSpeed(driveSpeed);
         drivingSpeedController.updateOutput(input);
-        botBehaviour.output().boost(driveSpeed > 1400);
+        botBehaviour.output().boost(driveSpeed > 1400
+                && driveSpeed-50 - input.car.velocity.magnitude() > 0);
 
         groundOrientationController.setDestination(playerDestinationOnBall);
         groundOrientationController.updateOutput(input);
+
+        if(playerDestinationOnBall.minus(input.car.position).magnitude() > 2000) {
+            botBehaviour.output().drift(false);
+        }
+
+        if(input.ball.position.minus(input.car.position).magnitude() < 700
+        && input.car.velocity.normalized().dotProduct(playerDestinationOnBall.minus(input.car.position).normalized()) > 0.9) {
+            jumpController.setFirstJumpType(new MiddleJump(), input);
+            jumpController.setSecondJumpType(new Flip(), input);
+        }
+        else {
+            jumpController.setFirstJumpType(new Wait(), input);
+            jumpController.setSecondJumpType(new Wait(), input);
+        }
+        jumpController.setJumpDestination(input.ball.position);
+        jumpController.updateOutput(input);
     }
 
     private double findOptimalTimeBeforeHittingTheBall(DataPacket input) {
-        double speed = -input.car.velocity.minus(input.ball.velocity).dotProduct(input.car.position.minus(input.ball.position).normalized());
-        double distance = input.car.hitBox.projectPointOnSurface(input.ball.position).minus(input.ball.position).magnitude();
-        double timeBeforeReachingBall = distance/speed;
+        Vector3 offsetCarPosition = input.car.hitBox.projectPointOnSurface(input.ball.position);
+        Vector3 offsetBallPosition = input.ball.position.plus(offsetCarPosition.minus(input.ball.position).scaledToMagnitude(RlConstants.BALL_RADIUS));
+        double distance = offsetBallPosition.minus(offsetCarPosition).magnitude();
+        double speed = input.ball.velocity.scaled(1, 1, 0).minus(input.car.velocity).magnitude();//.dotProduct(offsetBallPosition.minus(offsetCarPosition).normalized());
+        double timeBeforeHit = distance/speed;
 
-        return 0;
+        return timeBeforeHit;
     }
 
     private Vector3 findOptimalPlayerDestinationOnBall(DataPacket input) {
         Vector3 futureBallPosition = input.ballPrediction.ballAtTime(playerTimeBeforeHittingTheBall).position;
-        Vector3 desiredHitPositionOnBall = futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS-4));
+
+        Vector3 ballOffsetAwayFromDestination = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
+        Vector3 desiredHitPositionOnBall = futureBallPosition.plus(ballOffsetAwayFromDestination);
+        /*
+        Vector3 ballOffsetTowardsCar = input.car.position.minus(futureBallPosition).scaledToMagnitude(RlConstants.BALL_RADIUS);
+        if(desiredHitPositionOnBall.normalized().dotProduct(ballOffsetTowardsCar.normalized()) < 0) {
+            if(ballOffsetTowardsCar.minusAngle(ballOffsetAwayFromDestination).y < 0) {
+                desiredHitPositionOnBall = futureBallPosition.plus(ballOffsetTowardsCar.plusAngle(new Vector3(0, 1, 0)));
+            }
+            else {
+                desiredHitPositionOnBall = futureBallPosition.plus(ballOffsetTowardsCar.plusAngle(new Vector3(0, -1, 0)));
+            }
+        }*/
+
         Vector3 alignedHitBoxCenterPosition = futureBallPosition.minus(ballDestination).scaledToMagnitude(2*RlConstants.BALL_RADIUS);
         Vector3 hitBoxClosestRadiusTowardsBall = input.car.hitBox
                 .generateHypotheticalHitBox(alignedHitBoxCenterPosition)
                 .projectPointOnSurface(futureBallPosition)
                 .minus(alignedHitBoxCenterPosition);
         HitBox bestHitBoxGuess = input.car.hitBox.generateHypotheticalHitBox(desiredHitPositionOnBall.minus(hitBoxClosestRadiusTowardsBall));
-
 
         int resolution = 20;
         for(int i = 0; i < resolution; i++) {

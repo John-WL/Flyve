@@ -3,6 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aeri
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
@@ -20,7 +21,7 @@ import java.awt.*;
 public class AerialDirectionalHit3 extends SkillController {
 
     private BotBehaviour bot;
-    private AerialOrientationHandler aerialOrientationHandler;
+    private AerialOrientationController2 aerialOrientationHandler;
     private JumpController jumpHandler;
     private Vector3 ballDestination;
     private Vector3 playerDestination;
@@ -31,7 +32,7 @@ public class AerialDirectionalHit3 extends SkillController {
 
     public AerialDirectionalHit3(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialOrientationHandler = new AerialOrientationHandler(bot);
+        this.aerialOrientationHandler = new AerialOrientationController2(bot);
         this.jumpHandler = new JumpController(bot);
 
         this.orientation = new Vector3();
@@ -51,11 +52,6 @@ public class AerialDirectionalHit3 extends SkillController {
         BotOutput output = bot.output();
         Vector3 playerPosition = input.car.position;
 
-        /*
-        Vector3 playerDistanceFromBall = input.ball.position.minus(input.car.position);
-        Vector3 playerSpeedFromBall = input.ball.velocity.minus(input.car.velocity);
-        timeToReachAerial = RlUtils.timeToReachAerialDestination(input, playerDistanceFromBall, playerSpeedFromBall)*1.05;
-        */
         // try to calculate the time it'll take to reach the destination?
         for(int i = 0; i < 100; i++) {
             double a = input.car.orientation.noseVector.scaled(RlConstants.ACCELERATION_DUE_TO_BOOST)
@@ -64,7 +60,7 @@ public class AerialDirectionalHit3 extends SkillController {
             double b = input.car.velocity.projectOnto(input.car.position.minus(playerDestination)).magnitude();
             double c = -input.car.position.minus(playerDestination).magnitude();
             timeToReachAerial = (-b + Math.sqrt(b * b - 4 * a * c))
-                    / (2 * a);
+                                            / (2 * a);
 
             futureBallPosition = input.ballPrediction.ballAtTime(timeToReachAerial).position;
             futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, Vector3.UP_VECTOR.scaled(-RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeToReachAerial);
@@ -83,7 +79,7 @@ public class AerialDirectionalHit3 extends SkillController {
         }
 
         // set the desired orientation and apply it
-        aerialOrientationHandler.setDestination(orientation);
+        aerialOrientationHandler.setOrientationDestination(orientation);
         if(timeToReachAerial < 1.5) {
             aerialOrientationHandler.setRollOrientation(input.ball.position);
         }
@@ -97,22 +93,6 @@ public class AerialDirectionalHit3 extends SkillController {
         this.jumpHandler.setFirstJumpType(new SimpleJump(), input);
         this.jumpHandler.setSecondJumpType(new ShortJump(), input);
         this.jumpHandler.updateOutput(input);
-    }
-
-    private double findClosestTimeBetweenPlayerAndBallTrajectory(DataPacket input) {
-        Vector3 closestDistance = new Vector3(10000000, 10000000, 10000000);
-        double bestTimeFound = RlUtils.BALL_PREDICTION_TIME;
-
-        for(int i = 0; i < RlUtils.BALL_PREDICTION_TIME*RlUtils.BALL_PREDICTION_REFRESH_RATE; i++) {
-            double timeToTest = RlUtils.BALL_PREDICTION_TIME - i/RlUtils.BALL_PREDICTION_REFRESH_RATE;
-            Vector3 distanceToTest = input.ballPrediction.ballAtTime(timeToTest).position.minus(input.ballPrediction.carsAtTime(timeToTest).get(input.playerIndex).position);
-            if(closestDistance.magnitudeSquared() > distanceToTest.magnitudeSquared()) {
-                bestTimeFound = timeToTest;
-                closestDistance = distanceToTest;
-            }
-        }
-
-        return bestTimeFound;
     }
 
     @Override

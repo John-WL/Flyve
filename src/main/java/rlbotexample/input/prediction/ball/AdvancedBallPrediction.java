@@ -102,7 +102,7 @@ public class AdvancedBallPrediction {
 
             // bounce the ball off of cars
             for(CarData predictedCar: predictedCars) {
-                predictedBall = updateBallFromCollision(predictedBall, predictedCar, 1/refreshRate);
+                //predictedBall = updateBallFromCollision(predictedBall, predictedCar, 1/refreshRate);
             }
 
             // bounce the cars off of the saved ball

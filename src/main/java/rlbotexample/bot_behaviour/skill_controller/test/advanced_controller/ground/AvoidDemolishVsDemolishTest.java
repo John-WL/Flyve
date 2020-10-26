@@ -13,13 +13,15 @@ import util.game_situation.trainning_pack.TrainingPack;
 public class AvoidDemolishVsDemolishTest extends PanBot {
 
     private AvoidDemolish avoidDemolishController;
-    private Demolish demolishController;
+    private Demolish demolishController1;
+    private Demolish demolishController2;
     private TrainingPack gameSituationHandler;
 
     public AvoidDemolishVsDemolishTest() {
         gameSituationHandler = new CircularTrainingPack();
         avoidDemolishController = new AvoidDemolish(this);
-        demolishController = new Demolish(this);
+        demolishController1 = new Demolish(this);
+        demolishController2 = new Demolish(this);
     }
 
     // called every frame
@@ -30,9 +32,13 @@ public class AvoidDemolishVsDemolishTest extends PanBot {
             avoidDemolishController.setPlayerToAvoid(1);
             avoidDemolishController.updateOutput(input);
         }
+        else if(input.playerIndex == 1) {
+            demolishController1.setPlayerToDemolish(0);
+            demolishController1.updateOutput(input);
+        }
         else {
-            demolishController.setPlayerToDemolish(0);
-            demolishController.updateOutput(input);
+            demolishController2.setPlayerToDemolish(0);
+            demolishController2.updateOutput(input);
         }
 
         return super.output();
@@ -41,7 +47,8 @@ public class AvoidDemolishVsDemolishTest extends PanBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        avoidDemolishController.debug(renderer, input);
-        demolishController.debug(renderer, input);
+        //avoidDemolishController.debug(renderer, input);
+        //demolishController1.debug(renderer, input);
+        //demolishController2.debug(renderer, input);
     }
 }

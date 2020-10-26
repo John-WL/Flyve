@@ -7,8 +7,8 @@ import util.math.vector.Vector3;
 
 public class SimpleJump extends JumpType {
 
-    private static final int JUMP_DURATION = 8;
-    private static final int[] JUMP_TIME_FRAMES = {1, 8};
+    private static final int JUMP_DURATION = 9;
+    private static final int[] JUMP_TIME_FRAMES = {2, 9};
 
     public SimpleJump() {
         super(JUMP_DURATION);
@@ -26,7 +26,7 @@ public class SimpleJump extends JumpType {
         }
 
         if(getCurrentJumpCallCounter() >= JUMP_TIME_FRAMES[0] &&
-                getCurrentJumpCallCounter() <= JUMP_TIME_FRAMES[1]) {
+                getCurrentJumpCallCounter() < JUMP_TIME_FRAMES[1]) {
             output.jump(true);
         }
     }

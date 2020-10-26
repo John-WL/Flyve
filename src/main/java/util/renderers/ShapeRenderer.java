@@ -41,6 +41,16 @@ public class ShapeRenderer {
         }
     }
 
+    public void renderParabola3D(Parabola3D parabola, double fromTime, double toTime, Color color) {
+        Vector3 previousPosition = parabola.compute(fromTime);
+        for(int i = 1; i < 40; i++) {
+            double timeToCompute = fromTime + ((i/40.0)*(toTime-fromTime));
+            Vector3 nextPosition = parabola.compute(timeToCompute);
+            renderer.drawLine3d(color, nextPosition, previousPosition);
+            previousPosition = nextPosition;
+        }
+    }
+
     public void render3DSplineFunction(Function<Double, Vector3> function, double amountOfTimeToRender, Color color) {
     }
 
