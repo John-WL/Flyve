@@ -4,9 +4,8 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugCustomBallPrediction;
-import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit3;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit4;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit5;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
@@ -19,15 +18,15 @@ import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
-public class AerialDirectionalHit4Test extends PanBot {
+public class AerialDirectionalHit5Test extends PanBot {
 
-    private AerialDirectionalHit4 aerialDirectionalHitController;
+    private AerialDirectionalHit5 aerialDirectionalHitController;
     private TrainingPack gameSituationHandler;
     private Predictions predictions;
 
-    public AerialDirectionalHit4Test() {
+    public AerialDirectionalHit5Test() {
         predictions = new Predictions();
-        aerialDirectionalHitController = new AerialDirectionalHit4(this);
+        aerialDirectionalHitController = new AerialDirectionalHit5(this);
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());
@@ -46,7 +45,7 @@ public class AerialDirectionalHit4Test extends PanBot {
         //gameSituationHandler.update();
 
         // do the thing
-        aerialDirectionalHitController.setBallDestination(new Vector3(0, -5120, 100));
+        aerialDirectionalHitController.setBallDestination(new Vector3(0, 0, 1000));
         aerialDirectionalHitController.updateOutput(input);
 
         // return the calculated bot output

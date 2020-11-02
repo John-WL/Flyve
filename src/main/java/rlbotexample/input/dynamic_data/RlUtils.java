@@ -1,14 +1,19 @@
 package rlbotexample.input.dynamic_data;
 
+import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
+import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
 import util.game_constants.RlConstants;
 import util.timer.Timer;
 import util.math.vector.Vector3;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class RlUtils {
 
@@ -69,5 +74,39 @@ public class RlUtils {
         }*/
 
         return timeBeforeReachingBall;
+    }
+
+    public static Vector3 findConstantAccelerationNeededToReachAerialDestination(ExtendedCarData carData, Vector3 xfVec, double t) {
+        // variable name conversion so that the variable names in my notebook match, please ignore
+        Vector3 xiVec = carData.position;
+        Vector3 viVec = carData.velocity;
+
+        double ax = findAcceleration(xiVec.x, xfVec.x, viVec.x, t);
+        double ay = findAcceleration(xiVec.y, xfVec.y, viVec.y, t);
+        double az = findAcceleration(xiVec.z, xfVec.z, viVec.z, t);
+
+        return new Vector3(ax, ay, az);
+    }
+
+    private static double findAcceleration(double xi, double xf, double vi, double t) {
+        return 2*(xf - xi - (vi*t))/(t*t);
+    }
+
+    private static double sq(double x) {
+        return x*x;
+    }
+
+    public static Vector3 getOrientationForAerial(ExtendedCarData carData, Trajectory3D trajectory) {
+        int precision = 120;
+        double amountOfTimeToSearch = 5;
+        for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
+            double currentTestTime = (i/(double)precision)*amountOfTimeToSearch;
+            Vector3 testAcceleration = RlUtils.findConstantAccelerationNeededToReachAerialDestination(carData, trajectory.compute(currentTestTime), currentTestTime);
+            if(testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)).magnitude() < RlConstants.ACCELERATION_DUE_TO_BOOST) {
+                return testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH));
+            }
+        }
+
+        return new Vector3();
     }
 }

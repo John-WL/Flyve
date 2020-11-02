@@ -54,8 +54,6 @@ public class SampleBot implements Bot {
         // Bot behaviour
         myBotOutput = botBehaviour.processInput(input, packet);
 
-
-
         // just some debug calculations all the way down to the return...
         previousFpsTime = currentFpsTime;
         currentFpsTime = System.currentTimeMillis();
