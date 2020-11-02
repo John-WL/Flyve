@@ -100,7 +100,7 @@ public class RlUtils {
         int precision = 120;
         double amountOfTimeToSearch = 5;
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
-            double currentTestTime = (i/(double)precision)*amountOfTimeToSearch;
+            double currentTestTime = i/(double)precision;
             Vector3 testAcceleration = RlUtils.findConstantAccelerationNeededToReachAerialDestination(carData, trajectory.compute(currentTestTime), currentTestTime);
             if(testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)).magnitude() < RlConstants.ACCELERATION_DUE_TO_BOOST) {
                 return testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH));
