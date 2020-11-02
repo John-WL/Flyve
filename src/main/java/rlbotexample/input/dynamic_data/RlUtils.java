@@ -76,14 +76,14 @@ public class RlUtils {
         return timeBeforeReachingBall;
     }
 
-    public static Vector3 findConstantAccelerationNeededToReachAerialDestination(ExtendedCarData carData, Vector3 xfVec, double t) {
+    public static Vector3 findConstantAccelerationNeededToReachAerialDestination(ExtendedCarData carData, Vector3 xf, double t) {
         // variable name conversion so that the variable names in my notebook match, please ignore
-        Vector3 xiVec = carData.position;
-        Vector3 viVec = carData.velocity;
+        Vector3 xi = carData.position;
+        Vector3 vi = carData.velocity;
 
-        double ax = findAcceleration(xiVec.x, xfVec.x, viVec.x, t);
-        double ay = findAcceleration(xiVec.y, xfVec.y, viVec.y, t);
-        double az = findAcceleration(xiVec.z, xfVec.z, viVec.z, t);
+        double ax = findAcceleration(xi.x, xf.x, vi.x, t);
+        double ay = findAcceleration(xi.y, xf.y, vi.y, t);
+        double az = findAcceleration(xi.z, xf.z, vi.z, t);
 
         return new Vector3(ax, ay, az);
     }
