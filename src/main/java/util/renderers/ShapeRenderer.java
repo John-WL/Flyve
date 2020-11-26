@@ -4,7 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
-import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
+import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.shapes.Triangle3D;
 import util.math.vector.Vector3;
 
@@ -54,7 +54,7 @@ public class ShapeRenderer {
     public void render3DSplineFunction(Function<Double, Vector3> function, double amountOfTimeToRender, Color color) {
     }
 
-    public void renderBallPrediction(AdvancedBallPrediction ballPrediction, double amountOfTimeToRender, Color color) {
+    public void renderBallPrediction(GameStatePrediction ballPrediction, double amountOfTimeToRender, Color color) {
         Vector3 previousPosition = ballPrediction.ballAtTime(0).position;
         for(int i = 1; i < amountOfTimeToRender*RlUtils.BALL_PREDICTION_REFRESH_RATE; i++) {
             Vector3 nextPosition = ballPrediction.ballAtTime(i/RlUtils.BALL_PREDICTION_REFRESH_RATE).position;

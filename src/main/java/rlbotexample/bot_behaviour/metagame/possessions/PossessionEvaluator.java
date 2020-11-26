@@ -29,8 +29,8 @@ public class PossessionEvaluator {
     }
 
     private static double singlePlayerPossessionValue(int indexOfPlayer, DataPacket input) {
-        Vector3 futurePositionOfBall = input.ballPrediction.ballAtTime(1).position;
-        Vector3 futurePositionOfPlayer = input.ballPrediction.carsAtTime(1).get(indexOfPlayer).position;
+        Vector3 futurePositionOfBall = input.statePrediction.ballAtTime(1).position;
+        Vector3 futurePositionOfPlayer = input.statePrediction.carsAtTime(1).get(indexOfPlayer).position;
 
         Vector3 playerNoseOrientation = input.allCars.get(indexOfPlayer).orientation.noseVector;
         Vector3 goalPosition = new Vector3(0, 5200 * (input.allCars.get(indexOfPlayer).team*2)-1, 500);

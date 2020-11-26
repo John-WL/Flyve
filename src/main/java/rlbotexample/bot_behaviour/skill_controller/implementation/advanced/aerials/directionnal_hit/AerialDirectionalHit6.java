@@ -7,9 +7,9 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aer
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
+import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.aerials.AerialUtils;
-import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
@@ -20,7 +20,7 @@ import util.renderers.ShapeRenderer;
 
 import java.awt.*;
 
-public class AerialDirectionalHit5 extends SkillController {
+public class AerialDirectionalHit6 extends SkillController {
 
     private BotBehaviour bot;
     private AerialOrientationController2 aerialOrientationHandler;
@@ -34,7 +34,7 @@ public class AerialDirectionalHit5 extends SkillController {
     private Vector3 futureCarPosition;
     private HitBox futureHitBox;
 
-    public AerialDirectionalHit5(BotBehaviour bot) {
+    public AerialDirectionalHit6(BotBehaviour bot) {
         this.bot = bot;
         this.aerialOrientationHandler = new AerialOrientationController2(bot);
         this.jumpController = new JumpController(bot);
@@ -98,12 +98,11 @@ public class AerialDirectionalHit5 extends SkillController {
 
         // very weird way to converge....
         // there might be a better way, like taking in consideration the hit-box, first...
-        Vector3 directionAtImpact = carPredictedTrajectory.derivative(aerialInfo.timeOfFlight);
+        Vector3 velocityAtImpact = carPredictedTrajectory.derivative(aerialInfo.timeOfFlight).scaledToMagnitude(RlConstants.ACCELERATION_DUE_TO_BOOST/2);
         Vector3 futureBallPosition = input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position;
-        Vector3 impactPointOnBall = futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
-        if(directionAtImpact.normalized().dotProduct(futureBallPosition.minus(impactPointOnBall).normalized()) < 0) {
-            //aerialInfo.acceleration = aerialInfo.acceleration.minus(futureBallPosition.minus(impactPointOnBall).scaledToMagnitude(1700));
-        }
+        Vector3 destinationOffset = ballDestination.minus(futureBallPosition).scaledToMagnitude(velocityAtImpact.magnitude());
+
+        aerialInfo.acceleration = aerialInfo.acceleration.plus(velocityAtImpact.minus(destinationOffset).scaled(1, 1, 0));
 
         return aerialInfo;
     }

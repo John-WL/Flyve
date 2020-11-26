@@ -48,9 +48,9 @@ public class AerialOrientationController2 extends SkillController {
         Vector3 localRollDestination = rollOrientation.minus(input.car.position).toFrameOfReference(input.car.orientation);
 
         desiredSpin = new Vector3(
-                new Vector2(localRollDestination.z, localRollDestination.y).correctionAngle(new Vector2(1, 0))*13,
-                new Vector2(localPlayerOrientationVector.x, -localPlayerOrientationVector.z).correctionAngle(new Vector2(1, 0))*4.3,
-                new Vector2(localPlayerOrientationVector.x, localPlayerOrientationVector.y).correctionAngle(new Vector2(1, 0))*3
+            new Vector2(localRollDestination.z, localRollDestination.y).correctionAngle(new Vector2(1, 0))*13,
+            new Vector2(localPlayerOrientationVector.x, -localPlayerOrientationVector.z).correctionAngle(new Vector2(1, 0))*4.3,
+            new Vector2(localPlayerOrientationVector.x, localPlayerOrientationVector.y).correctionAngle(new Vector2(1, 0))*3
         );
         //double rollVelocityAmount = ;
 

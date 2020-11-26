@@ -3,7 +3,6 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offe
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialIntersectDestination2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
@@ -12,7 +11,6 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
-import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
 import java.awt.*;
@@ -81,7 +79,7 @@ public class Demolish extends SkillController {
         double speed = -carToDemo.velocity.minus(input.car.velocity).dotProduct(carToDemo.position.minus(input.car.position).normalized());
         double timeBeforeDemo = distance/speed;
 
-        return input.ballPrediction.carsAtTime(timeBeforeDemo).get(indexOfPlayerToDemolish).position;
+        return input.statePrediction.carsAtTime(timeBeforeDemo).get(indexOfPlayerToDemolish).position;
     }
 
     @Override

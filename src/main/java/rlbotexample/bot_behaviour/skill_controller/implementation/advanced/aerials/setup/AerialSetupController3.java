@@ -4,7 +4,8 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit3;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit5;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit6;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -12,15 +13,15 @@ import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.game_constants.RlConstants;
-import util.renderers.ShapeRenderer;
 import util.math.vector.Vector3;
+import util.renderers.ShapeRenderer;
 
 import java.awt.*;
 
-public class AerialSetupController2 extends SkillController {
+public class AerialSetupController3 extends SkillController {
 
     private BotBehaviour bot;
-    private AerialDirectionalHit3 aerialDirectionalHit2;
+    private AerialDirectionalHit6 aerialDirectionalHit2;
     private DrivingSpeedController drivingSpeedController;
     private GroundOrientationController groundOrientationController;
 
@@ -30,9 +31,9 @@ public class AerialSetupController2 extends SkillController {
     private Vector3 ballDestination;
     private boolean isAerialing;
 
-    public AerialSetupController2(BotBehaviour bot) {
+    public AerialSetupController3(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialDirectionalHit2 = new AerialDirectionalHit3(bot);
+        this.aerialDirectionalHit2 = new AerialDirectionalHit6(bot);
         this.drivingSpeedController = new DrivingSpeedController(bot);
         this.groundOrientationController = new GroundOrientationController(bot);
         this.closestApproachTimeBetweenParabolaAndBallPrediction = 0;
@@ -79,7 +80,7 @@ public class AerialSetupController2 extends SkillController {
         && AerialInfo.isBallConsideredAerial(input.statePrediction.ballAtTime(closestApproachTimeBetweenParabolaAndBallPrediction), input.car.hitBox)) {
             isAerialing = true;
         }
-        if(distanceBetweenParabolaAndBallPrediction.magnitude() > 600
+        if(distanceBetweenParabolaAndBallPrediction.magnitude() > 2000
         || input.ball.position.z < 200) {
             isAerialing = false;
         }

@@ -30,7 +30,7 @@ public class DebugCustomBallPrediction extends PanBot {
 
         BallData previousBall = input.ball;
         int divisor = 0;
-        for(BallData nextBall: input.ballPrediction.balls) {
+        for(BallData nextBall: input.statePrediction.balls) {
             divisor++;
             divisor %= 8;
 

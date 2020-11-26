@@ -1,17 +1,13 @@
 package rlbotexample.input.dynamic_data;
 
-import rlbot.render.Renderer;
-import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
-import rlbotexample.input.prediction.Trajectory3D;
-import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
+import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.game_constants.RlConstants;
+import util.math.MovingAverage;
 import util.timer.Timer;
 import util.math.vector.Vector3;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -21,14 +17,17 @@ public class RlUtils {
     public static final double BALL_PREDICTION_REFRESH_RATE = 120;
 
     private static Timer ballPredictionReloadTimeout = new Timer(0).start();
-    private static AdvancedBallPrediction ballPrediction = new AdvancedBallPrediction(new BallData(new Vector3(), new Vector3(), new Vector3(), 0), new ArrayList<CarData>(), 0, BALL_PREDICTION_REFRESH_RATE);
+    private static GameStatePrediction ballPrediction = new GameStatePrediction(new BallData(new Vector3(), new Vector3(), new Vector3(), 0), new ArrayList<CarData>(), 0, BALL_PREDICTION_REFRESH_RATE);
 
     private static final List<Integer> amountOfFramesSinceFirstJumpOccurredForAllPlayers = new ArrayList<>();
+    private static final List<Double> previousBoostAmountForAllPlayers = new ArrayList<>();
+    private static final List<MovingAverage> averageBoostUsageForAllPlayers = new ArrayList<>();
+    private static final int amountOfFramesForTheAverage = (int) (0.2*RlConstants.BOT_REFRESH_RATE);
 
-    public static AdvancedBallPrediction ballPrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
+    public static GameStatePrediction gameStatePrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
         if(playerIndex == 0 && ballPredictionReloadTimeout.isTimeElapsed()) {
             ballPredictionReloadTimeout = new Timer(1.0/RlConstants.BOT_REFRESH_RATE).start();
-            ballPrediction = new AdvancedBallPrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
+            ballPrediction = new GameStatePrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
         }
         return ballPrediction;
     }
@@ -39,6 +38,10 @@ public class RlUtils {
                 return amountOfFramesSinceFirstJumpOccurredForAllPlayers.get(playerIndex);
             } catch (Exception e) {
                 amountOfFramesSinceFirstJumpOccurredForAllPlayers.add(0);
+                try {
+                    return amountOfFramesSinceFirstJumpOccurredForAllPlayers.get(playerIndex);
+                }
+                catch (Exception ignored) {}
             }
         }
         throw new RuntimeException();
@@ -51,62 +54,72 @@ public class RlUtils {
                 return;
             } catch (Exception e) {
                 amountOfFramesSinceFirstJumpOccurredForAllPlayers.add(0);
+                try {
+                    amountOfFramesSinceFirstJumpOccurredForAllPlayers.set(playerIndex, framesSinceFirstJumpOccurred);
+                }
+                catch (Exception ignored) {}
             }
         }
         throw new RuntimeException();
     }
 
-    // good enough approximation of time before aerial hit for now.
-    public static double timeToReachAerialDestination(DataPacket input, Vector3 playerDistanceFromDestination, Vector3 playerSpeedFromDestination) {
-        // this is the player speed SIGNED (it's the player speed, but it's negative if it's going away from the destination...)
-        double signedPlayerSpeedFromBall = playerSpeedFromDestination.dotProduct(playerDistanceFromDestination)
-                / playerDistanceFromDestination.magnitude();
-        double a = -(RlConstants.ACCELERATION_DUE_TO_BOOST)/3.5 /*+ (input.car.orientation.noseVector.dotProduct(new Vector3(0, 0, 1))*RlConstants.NORMAL_GRAVITY_STRENGTH/2)*/;
-        double b = signedPlayerSpeedFromBall;
-        double c = playerDistanceFromDestination.magnitude();
-        double timeBeforeReachingBall = -b - Math.sqrt(b*b - 4*a*c);
-        timeBeforeReachingBall /= 2*a;
-
-        // player never has more than 3 seconds to boost in air, so we cap it here.
-        // not sure if this is necessary though. It works fine with it
-        /*if(timeBeforeReachingBall > 3) {
-            timeBeforeReachingBall = 3;
-        }*/
-
-        return timeBeforeReachingBall;
-    }
-
-    public static Vector3 findConstantAccelerationNeededToReachAerialDestination(ExtendedCarData carData, Vector3 xf, double t) {
-        // variable name conversion so that the variable names in my notebook match, please ignore
-        Vector3 xi = carData.position;
-        Vector3 vi = carData.velocity;
-
-        double ax = findAcceleration(xi.x, xf.x, vi.x, t);
-        double ay = findAcceleration(xi.y, xf.y, vi.y, t);
-        double az = findAcceleration(xi.z, xf.z, vi.z, t);
-
-        return new Vector3(ax, ay, az);
-    }
-
-    private static double findAcceleration(double xi, double xf, double vi, double t) {
-        return 2*(xf - xi - (vi*t))/(t*t);
-    }
-
-    private static double sq(double x) {
-        return x*x;
-    }
-
-    public static Vector3 getOrientationForAerial(ExtendedCarData carData, Trajectory3D trajectory) {
-        int precision = 120;
-        double amountOfTimeToSearch = 5;
-        for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
-            double currentTestTime = i/(double)precision;
-            Vector3 testAcceleration = RlUtils.findConstantAccelerationNeededToReachAerialDestination(carData, trajectory.compute(currentTestTime), currentTestTime);
-            if(testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)).magnitude() < RlConstants.ACCELERATION_DUE_TO_BOOST) {
-                return testAcceleration.plus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH));
+    public static double getPreviousAmountOfBoost(int playerIndex) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                return previousBoostAmountForAllPlayers.get(playerIndex);
+            }
+            catch (Exception e) {
+                previousBoostAmountForAllPlayers.add(0d);
+                try {
+                    return previousBoostAmountForAllPlayers.get(playerIndex);
+                }
+                catch (Exception ignored) {}
             }
         }
+        throw new RuntimeException();
+    }
 
-        return new Vector3();
+    public static void setPreviousAmountOfBoost(int playerIndex, double boostAmount) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                averageBoostUsageForAllPlayers.get(playerIndex)
+                        .update(
+                                previousBoostAmountForAllPlayers.get(playerIndex) - boostAmount < -1 ?
+                                RlConstants.ACCELERATION_DUE_TO_BOOST : 0
+                        );
+                previousBoostAmountForAllPlayers.set(playerIndex, boostAmount);
+                return;
+            } catch (Exception e) {
+                averageBoostUsageForAllPlayers.add(new MovingAverage(amountOfFramesForTheAverage));
+                previousBoostAmountForAllPlayers.add(0d);
+                try {
+                    averageBoostUsageForAllPlayers.get(playerIndex)
+                            .update(
+                                    previousBoostAmountForAllPlayers.get(playerIndex) - boostAmount < -1 ?
+                                    RlConstants.ACCELERATION_DUE_TO_BOOST : 0
+                            );
+                    previousBoostAmountForAllPlayers.set(playerIndex, boostAmount);
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    public static double getAverageBoostUsage(int playerIndex) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                return averageBoostUsageForAllPlayers.get(playerIndex).value;
+            }
+            catch (Exception e) {
+                averageBoostUsageForAllPlayers.add(new MovingAverage(amountOfFramesForTheAverage));
+                try {
+                    return averageBoostUsageForAllPlayers.get(playerIndex).value;
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
+
     }
 }

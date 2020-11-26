@@ -1,4 +1,4 @@
-package rlbotexample.input.prediction.player;
+package rlbotexample.input.prediction.gamestate_prediction.player;
 
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.car.HitBox;

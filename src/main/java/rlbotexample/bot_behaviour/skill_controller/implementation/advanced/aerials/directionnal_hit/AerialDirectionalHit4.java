@@ -9,7 +9,6 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
@@ -61,7 +60,7 @@ public class AerialDirectionalHit4 extends SkillController {
         // orientation
         aerialOrientationHandler.setOrientationDestination(orientation.scaled(300).plus(input.car.position));
         if(timeToReachAerial < 1.5) {
-            aerialOrientationHandler.setRollOrientation(input.ballPrediction.ballAtTime(timeToReachAerial).position);
+            aerialOrientationHandler.setRollOrientation(input.statePrediction.ballAtTime(timeToReachAerial).position);
         }
         else {
             aerialOrientationHandler.setRollOrientation(input.car.position.plus(input.car.orientation.roofVector));
@@ -108,7 +107,7 @@ public class AerialDirectionalHit4 extends SkillController {
     }
 
     private Vector3 computeBallTrajectory(double time, DataPacket input) {
-        Vector3 futureBallPosition = input.ballPrediction.ballAtTime(time).position;
+        Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
         Vector3 initialOffset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
 
         return futureBallPosition.plus(initialOffset);

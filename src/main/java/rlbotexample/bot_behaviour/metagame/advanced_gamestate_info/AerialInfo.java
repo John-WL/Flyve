@@ -1,9 +1,12 @@
 package rlbotexample.bot_behaviour.metagame.advanced_gamestate_info;
 
+import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
+import rlbotexample.input.dynamic_data.aerials.AerialUtils;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.prediction.Trajectory3D;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
@@ -22,7 +25,7 @@ public class AerialInfo {
     }
 
     public static boolean isPlayerAllowedToAerial(int indexOfPlayer, DataPacket input) {
-        BallData futureBallToReach = input.ballPrediction.ballAtTime(approximateTimeToReachBall(indexOfPlayer, input));
+        BallData futureBallToReach = input.statePrediction.ballAtTime(approximateTimeToReachBall(indexOfPlayer, input));
         HitBox playerHitBox = input.allCars.get(indexOfPlayer).hitBox;
         return isManeuverReachable(indexOfPlayer, input) && isBallConsideredAerial(futureBallToReach, playerHitBox);
 
@@ -38,6 +41,12 @@ public class AerialInfo {
     private static double approximateTimeToReachBall(int indexOfPlayer, DataPacket input) {
         Vector3 playerDistanceFromDestination = input.ball.position.minus(input.allCars.get(indexOfPlayer).position);
         Vector3 playerSpeedFromDestination = input.ball.velocity.minus(input.allCars.get(indexOfPlayer).velocity);
-        return RlUtils.timeToReachAerialDestination(input, playerDistanceFromDestination, playerSpeedFromDestination);
+        AerialTrajectoryInfo aerialInfo = AerialUtils.findAerialTrajectoryInfo(input.car, new Trajectory3D() {
+            @Override
+            public Vector3 compute(double time) {
+                return input.statePrediction.ballAtTime(time).position;
+            }
+        });
+        return aerialInfo.timeOfFlight;
     }
 }

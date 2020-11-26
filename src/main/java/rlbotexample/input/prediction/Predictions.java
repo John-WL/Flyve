@@ -12,7 +12,7 @@ import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.car.Orientation;
 import rlbotexample.input.dynamic_data.car.KinematicPoint;
 import rlbotexample.input.geometry.StandardMap;
-import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
+import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
 import util.math.vector.Vector2;
@@ -271,7 +271,7 @@ public class Predictions {
     // get the exact time it'll take before reaching the ball with respect to the current trajectory
     // (WHICH MEANS that a lot of times, it'll return infinity, duh (uh~ I mean Double.MAX_VALUE seconds...).
     // Path don't always intersect with each other, einstein).
-    public double findIntersectionTimeBetweenAerialPlayerPositionAndCustomBallPrediction(ExtendedCarData carData, BallData ballData, AdvancedBallPrediction ballPrediction) {
+    public double findIntersectionTimeBetweenAerialPlayerPositionAndCustomBallPrediction(ExtendedCarData carData, BallData ballData, GameStatePrediction ballPrediction) {
         Vector3 playerPosition = carData.position;
         Vector3 playerSpeed = carData.velocity;
         HitBox playerHitBox = carData.hitBox;

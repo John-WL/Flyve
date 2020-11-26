@@ -10,9 +10,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.MiddleJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.HitBox;
-import util.controllers.PidController;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
@@ -94,7 +92,7 @@ public class GroundDirectionalHit extends SkillController {
     }
 
     private Vector3 findOptimalPlayerDestinationOnBall(DataPacket input) {
-        Vector3 futureBallPosition = input.ballPrediction.ballAtTime(playerTimeBeforeHittingTheBall).position;
+        Vector3 futureBallPosition = input.statePrediction.ballAtTime(playerTimeBeforeHittingTheBall).position;
 
         Vector3 ballOffsetAwayFromDestination = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
         Vector3 desiredHitPositionOnBall = futureBallPosition.plus(ballOffsetAwayFromDestination);

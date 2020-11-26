@@ -5,7 +5,7 @@ import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
-import rlbotexample.input.prediction.ball.AdvancedBallPrediction;
+import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class DataPacket {
     public final BallData ball;
     public final int team;
 
-    public final AdvancedBallPrediction ballPrediction;
+    public final GameStatePrediction statePrediction;
 
     /** The index of your player */
     public final int playerIndex;
@@ -35,17 +35,17 @@ public class DataPacket {
     public DataPacket(GameTickPacket request, int playerIndex) {
         this.playerIndex = playerIndex;
         this.allCars = new ArrayList<>();
-        List<CarData> ballPredictionCars = new ArrayList<>();
+        List<CarData> carsForGameStatePrediction = new ArrayList<>();
         for (int i = 0; i < request.playersLength(); i++) {
             final rlbot.flat.PlayerInfo playerInfo = request.players(i);
             final float elapsedSeconds = request.gameInfo().secondsElapsed();
             allCars.add(new ExtendedCarData(playerInfo, i, elapsedSeconds));
-            ballPredictionCars.add(new CarData(request.players(i), request.gameInfo().secondsElapsed()));
+            carsForGameStatePrediction.add(new CarData(request.players(i), request.gameInfo().secondsElapsed()));
         }
         this.car = allCars.get(playerIndex);
         this.team = this.car.team;
         this.ball = new BallData(request.ball());
-        this.ballPrediction = RlUtils.ballPrediction(playerIndex, this.ball, ballPredictionCars);
+        this.statePrediction = RlUtils.gameStatePrediction(playerIndex, this.ball, carsForGameStatePrediction);
 
         // load boost
         BoostManager.loadGameTickPacket(request);

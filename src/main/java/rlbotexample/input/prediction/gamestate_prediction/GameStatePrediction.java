@@ -1,12 +1,15 @@
-package rlbotexample.input.prediction.ball;
+package rlbotexample.input.prediction.gamestate_prediction;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
-import rlbotexample.input.prediction.object_collisions.BallCollisionWithCar;
-import rlbotexample.input.prediction.object_collisions.CarCollisionWithBall;
-import rlbotexample.input.prediction.player.CarBounce;
-import rlbotexample.input.prediction.player.PlayerPredictedAerialTrajectory;
+import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
+import rlbotexample.input.prediction.gamestate_prediction.ball.BallBounce;
+import rlbotexample.input.prediction.gamestate_prediction.ball.BallStopper;
+import rlbotexample.input.prediction.gamestate_prediction.object_collisions.BallCollisionWithCar;
+import rlbotexample.input.prediction.gamestate_prediction.object_collisions.CarCollisionWithBall;
+import rlbotexample.input.prediction.gamestate_prediction.player.CarBounce;
+import rlbotexample.input.prediction.gamestate_prediction.player.PlayerPredictedAerialTrajectory;
 import util.game_constants.RlConstants;
 import util.shapes.Sphere;
 import util.math.vector.Ray3;
@@ -15,23 +18,21 @@ import util.math.vector.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvancedBallPrediction {
+public class GameStatePrediction {
 
     public final List<BallData> balls = new ArrayList<>();
     public final List<List<CarData>> cars = new ArrayList<>();
-    private final double amountOfAvailableTime;
     private final double refreshRate;
     private final BallData initialBall;
     private final List<CarData> initialCars;
-    private final BallStopper ballStopper = new BallStopper();
+    private final rlbotexample.input.prediction.gamestate_prediction.ball.BallStopper ballStopper = new BallStopper();
     private final StandardMapSplitMesh standardMap = new StandardMapSplitMesh();
     private final List<Integer> nextBallBounceIndexes = new ArrayList<>();
     private final Integer[] carsHitOnBallTimeIndexes;
 
-    public AdvancedBallPrediction(final BallData initialBall, final List<CarData> initialCars, final double amountOfAvailableTime, final double refreshRate) {
+    public GameStatePrediction(final BallData initialBall, final List<CarData> initialCars, final double amountOfAvailableTime, final double refreshRate) {
         this.initialBall = initialBall;
         this.initialCars = initialCars;
-        this.amountOfAvailableTime = amountOfAvailableTime;
         this.refreshRate = refreshRate;
         this.carsHitOnBallTimeIndexes = new Integer[initialCars.size()];
         loadCustomBallPrediction(amountOfAvailableTime);
@@ -44,7 +45,27 @@ public class AdvancedBallPrediction {
         else if((int) (refreshRate * deltaTime) < 0) {
             return balls.get(0);
         }
-        return balls.get((int) (refreshRate * deltaTime));
+        return balls.get((int)(refreshRate * deltaTime));
+    }
+
+    public BallData ballAtInterpolatedTime(final double deltaTime) {
+        if((int) (refreshRate * deltaTime) >= balls.size()-1) {
+            return balls.get(balls.size() - 1);
+        }
+        else if((int) (refreshRate * deltaTime) < 0) {
+            return balls.get(0);
+        }
+        int flooredTime = (int)(refreshRate * deltaTime);
+        double remainder = (refreshRate * deltaTime) - flooredTime;
+        return interpolate(balls.get((int)(refreshRate * deltaTime)), balls.get((int)(refreshRate * deltaTime)+1), remainder);
+    }
+
+    private BallData interpolate(BallData ball1, BallData ball2, double t) {
+        return new BallData(
+                ball1.position.scaled(t).plus(ball2.position.scaled(1-t)),
+                ball1.velocity.scaled(t).plus(ball2.velocity.scaled(1-t)),
+                ball1.spin.scaled(t).plus(ball2.spin.scaled(1-t)),
+                ball1.time+t);
     }
 
     public List<Double> ballBounceTimes() {

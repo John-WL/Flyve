@@ -102,7 +102,7 @@ public class Normal1sV3 extends PanBot {
                 controllerLabel = "driveToBounce";
 
                 if(input.ball.position.minus(input.car.position).normalized().dotProduct(input.car.velocity) > 700 && input.ball.position.minus(input.car.position).magnitude() > 1200) {
-                    flipController.setDestination(input.ballPrediction.ballAtTime(input.car.position.minus(input.ball.position).magnitude()/input.car.velocity.minus(input.ball.velocity).magnitude()).position);
+                    flipController.setDestination(input.statePrediction.ballAtTime(input.car.position.minus(input.ball.position).magnitude()/input.car.velocity.minus(input.ball.velocity).magnitude()).position);
                     skillController = flipController;
                     controllerLabel = "flip";
                 }
@@ -112,7 +112,7 @@ public class Normal1sV3 extends PanBot {
                 skillController = flickController;
 
                 // flick the getNativeBallPrediction if threat
-                if (input.ballPrediction.timeOfCollisionBetweenCarAndBall(1-input.playerIndex) > 2) {
+                if (input.statePrediction.timeOfCollisionBetweenCarAndBall(1-input.playerIndex) > 2) {
                     skillController = dribbleController;
                     controllerLabel = "dribble";
                     //System.out.println("dribble");
@@ -151,7 +151,7 @@ public class Normal1sV3 extends PanBot {
             }
 
             // aerial handling
-            if(input.ballPrediction.ballAtTime(0.5).position.z > 400 && input.ballPrediction.ballAtTime(0.5).velocity.z > 0 && input.car.boost * 20 > input.ballPrediction.ballAtTime(1).position.z && input.car.position.minus(input.ball.position).flatten().magnitude() < 1000) {
+            if(input.statePrediction.ballAtTime(0.5).position.z > 400 && input.statePrediction.ballAtTime(0.5).velocity.z > 0 && input.car.boost * 20 > input.statePrediction.ballAtTime(1).position.z && input.car.position.minus(input.ball.position).flatten().magnitude() < 1000) {
                 isAerialing = true;
             }
             else if(input.ball.position.z < 150) {
@@ -175,7 +175,7 @@ public class Normal1sV3 extends PanBot {
                     improvisedDriveToDestinationController.setSpeed(2300);
                 }*/
             }
-            else if(allyNetPosition.minus(input.car.position).dotProduct(input.car.position.minus(input.ballPrediction.ballAtTime(allyNetPosition.minus(input.car.position).magnitude()/20000).position)) > 0) {
+            else if(allyNetPosition.minus(input.car.position).dotProduct(input.car.position.minus(input.statePrediction.ballAtTime(allyNetPosition.minus(input.car.position).magnitude()/20000).position)) > 0) {
                 isInCriticalPosition = false;
             }
             if(isInCriticalPosition) {

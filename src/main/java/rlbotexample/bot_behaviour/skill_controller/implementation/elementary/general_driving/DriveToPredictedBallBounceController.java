@@ -41,17 +41,17 @@ public class DriveToPredictedBallBounceController extends SkillController {
     @Override
     public void updateOutput(DataPacket input) {
         final BotOutput output = bot.output();
-        final List<Double> timeOfBallBounces = input.ballPrediction.ballBounceTimes();
+        final List<Double> timeOfBallBounces = input.statePrediction.ballBounceTimes();
         final BallData futureBall;
 
         double actualTimeOfBallBounce = Double.MAX_VALUE;
         for(Double timeOfBallBounce: timeOfBallBounces) {
-            if(timeOfBallBounce < actualTimeOfBallBounce && input.ballPrediction.ballAtTime(timeOfBallBounce).position.minus(input.car.position).magnitude()/timeOfBallBounce < 2300) {
+            if(timeOfBallBounce < actualTimeOfBallBounce && input.statePrediction.ballAtTime(timeOfBallBounce).position.minus(input.car.position).magnitude()/timeOfBallBounce < 2300) {
                 actualTimeOfBallBounce = timeOfBallBounce;
             }
         }
 
-        futureBall = input.ballPrediction.ballAtTime(actualTimeOfBallBounce);
+        futureBall = input.statePrediction.ballAtTime(actualTimeOfBallBounce);
         /*
         if(Math.abs(input.ball.velocity.z) > 80) {
             futureBall = input.ballPrediction.ballAtTime(actualTimeOfBallBounce);
@@ -60,7 +60,7 @@ public class DriveToPredictedBallBounceController extends SkillController {
             //System.out.println("ground prediction");
             futureBall = input.ballPrediction.ballAtTime(input.car.position.minus(input.ball.position).magnitude()/input.car.velocity.minus(input.ball.velocity).magnitude());
         }*/
-        final CarData futureCar = input.ballPrediction.carsAtTime(actualTimeOfBallBounce).get(input.playerIndex);
+        final CarData futureCar = input.statePrediction.carsAtTime(actualTimeOfBallBounce).get(input.playerIndex);
 
         Vector3 futureDestination = futureBall.position.plus(futureBall.position.minus(ballDestination).scaledToMagnitude(85));
 

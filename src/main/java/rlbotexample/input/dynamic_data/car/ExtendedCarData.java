@@ -25,6 +25,14 @@ public class ExtendedCarData extends CarData {
     /** Counter for the amount of time that has elapsed since the last jump from the ground */
     public final int framesSinceFirstJumpOccurred;
 
+    /** Amount of boost that the player had last frame */
+    public final double previousBoost;
+
+    /** Value that represents the average amount of boost the player is currently using.
+     *  It can be useful for approximations of aerial trajectories when the player is pulsing its boost usage.
+     */
+    public final double averageBoostUsage;
+
     /**
      * True if the car is showing the supersonic and can demolish enemies on contact.
      * This is a close approximation for whether the car is at max speed.
@@ -44,10 +52,14 @@ public class ExtendedCarData extends CarData {
         this.orientation = CarOrientation.fromFlatbuffer(playerInfo);
         this.isSupersonic = playerInfo.isSupersonic();
         this.team = playerInfo.team();
+
         this.hasWheelContact = playerInfo.hasWheelContact();
         this.framesSinceFirstJumpOccurred = RlUtils.getPreviousAmountOfFramesSinceFirstJumpOccurred(playerIndex);
         this.hasFirstJump = hasWheelContact;
         this.hasSecondJump = !playerInfo.doubleJumped() && hasInfiniteJump(playerInfo.jumped());
+
+        this.previousBoost = RlUtils.getPreviousAmountOfBoost(playerIndex);
+        this.averageBoostUsage = averageBoostConsumption();
     }
 
     private boolean hasInfiniteJump(boolean hasJumped) {
@@ -58,5 +70,11 @@ public class ExtendedCarData extends CarData {
             RlUtils.setPreviousAmountOfFramesSinceFirstJumpOccurred(playerIndex, 0);
         }
         return framesSinceFirstJumpOccurred < RlConstants.AMOUNT_OF_TIME_BEFORE_LOSING_SECOND_JUMP*RlConstants.BOT_REFRESH_RATE;
+    }
+
+    private double averageBoostConsumption() {
+        RlUtils.setPreviousAmountOfBoost(playerIndex, boost);
+
+        return RlUtils.getAverageBoostUsage(playerIndex);
     }
 }

@@ -1,4 +1,4 @@
-package rlbotexample.input.prediction.ball;
+package rlbotexample.input.prediction.gamestate_prediction.ball;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.prediction.Parabola3D;

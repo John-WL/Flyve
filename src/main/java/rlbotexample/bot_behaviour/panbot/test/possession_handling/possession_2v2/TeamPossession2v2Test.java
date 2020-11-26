@@ -71,7 +71,7 @@ public class TeamPossession2v2Test extends PanBot {
 
     private void processInputOfLastManPlayer(DataPacket input, GameTickPacket packet) {
         Vector3 playerGoalPosition = new Vector3(0, 5200 * ((input.team*2)-1), 500);
-        Vector3 destination = input.ballPrediction.ballAtTime(input.ball.velocity.magnitude()/6000).position.minus(playerGoalPosition).scaled(0.75).plus(playerGoalPosition);
+        Vector3 destination = input.statePrediction.ballAtTime(input.ball.velocity.magnitude()/6000).position.minus(playerGoalPosition).scaled(0.75).plus(playerGoalPosition);
         driveToDestination2Controller.setDestination(destination);
         driveToDestination2Controller.setSpeed(input.car.position.minus(destination).magnitude());
         driveToDestination2Controller.updateOutput(input);

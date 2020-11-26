@@ -4,12 +4,10 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
@@ -62,7 +60,7 @@ public class AerialDirectionalHit3 extends SkillController {
             timeToReachAerial = (-b + Math.sqrt(b * b - 4 * a * c))
                                             / (2 * a);
 
-            futureBallPosition = input.ballPrediction.ballAtTime(timeToReachAerial).position;
+            futureBallPosition = input.statePrediction.ballAtTime(timeToReachAerial).position;
             futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, Vector3.UP_VECTOR.scaled(-RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeToReachAerial);
 
             Vector3 offset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);

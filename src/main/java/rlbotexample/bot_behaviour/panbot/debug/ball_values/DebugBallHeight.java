@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.panbot.debug.player_prediction;
+package rlbotexample.bot_behaviour.panbot.debug.ball_values;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
@@ -10,16 +10,17 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class DebugPlayerPredictedTrajectory extends PanBot {
+public class DebugBallHeight extends PanBot {
 
     private Predictions predictions;
 
-    public DebugPlayerPredictedTrajectory() {
+    public DebugBallHeight() {
         this.predictions = new Predictions();
     }
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
+        System.out.println(input.ball.position.z);
 
         return new BotOutput();
     }
@@ -28,12 +29,5 @@ public class DebugPlayerPredictedTrajectory extends PanBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
-        int resolution = 30;
-        Vector3 previousPosition = input.allCars.get(input.playerIndex).position;
-        for(int i = 0; i < resolution; i++) {
-            Vector3 nextPosition = input.statePrediction.carsAtTime(i/5.0).get(input.playerIndex).position;
-            renderer.drawLine3d(Color.YELLOW, previousPosition, nextPosition);
-            previousPosition = nextPosition;
-        }
     }
 }

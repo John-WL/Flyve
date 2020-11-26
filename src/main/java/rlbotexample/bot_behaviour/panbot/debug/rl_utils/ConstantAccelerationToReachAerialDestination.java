@@ -3,9 +3,9 @@ package rlbotexample.bot_behaviour.panbot.debug.rl_utils;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
+import rlbotexample.input.dynamic_data.aerials.AerialUtils;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
@@ -17,19 +17,19 @@ import java.awt.*;
 
 public class ConstantAccelerationToReachAerialDestination extends PanBot {
 
-    private Vector3 acceleration;
+    private AerialTrajectoryInfo aerialInfo;
     private Vector3 destination;
     private Parabola3D trajectory;
 
     public ConstantAccelerationToReachAerialDestination() {
-        this.acceleration = new Vector3();
+        this.aerialInfo = new AerialTrajectoryInfo();
         this.destination = new Vector3(0, 0, 1000);
         this.trajectory = null;
     }
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        acceleration = RlUtils.getOrientationForAerial(input.allCars.get(1-input.playerIndex), new Trajectory3D() {
+        aerialInfo = AerialUtils.findAerialTrajectoryInfo(input.allCars.get(1-input.playerIndex), new Trajectory3D() {
             @Override
             public Vector3 compute(double time) {
                 return destination;
@@ -37,7 +37,7 @@ public class ConstantAccelerationToReachAerialDestination extends PanBot {
         });
         trajectory = new Parabola3D(input.allCars.get(1-input.playerIndex).position,
                 input.allCars.get(1-input.playerIndex).velocity,
-                acceleration.minus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)),
+                aerialInfo.acceleration.minus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)),
                 0);
 
         return new BotOutput();
@@ -46,7 +46,7 @@ public class ConstantAccelerationToReachAerialDestination extends PanBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position, input.allCars.get(1-input.playerIndex).position.plus(acceleration));
+        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position, input.allCars.get(1-input.playerIndex).position.plus(aerialInfo.acceleration));
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderParabola3D(trajectory, 10, Color.CYAN);
         shapeRenderer.renderCross(destination, Color.red);

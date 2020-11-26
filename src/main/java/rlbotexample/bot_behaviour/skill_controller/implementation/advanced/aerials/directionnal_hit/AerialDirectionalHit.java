@@ -52,7 +52,6 @@ public class AerialDirectionalHit extends SkillController {
         Vector3 playerDistanceFromBall = input.ball.position.minus(playerPosition);
         Vector3 playerSpeedFromBall = input.ball.velocity.minus(playerSpeed);
 
-        double timeBeforeReachingBall = RlUtils.timeToReachAerialDestination(input, playerDistanceFromBall, playerSpeedFromBall);
 
         /*
         final List<Double> timeOfBallBounces = input.ballPrediction.ballBounceTimes();
@@ -67,11 +66,6 @@ public class AerialDirectionalHit extends SkillController {
 
         // get the future player and getNativeBallPrediction positions
         //playerFuturePosition = input.ballPrediction.carsAtTime(timeBeforeReachingBall).get(input.playerIndex).position;
-        playerFuturePosition = new Parabola3D(input.car.position,
-                input.car.velocity,
-                new Vector3(0, 0, -1).scaled(RlConstants.NORMAL_GRAVITY_STRENGTH), 0)
-                .compute(timeBeforeReachingBall);
-        BallData futureBall = input.ballPrediction.ballAtTime(timeBeforeReachingBall);
 
         //////// added stuff to help cope with unreachable balls... not too successful maybe ^^'
 
@@ -79,17 +73,12 @@ public class AerialDirectionalHit extends SkillController {
         ////////
 
         // get the getNativeBallPrediction offset so we actually hit the getNativeBallPrediction to make it go in the desired direction
-        Vector3 ballOffset = futureBall.position.minus(ballDestination)
                 //.plus(new Vector3(0, 0, -1).scaled(Math.max((2040 - futureBall.position.z) - ballDestination.z, 0) * 2))
-                .scaledToMagnitude(RlConstants.BALL_RADIUS);
 
         // get the orientation we should have to hit the ball
-        Vector3 orientation = futureBall.position.plus(ballOffset).minus(playerFuturePosition);
 
         // update variables so we can print them later in the debugger
-        hitPositionOnBall = futureBall.position.plus(ballOffset);
         this.orientation = orientation;
-        this.ballFuturePosition = futureBall.position;
 
         // boost to the destination
         if(input.car.orientation.noseVector.dotProduct(orientation)/orientation.magnitude() > 0.7) {

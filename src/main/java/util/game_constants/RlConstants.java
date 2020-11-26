@@ -18,6 +18,7 @@ public class RlConstants {
     public static final double CAR_MASS = 180;
 
     public static final double ACCELERATION_DUE_TO_BOOST = 991.666;
+    public static final double ACCELERATION_DUE_TO_JUMP = 291.667;
 
     public static final double NORMAL_GRAVITY_STRENGTH = 650;
 

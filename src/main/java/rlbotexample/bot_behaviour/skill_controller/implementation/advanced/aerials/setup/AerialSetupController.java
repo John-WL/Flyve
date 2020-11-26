@@ -48,9 +48,8 @@ public class AerialSetupController extends SkillController {
         Vector3 playerSpeedFromBall = input.ball.velocity.minus(input.car.velocity);
 
         //timeOfAerialHit = RlUtils.timeToReachAerialDestination(playerDistanceFromBall, playerSpeedFromBall)*1.45;
-        timeOfAerialHit = RlUtils.timeToReachAerialDestination(input, playerDistanceFromBall, playerSpeedFromBall);
 
-        ballFuturePosition = input.ballPrediction.ballAtTime(timeOfAerialHit).position;
+        ballFuturePosition = input.statePrediction.ballAtTime(timeOfAerialHit).position;
 
         Vector3 localBallPosition = input.car.position.minus(ballFuturePosition).matrixRotation(input.car.orientation);
         Vector2 flatBallPosition = localBallPosition.flatten();
@@ -71,10 +70,10 @@ public class AerialSetupController extends SkillController {
         double c = -(ballFuturePosition.z - input.car.position.z);
         double ballisticTimeToReachFutureBall = (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
 
-        Vector3 futureBallPosition = input.ballPrediction.ballAtTime(ballisticTimeToReachFutureBall).position;
+        Vector3 futureBallPosition = input.statePrediction.ballAtTime(ballisticTimeToReachFutureBall).position;
         double timeBeforeReachingUnderDestination = ((input.car.velocity.magnitude() + targetDrivingSpeed)/2)/input.car.position.minus(futureBallPosition).magnitude();
 
-        Vector3 futureCarPosition = input.ballPrediction.carsAtTime(timeOfAerialHit).get(input.playerIndex).position;
+        Vector3 futureCarPosition = input.statePrediction.carsAtTime(timeOfAerialHit).get(input.playerIndex).position;
         Vector3 futureLocalBallPosition = input.car.position.minus(ballFuturePosition).matrixRotation(input.car.orientation);
         if(targetDrivingSpeed < 2300
                 && input.car.velocity.magnitude() > (targetDrivingSpeed)

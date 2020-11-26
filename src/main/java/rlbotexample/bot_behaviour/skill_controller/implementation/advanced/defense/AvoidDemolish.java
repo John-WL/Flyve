@@ -6,9 +6,6 @@ import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SpeedFlip;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import util.math.vector.Vector3;
@@ -60,8 +57,8 @@ public class AvoidDemolish extends SkillController {
 
     private Vector3 findDestinationOfCarToAvoidDemo(DataPacket input) {
         double closestTime = findClosestIntersectionTimeBetween4DCurves(input);
-        Vector3 futurePositionOfCar = input.ballPrediction.carsAtTime(closestTime).get(input.playerIndex).position;
-        Vector3 futurePositionOfCarToAvoid = input.ballPrediction.carsAtTime(closestTime).get(indexOfPlayerToAvoid).position;
+        Vector3 futurePositionOfCar = input.statePrediction.carsAtTime(closestTime).get(input.playerIndex).position;
+        Vector3 futurePositionOfCarToAvoid = input.statePrediction.carsAtTime(closestTime).get(indexOfPlayerToAvoid).position;
 
         Vector3 deltaPosition = futurePositionOfCar.minus(futurePositionOfCarToAvoid);
 
@@ -73,10 +70,10 @@ public class AvoidDemolish extends SkillController {
         double timeOfProbableCollision = 0;
         double closestTimeOfProbableCollision = 0;
 
-        for(int i = 0; i < input.ballPrediction.balls.size(); i++) {
-            timeOfProbableCollision = input.ballPrediction.balls.get(i).time;
-            Vector3 testSelf = input.ballPrediction.cars.get(i).get(input.playerIndex).position;
-            Vector3 testCarToAvoid = input.ballPrediction.cars.get(i).get(indexOfPlayerToAvoid).position;
+        for(int i = 0; i < input.statePrediction.balls.size(); i++) {
+            timeOfProbableCollision = input.statePrediction.balls.get(i).time;
+            Vector3 testSelf = input.statePrediction.cars.get(i).get(input.playerIndex).position;
+            Vector3 testCarToAvoid = input.statePrediction.cars.get(i).get(indexOfPlayerToAvoid).position;
             if(testSelf.minus(testCarToAvoid).magnitude() < closestDistance) {
                 closestDistance = testSelf.minus(testCarToAvoid).magnitude();
                 closestTimeOfProbableCollision = timeOfProbableCollision;

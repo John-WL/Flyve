@@ -1,4 +1,4 @@
-package rlbotexample.input.prediction.object_collisions;
+package rlbotexample.input.prediction.gamestate_prediction.object_collisions;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;

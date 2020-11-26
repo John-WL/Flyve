@@ -5,7 +5,6 @@ import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Flip;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -49,7 +48,7 @@ public class AerialDirectionalHit2 extends SkillController {
         BotOutput output = bot.output();
         Vector3 playerPosition = input.car.position;
 
-        playerDestination = input.ballPrediction.ballAtTime(0).position;
+        playerDestination = input.statePrediction.ballAtTime(0).position;
         // uh... try to binary search the right ball I guess?
         Vector3 orientationWithoutGravity = new Vector3();
         for(int i = 0; i < 100; i++) {
@@ -76,7 +75,7 @@ public class AerialDirectionalHit2 extends SkillController {
                                                     / (2*a);
             //System.out.println(timeToReachDestination);
 
-            futureBallPosition = input.ballPrediction.ballAtTime(timeToReachAerial).position;
+            futureBallPosition = input.statePrediction.ballAtTime(timeToReachAerial).position;
 
             Vector3 offset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
             playerDestination = futureBallPosition.plus(offset);
