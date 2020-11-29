@@ -59,6 +59,10 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(x * scale, y * scale, z * scale);
     }
 
+    public Vector3 scaled(Vector3 scale) {
+        return new Vector3(x * scale.x, y * scale.y, z * scale.z);
+    }
+
     public Vector3 scaled(double scaleX, double scaleY, double scaleZ) {
         return new Vector3(x * scaleX, y * scaleY, z * scaleZ);
     }
@@ -79,6 +83,10 @@ public class Vector3 extends rlbot.vector.Vector3 {
         double yDiff = y - other.y;
         double zDiff = z - other.z;
         return Math.sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
+    }
+
+    public Vector3 inverse() {
+        return new Vector3(1/x, 1/y, 1/z);
     }
 
     public double magnitude() {

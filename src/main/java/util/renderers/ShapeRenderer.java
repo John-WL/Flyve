@@ -4,7 +4,10 @@ import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Parabola3D;
+import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
+import util.math.vector.Vector2;
+import util.shapes.Circle;
 import util.shapes.Triangle3D;
 import util.math.vector.Vector3;
 
@@ -32,7 +35,20 @@ public class ShapeRenderer {
         renderer.drawLine3d(color, triangle.point2, triangle.point0);
     }
 
-    public void renderParabola3D(Parabola3D parabola, double amountOfTimeToRender, Color color) {
+    public void renderCircle(Circle circle, double zOffset, Color color) {
+        int amountOfPoints = 100;
+        double precision = Math.PI*2/amountOfPoints;
+        Vector2 point = circle.findPointOnCircle(0);
+        Vector2 previousPoint;
+
+        for(int i = 1; i < amountOfPoints; i++) {
+            previousPoint = point;
+            point = circle.findPointOnCircle(i*precision);
+            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
+        }
+    }
+
+    public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color color) {
         Vector3 previousPosition = parabola.compute(0);
         for(int i = 1; i < 40; i++) {
             Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/40);
@@ -41,7 +57,7 @@ public class ShapeRenderer {
         }
     }
 
-    public void renderParabola3D(Parabola3D parabola, double fromTime, double toTime, Color color) {
+    public void renderTrajectory(Trajectory3D parabola, double fromTime, double toTime, Color color) {
         Vector3 previousPosition = parabola.compute(fromTime);
         for(int i = 1; i < 40; i++) {
             double timeToCompute = fromTime + ((i/40.0)*(toTime-fromTime));
@@ -49,9 +65,6 @@ public class ShapeRenderer {
             renderer.drawLine3d(color, nextPosition, previousPosition);
             previousPosition = nextPosition;
         }
-    }
-
-    public void render3DSplineFunction(Function<Double, Vector3> function, double amountOfTimeToRender, Color color) {
     }
 
     public void renderBallPrediction(GameStatePrediction ballPrediction, double amountOfTimeToRender, Color color) {

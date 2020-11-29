@@ -4,8 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit5;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.AerialDirectionalHit6;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit5;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -21,7 +20,7 @@ import java.awt.*;
 public class AerialSetupController3 extends SkillController {
 
     private BotBehaviour bot;
-    private AerialDirectionalHit6 aerialDirectionalHit2;
+    private AerialDirectionalHit5 aerialDirectionalHit2;
     private DrivingSpeedController drivingSpeedController;
     private GroundOrientationController groundOrientationController;
 
@@ -33,7 +32,7 @@ public class AerialSetupController3 extends SkillController {
 
     public AerialSetupController3(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialDirectionalHit2 = new AerialDirectionalHit6(bot);
+        this.aerialDirectionalHit2 = new AerialDirectionalHit5(bot);
         this.drivingSpeedController = new DrivingSpeedController(bot);
         this.groundOrientationController = new GroundOrientationController(bot);
         this.closestApproachTimeBetweenParabolaAndBallPrediction = 0;

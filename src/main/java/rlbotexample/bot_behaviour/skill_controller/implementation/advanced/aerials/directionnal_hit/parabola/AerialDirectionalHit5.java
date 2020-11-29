@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
@@ -8,12 +8,13 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
-import rlbotexample.input.dynamic_data.aerials.AerialUtils;
+import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
+import util.controllers.BoostController;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
@@ -25,11 +26,15 @@ public class AerialDirectionalHit5 extends SkillController {
     private BotBehaviour bot;
     private AerialOrientationController2 aerialOrientationHandler;
     private JumpController jumpController;
+    private BoostController boostController;
 
     private Vector3 ballDestination;
+
+    private Trajectory3D targetTrajectory;
+    private Trajectory3D carPredictedTrajectory;
+    private AerialAccelerationFinder aerialAccelerationFinder;
     private AerialTrajectoryInfo aerialInfo;
-    private Parabola3D carPredictedTrajectory;
-    private double timeToReachAerial;
+
     private Vector3 futureBallPosition;
     private Vector3 futureCarPosition;
     private HitBox futureHitBox;
@@ -38,11 +43,15 @@ public class AerialDirectionalHit5 extends SkillController {
         this.bot = bot;
         this.aerialOrientationHandler = new AerialOrientationController2(bot);
         this.jumpController = new JumpController(bot);
+        this.boostController = new BoostController();
 
-        this.aerialInfo = new AerialTrajectoryInfo();
         this.ballDestination = new Vector3();
+
+        this.targetTrajectory = null;
         this.carPredictedTrajectory = new Parabola3D(new Vector3(), new Vector3(), new Vector3(), 0);
-        this.timeToReachAerial = 0;
+        this.aerialAccelerationFinder = null;
+        this.aerialInfo = new AerialTrajectoryInfo();
+
         this.futureBallPosition = new Vector3();
         this.futureCarPosition = new Vector3();
         this.futureHitBox = null;
@@ -61,19 +70,12 @@ public class AerialDirectionalHit5 extends SkillController {
 
         // orientation handling
         aerialOrientationHandler.setOrientationDestination(orientation.scaled(300).plus(input.car.position));
-        if(timeToReachAerial < 1.5) {
-            aerialOrientationHandler.setRollOrientation(input.statePrediction.ballAtTime(timeToReachAerial).position);
-        }
-        else {
-            aerialOrientationHandler.setRollOrientation(input.car.position.plus(input.car.orientation.roofVector));
-        }
-        if(input.car.position.z < 100) {
-            aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000));
-        }
+        aerialOrientationHandler.setRollOrientation(targetTrajectory.compute(aerialInfo.timeOfFlight));
         aerialOrientationHandler.updateOutput(input);
 
         // boost
-        output.boost(input.car.orientation.noseVector.dotProduct(orientation) > 0.7);
+        output.boost(input.car.orientation.noseVector.dotProduct(orientation.normalized()) > 0.7
+        && boostController.process(aerialInfo.acceleration.magnitude()));
 
         // jump
         this.jumpController.setFirstJumpType(new SimpleJump(), input);
@@ -81,29 +83,30 @@ public class AerialDirectionalHit5 extends SkillController {
         this.jumpController.updateOutput(input);
     }
 
-    private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
-        AerialTrajectoryInfo aerialInfo = AerialUtils.findAerialTrajectoryInfo(input.car, new Trajectory3D() {
+    private void updateTargetTrajectory(DataPacket input) {
+        targetTrajectory = new Trajectory3D() {
             @Override
             public Vector3 compute(double time) {
                 Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
                 return futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
+                //return new Vector3(0, 0, 1000);
             }
-        });
+        };
+    }
+
+    private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
+        updateTargetTrajectory(input);
+
+        aerialAccelerationFinder = new AerialAccelerationFinder(targetTrajectory);
+        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input);
+        //aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(targetTrajectory.compute(aerialInfo.timeOfFlight).minus(input.car.position).magnitude()/500, input);
+
         carPredictedTrajectory = new Parabola3D(
                 input.car.position,
                 input.car.velocity,
-                aerialInfo.acceleration.minus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)),
+                this.aerialInfo.acceleration.minus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)),
                 0
         );
-
-        // very weird way to converge....
-        // there might be a better way, like taking in consideration the hit-box, first...
-        Vector3 directionAtImpact = carPredictedTrajectory.derivative(aerialInfo.timeOfFlight);
-        Vector3 futureBallPosition = input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position;
-        Vector3 impactPointOnBall = futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
-        if(directionAtImpact.normalized().dotProduct(futureBallPosition.minus(impactPointOnBall).normalized()) < 0) {
-            //aerialInfo.acceleration = aerialInfo.acceleration.minus(futureBallPosition.minus(impactPointOnBall).scaledToMagnitude(1700));
-        }
 
         return aerialInfo;
     }
@@ -119,8 +122,13 @@ public class AerialDirectionalHit5 extends SkillController {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.MAGENTA);
         shapeRenderer.renderCross(futureCarPosition, Color.red);
-        shapeRenderer.renderParabola3D(carPredictedTrajectory, -0.5, 0, Color.pink);
-        shapeRenderer.renderParabola3D(carPredictedTrajectory, 0, 3, Color.CYAN);
+
+        shapeRenderer.renderCross(new Vector3(0, 0, 1000), Color.red);
+
+
+
+        shapeRenderer.renderTrajectory(carPredictedTrajectory, -0.5, 0, Color.pink);
+        shapeRenderer.renderTrajectory(carPredictedTrajectory, 0, 4, Color.CYAN);
         //shapeRenderer.renderHitBox(futureHitBox, Color.YELLOW);
     }
 }

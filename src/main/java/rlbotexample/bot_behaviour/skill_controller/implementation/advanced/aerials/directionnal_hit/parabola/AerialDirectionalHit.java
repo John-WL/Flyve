@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;

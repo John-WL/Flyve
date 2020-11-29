@@ -12,6 +12,12 @@ public class Circle {
         this.radius = radius;
     }
 
+    public Vector2 findPointOnCircle(double rads) {
+        Vector2 d = new Vector2(Math.cos(rads), Math.sin(rads));
+
+        return center.plus(d.scaled(radius));
+    }
+
     public Vector2 getCenter() {
         return center;
     }

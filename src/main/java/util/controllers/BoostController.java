@@ -1,17 +1,22 @@
 package util.controllers;
 
+import util.game_constants.RlConstants;
+
 public class BoostController {
 
-    private final static PwmController pwmController = new PwmController(4);
+    private double currentDeltaV;
 
-    public static boolean process(double accelerationRatio) {
-        return pwmController.process(accelerationRatio);
+    public BoostController() {
+        this.currentDeltaV = 0;
     }
 
-    private static double booelanToDouble(boolean valueToConvert) {
-        if(valueToConvert) {
-            return 1;
+    public boolean process(double desiredAverageAcceleration) {
+        currentDeltaV += desiredAverageAcceleration;
+        if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
+            currentDeltaV -= RlConstants.ACCELERATION_DUE_TO_BOOST;
+            return true;
         }
-        return 0;
+
+        return false;
     }
 }

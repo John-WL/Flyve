@@ -3,37 +3,38 @@ package rlbotexample.bot_behaviour.skill_controller.debug;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
+import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 
 public class OtherPlayerAccelerationSpeedPrinter extends SkillController {
 
-    private Vector3 currentPlayerPosition;
-    private Vector3 lastPlayerPosition;
-    private Vector3 currentPlayerSpeed;
-    private Vector3 lastPlayerSpeed;
-    private Vector3 currentAcceleration;
+    private double currentPlayerSpeed;
+    private double lastPlayerSpeed;
+    private double currentAcceleration;
+    private int counter;
 
     public OtherPlayerAccelerationSpeedPrinter() {
         super();
-        currentPlayerPosition = new Vector3();
-        lastPlayerPosition = new Vector3();
-        currentPlayerSpeed = new Vector3();
-        lastPlayerSpeed = new Vector3();
-        currentAcceleration = new Vector3();
+        currentPlayerSpeed = 0;
+        lastPlayerSpeed = 0;
+        currentAcceleration = 0;
+        counter = 0;
     }
 
     @Override
     public void updateOutput(DataPacket input) {
         // drive and turn to reach destination F
-        lastPlayerPosition = currentPlayerPosition;
-        currentPlayerPosition = input.allCars.get(input.allCars.size()-1).position;
-
         lastPlayerSpeed = currentPlayerSpeed;
-        currentPlayerSpeed = currentPlayerPosition.minus(lastPlayerPosition);
+        currentPlayerSpeed = input.allCars.get(input.allCars.size()-1).velocity.dotProduct(input.allCars.get(input.allCars.size()-1).orientation.noseVector);
 
-        currentAcceleration = currentPlayerSpeed.minus(lastPlayerSpeed);
+        currentAcceleration = currentAcceleration + (currentPlayerSpeed - (lastPlayerSpeed));
 
-        System.out.println(currentAcceleration.magnitude());
+        counter++;
+        if(counter == 1) {
+            counter = 0;
+            System.out.println("a.sample(new Vector2(" + currentPlayerSpeed + ", " + currentAcceleration*30 + "));");
+            currentAcceleration = 0;
+        }
     }
 
     @Override

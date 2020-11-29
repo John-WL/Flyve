@@ -2,6 +2,7 @@ package rlbotexample.input.prediction.gamestate_prediction;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallBounce;
@@ -203,7 +204,7 @@ public class GameStatePrediction {
         final double specificCarRadiusWithRespectToBall = pointOnCarSurfaceTowardBall.minus(carCenterHitBoxPosition).magnitude();
 
         if(carCenterHitBoxPosition.minus(ballData.position).magnitude() < specificCarRadiusWithRespectToBall + RlConstants.BALL_RADIUS) {
-            return new BallCollisionWithCar(ballData, carData).compute(deltaTime);
+            return new BallCollisionWithCar(ballData, carData, pointOnCarSurfaceTowardBall).compute(deltaTime);
         }
 
         return ballData;

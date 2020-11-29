@@ -1,6 +1,7 @@
 package rlbotexample.input.prediction;
 
 import rlbotexample.input.dynamic_data.RlUtils;
+import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
 public abstract class Trajectory3D {
@@ -8,7 +9,7 @@ public abstract class Trajectory3D {
     public abstract Vector3 compute(double time);
 
     public Vector3 derivative(double time) {
-        double h = 0.001;
+        double h = 1/RlConstants.BOT_REFRESH_RATE;
         Vector3 result = compute(time + h).minus(compute(time));
         result = result.scaled(1/h);
 

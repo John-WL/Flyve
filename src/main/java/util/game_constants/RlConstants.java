@@ -2,8 +2,11 @@ package util.game_constants;
 
 public class RlConstants {
 
-    public static final double BALL_RADIUS = 92.75;
     public static final double BALL_MASS = 30;
+    public static final double BALL_INERTIA = 0.4 * BALL_MASS * RlConstants.BALL_RADIUS * RlConstants.BALL_RADIUS;
+    public static final double BALL_BOUNCE_RESTITUTION = 0.6;
+
+    public static final double BALL_RADIUS = 92.75;
     public static final double BALL_MAX_SPEED = 4000;
     public static final double BALL_MAX_SPIN = 2*Math.PI;
     public static final double BALL_AIR_DRAG_COEFFICIENT = 0.0305;

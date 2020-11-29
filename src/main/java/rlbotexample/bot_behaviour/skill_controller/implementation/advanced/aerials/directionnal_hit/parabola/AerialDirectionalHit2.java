@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
@@ -21,6 +21,7 @@ public class AerialDirectionalHit2 extends SkillController {
     private BotBehaviour bot;
     private AerialOrientationController2 aerialOrientationHandler;
     private JumpController jumpController;
+    private BoostController boostController;
     private Vector3 ballDestination;
     private Vector3 playerDestination;
     private Vector3 futureBallPosition;
@@ -82,7 +83,7 @@ public class AerialDirectionalHit2 extends SkillController {
         }
 
         //output.boost(input.car.orientation.noseVector.dotProduct(orientationWithoutGravity.normalized()) > 0.7);
-        output.boost(BoostController.process(input.car.orientation.noseVector.dotProduct(orientation.minus(input.car.position).normalized())*1.3));
+        output.boost(boostController.process(input.car.orientation.noseVector.dotProduct(orientation.minus(input.car.position).normalized())*1.3));
 
         // set the desired orientation and apply it
         aerialOrientationHandler.setOrientationDestination(orientation);

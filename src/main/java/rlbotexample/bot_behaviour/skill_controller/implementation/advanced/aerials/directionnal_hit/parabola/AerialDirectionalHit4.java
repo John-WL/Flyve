@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
@@ -156,8 +156,8 @@ public class AerialDirectionalHit4 extends SkillController {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.MAGENTA);
         shapeRenderer.renderCross(futureCarPosition, Color.red);
-        shapeRenderer.renderParabola3D(carPredictedTrajectory, -0.5, 0, Color.pink);
-        shapeRenderer.renderParabola3D(carPredictedTrajectory, 0, 3, Color.CYAN);
+        shapeRenderer.renderTrajectory(carPredictedTrajectory, -0.5, 0, Color.pink);
+        shapeRenderer.renderTrajectory(carPredictedTrajectory, 0, 3, Color.CYAN);
         //shapeRenderer.renderHitBox(futureHitBox, Color.YELLOW);
     }
 }

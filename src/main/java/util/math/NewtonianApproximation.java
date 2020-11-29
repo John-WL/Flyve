@@ -32,6 +32,6 @@ public class NewtonianApproximation {
 
     private static double yourFunctionHere(double potatoe) {
         // just get rid of that and put your function here or replace it in the code or do a lambda or etc.
-        return Math.PI*/*fancy stuff*/potatoe;
+        return java.lang.Math.PI*/*fancy stuff*/potatoe;
     }
 }
