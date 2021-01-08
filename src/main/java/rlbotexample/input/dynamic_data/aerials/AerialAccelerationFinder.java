@@ -23,7 +23,8 @@ public class AerialAccelerationFinder {
         // same of the first jump if we are on the ceiling. We don't necessarily want to use it, as it can add an unnecessary/annoying velocity to deal with.
         Vector3 vi = carData.velocity
                 .minus(carData.orientation.roofVector.scaled(carData.hasFirstJump ? RlConstants.ACCELERATION_DUE_TO_JUMP : 0))
-                .minus(carData.orientation.roofVector.scaled(carData.hasSecondJump ? RlConstants.ACCELERATION_DUE_TO_JUMP : 0));
+                //.minus(carData.orientation.roofVector.scaled(carData.hasSecondJump ? RlConstants.ACCELERATION_DUE_TO_JUMP : 0))
+        ;
 
         double ax = findAcceleration(xi.x, xf.x, vi.x, t);
         double ay = findAcceleration(xi.y, xf.y, vi.y, t);
@@ -36,14 +37,14 @@ public class AerialAccelerationFinder {
         return 2*(xf - xi - (vi*t))/(t*t);
     }
 
-    private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input, Trajectory3D trajectory) {
-        int precision = 200;
+    private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
+        int precision = 120;
         double amountOfTimeToSearch = 10;
         double desiredAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST*BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
 
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
-            Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(input.car, trajectory.compute(currentTestTime), currentTestTime);
+            Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(input.car, targetTrajectory.compute(currentTestTime), currentTestTime);
             Vector3 testAccelerationWithGravity = testAcceleration.plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
             if(testAccelerationWithGravity.magnitude() < desiredAcceleration) {
                 return new AerialTrajectoryInfo(testAccelerationWithGravity, currentTestTime);
@@ -63,6 +64,6 @@ public class AerialAccelerationFinder {
             return new AerialTrajectoryInfo(testAcceleration, timeToTryFirst);
         }
 
-        return findAerialTrajectoryInfo(input, targetTrajectory);
+        return findAerialTrajectoryInfo(input);
     }
 }

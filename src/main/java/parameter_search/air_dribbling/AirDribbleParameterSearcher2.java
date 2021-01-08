@@ -3,7 +3,7 @@ package parameter_search.air_dribbling;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.machine_learning_models.evaluators.BotEvaluator;
@@ -13,7 +13,7 @@ import util.game_situation.trainning_pack.FiniteTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.machine_learning_models.hyperparameter_search.ParameterBruteForce3;
 
-public class AirDribbleParameterSearcher2 extends PanBot {
+public class AirDribbleParameterSearcher2 extends FlyveBot {
 
     private SkillController skillController;
     private TrainingPack trainingPack;

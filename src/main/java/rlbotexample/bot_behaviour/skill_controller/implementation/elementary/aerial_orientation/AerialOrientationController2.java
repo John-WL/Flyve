@@ -28,9 +28,13 @@ public class AerialOrientationController2 extends SkillController {
         this.rollOrientation = new Vector3();
         this.desiredSpin = new Vector3();
 
-        this.pitchVelocityPid = new PidController(3, 0, 0.3);
+        /*this.pitchVelocityPid = new PidController(3, 0, 0.3);
         this.yawVelocityPid = new PidController(3, 0, 0.2);
-        this.rollVelocityPid = new PidController(0.6, 0, 0.06);
+        this.rollVelocityPid = new PidController(0.6, 0, 0.06);*/
+
+        this.pitchVelocityPid = new PidController(1.5, 0, 0.15);
+        this.yawVelocityPid = new PidController(1.5, 0, 0.1);
+        this.rollVelocityPid = new PidController(0.3, 0, 0.03);
     }
 
     public void setOrientationDestination(Vector3 globalDestination) {

@@ -3,6 +3,7 @@ package rlbotexample;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
 import util.PortReader;
+import util.game_constants.RlConstants;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -30,7 +31,8 @@ public class JavaExample {
         });
 
         // cap refresh rates so the bot can run smoothly on cheap pc
-        botManager.setRefreshRate(30);
+        botManager.setRefreshRate((int)RlConstants.BOT_REFRESH_RATE);
+        // yeah no scrap that we're gonna run schedulers and task serializers instead xD
 
         SamplePythonInterface pythonInterface = new SamplePythonInterface(port, botManager);
         new Thread(pythonInterface::start).start();

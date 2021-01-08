@@ -2,14 +2,14 @@ package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
 import java.awt.*;
 
-public class DebugCustomBallPrediction extends PanBot {
+public class DebugCustomBallPrediction extends FlyveBot {
 
     public DebugCustomBallPrediction() {
     }

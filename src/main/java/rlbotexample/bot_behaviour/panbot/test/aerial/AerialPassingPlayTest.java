@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.test.aerial;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialIntersectDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController;
@@ -16,7 +16,7 @@ import util.math.vector.Vector3;
 
 // this implementation NEEDS at least 2 bots to work!
 // else it just crashes lul
-public class AerialPassingPlayTest extends PanBot {
+public class AerialPassingPlayTest extends FlyveBot {
 
     private AerialSetupController aerialDirectionalHitControllerBot0;
     private AerialSetupController aerialDirectionalHitControllerBot1;

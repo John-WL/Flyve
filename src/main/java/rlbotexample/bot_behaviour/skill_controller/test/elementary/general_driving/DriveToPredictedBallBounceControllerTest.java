@@ -2,14 +2,14 @@ package rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driv
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
-public class DriveToPredictedBallBounceControllerTest extends PanBot {
+public class DriveToPredictedBallBounceControllerTest extends FlyveBot {
 
     private DriveToPredictedBallBounceController driveToPredictedBallBounceController;
 

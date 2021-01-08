@@ -2,13 +2,9 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.DribbleAvoidingOpponent;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Flick;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.output.BotOutput;
 import util.game_situation.situations.ground_dribble.GroundDribbleSetup1;
 import util.game_situation.situations.ground_dribble.GroundDribbleSetup2;
@@ -16,7 +12,7 @@ import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
-public class DribbleAvoidingOpponentTest extends PanBot {
+public class DribbleAvoidingOpponentTest extends FlyveBot {
 
     private DribbleAvoidingOpponent dribbleController;
     private TrainingPack gameSituationHandler;

@@ -85,7 +85,8 @@ public class GroundDirectionalHit extends SkillController {
         Vector3 offsetCarPosition = input.car.hitBox.projectPointOnSurface(input.ball.position);
         Vector3 offsetBallPosition = input.ball.position.plus(offsetCarPosition.minus(input.ball.position).scaledToMagnitude(RlConstants.BALL_RADIUS));
         double distance = offsetBallPosition.minus(offsetCarPosition).magnitude();
-        double speed = input.ball.velocity.scaled(1, 1, 0).minus(input.car.velocity).magnitude();//.dotProduct(offsetBallPosition.minus(offsetCarPosition).normalized());
+        //double speed = input.ball.velocity.scaled(1, 1, 0).minus(input.car.velocity).magnitude();//.dotProduct(offsetBallPosition.minus(offsetCarPosition).normalized());
+        double speed = (input.car.velocity.magnitude()*0.4 + 2300*0.6);
         double timeBeforeHit = distance/speed;
 
         return timeBeforeHit;

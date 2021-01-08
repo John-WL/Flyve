@@ -2,16 +2,15 @@ package rlbotexample.bot_behaviour.skill_controller.test.elementary.jump;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.*;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
-public class JumpTest extends PanBot {
+public class JumpTest extends FlyveBot {
 
     private JumpController jumpController;
 

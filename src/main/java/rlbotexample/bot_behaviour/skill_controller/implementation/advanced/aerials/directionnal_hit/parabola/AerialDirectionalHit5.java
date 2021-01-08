@@ -4,9 +4,11 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController3;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -69,8 +71,9 @@ public class AerialDirectionalHit5 extends SkillController {
         Vector3 orientation = aerialInfo.acceleration;
 
         // orientation handling
-        aerialOrientationHandler.setOrientationDestination(orientation.scaled(300).plus(input.car.position));
-        aerialOrientationHandler.setRollOrientation(targetTrajectory.compute(aerialInfo.timeOfFlight));
+        aerialOrientationHandler.setOrientationDestination(orientation.plus(input.car.position));
+        //aerialOrientationHandler.setRollOrientation(targetTrajectory.compute(aerialInfo.timeOfFlight).minus(input.car.position));
+        aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000).minus(input.car.position));
         aerialOrientationHandler.updateOutput(input);
 
         // boost
@@ -79,7 +82,12 @@ public class AerialDirectionalHit5 extends SkillController {
 
         // jump
         this.jumpController.setFirstJumpType(new SimpleJump(), input);
-        this.jumpController.setSecondJumpType(new ShortJump(), input);
+        if(input.ball.position.z > 300) {
+            this.jumpController.setSecondJumpType(new ShortJump(), input);
+        }
+        else {
+            this.jumpController.setSecondJumpType(new Wait(), input);
+        }
         this.jumpController.updateOutput(input);
     }
 

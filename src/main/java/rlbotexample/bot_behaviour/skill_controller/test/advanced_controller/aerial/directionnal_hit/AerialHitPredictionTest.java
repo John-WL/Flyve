@@ -5,7 +5,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialHit;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
@@ -16,7 +16,7 @@ import util.game_situation.miscellaneous.RemoveResidualVelocity;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 
-public class AerialHitPredictionTest extends PanBot {
+public class AerialHitPredictionTest extends FlyveBot {
 
     private SkillController aerialHitController;
     private TrainingPack gameSituationHandler;

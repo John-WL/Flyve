@@ -2,14 +2,14 @@ package rlbotexample.bot_behaviour.panbot.debug.player_values;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class DebugPlayerSpeedMinusBallSpeed extends PanBot {
+public class DebugPlayerSpeedMinusBallSpeed extends FlyveBot {
 
     Vector3 deltaSpeed;
 

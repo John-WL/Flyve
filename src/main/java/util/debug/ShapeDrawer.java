@@ -21,7 +21,7 @@ public class ShapeDrawer {
         double angleResolution = 2*Math.PI/CIRCLE_RESOLUTION;
         Vector2 rotationResolution = new Vector2(Math.cos(angleResolution), Math.sin(angleResolution));
         Vector2 firstRadius;
-        Vector2 secondRadius = new Vector2(circle.getRadius(), 0);
+        Vector2 secondRadius = new Vector2(circle.getRadii(), 0);
 
         for(int i = 0; i < CIRCLE_RESOLUTION; i++) {
             firstRadius = secondRadius;

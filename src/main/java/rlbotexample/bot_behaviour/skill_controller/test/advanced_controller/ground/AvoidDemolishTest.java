@@ -2,15 +2,14 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defense.AvoidDemolish;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Demolish;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 
-public class AvoidDemolishTest extends PanBot {
+public class AvoidDemolishTest extends FlyveBot {
 
     private AvoidDemolish demolishController;
     private TrainingPack gameSituationHandler;

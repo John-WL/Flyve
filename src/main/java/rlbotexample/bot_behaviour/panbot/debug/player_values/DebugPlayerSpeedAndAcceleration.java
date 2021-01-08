@@ -4,11 +4,11 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.debug.OtherPlayerAccelerationSpeedPrinter;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
-public class DebugPlayerSpeedAndAcceleration extends PanBot {
+public class DebugPlayerSpeedAndAcceleration extends FlyveBot {
 
     private SkillController skillController;
 

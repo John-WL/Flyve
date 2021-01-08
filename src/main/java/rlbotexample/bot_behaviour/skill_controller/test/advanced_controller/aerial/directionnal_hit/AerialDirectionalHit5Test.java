@@ -2,32 +2,24 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugCustomBallPrediction;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit5;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
-import util.game_situation.miscellaneous.RemoveResidualVelocity;
-import util.game_situation.situations.aerial_hit.AerialHitSetup1;
-import util.game_situation.situations.aerial_hit.AerialHitSetup2;
-import util.game_situation.situations.aerial_hit.AerialHitSetup3;
-import util.game_situation.situations.aerial_hit.AerialHitSetup4;
-import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
-import util.state_machine.StateMachineTest;
 
-public class AerialDirectionalHit5Test extends PanBot {
+public class AerialDirectionalHit5Test extends FlyveBot {
 
     private AerialDirectionalHit5 aerialDirectionalHitController;
     private TrainingPack gameSituationHandler;
     private Predictions predictions;
 
     public AerialDirectionalHit5Test() {
-        predictions = new Predictions();
         aerialDirectionalHitController = new AerialDirectionalHit5(this);
-        gameSituationHandler = new CircularTrainingPack();
+        /*gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup1());
         gameSituationHandler.add(new RemoveResidualVelocity());
@@ -35,7 +27,7 @@ public class AerialDirectionalHit5Test extends PanBot {
         gameSituationHandler.add(new RemoveResidualVelocity());
         gameSituationHandler.add(new AerialHitSetup3());
         gameSituationHandler.add(new RemoveResidualVelocity());
-        gameSituationHandler.add(new AerialHitSetup4());
+        gameSituationHandler.add(new AerialHitSetup4());*/
     }
 
     // called every frame
@@ -45,7 +37,11 @@ public class AerialDirectionalHit5Test extends PanBot {
         //gameSituationHandler.update();
 
         // do the thing
-        aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 100));
+        if (input.team == 1) {
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, -5200, 100));
+        } else {
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 100));
+        }
         aerialDirectionalHitController.updateOutput(input);
 
         // return the calculated bot output

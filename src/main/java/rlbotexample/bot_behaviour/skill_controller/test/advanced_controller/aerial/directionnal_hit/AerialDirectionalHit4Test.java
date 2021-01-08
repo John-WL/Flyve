@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugCustomBallPrediction;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit4;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -17,7 +17,7 @@ import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
-public class AerialDirectionalHit4Test extends PanBot {
+public class AerialDirectionalHit4Test extends FlyveBot {
 
     private AerialDirectionalHit4 aerialDirectionalHitController;
     private TrainingPack gameSituationHandler;

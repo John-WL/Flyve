@@ -5,7 +5,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler2V2;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
@@ -17,7 +17,7 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class TeamPossession2v2Test extends PanBot {
+public class TeamPossession2v2Test extends FlyveBot {
 
     private PlayerRoleHandler2V2 playerRoleHandler2V2;
     private ExtendedCarData offensivePlayer;

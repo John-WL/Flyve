@@ -71,7 +71,7 @@ public class Demolish extends SkillController {
             jumpController.setSecondJumpType(new Wait(), input);
         }
         jumpController.setJumpDestination(carDestination);
-        jumpController.updateOutput(input);
+        //jumpController.updateOutput(input);
     }
 
     private Vector3 findDestinationOfCarToDemo(DataPacket input) {

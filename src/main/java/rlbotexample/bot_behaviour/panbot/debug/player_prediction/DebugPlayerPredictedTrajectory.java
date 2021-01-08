@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.debug.player_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
@@ -10,7 +10,7 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class DebugPlayerPredictedTrajectory extends PanBot {
+public class DebugPlayerPredictedTrajectory extends FlyveBot {
 
     private Predictions predictions;
 

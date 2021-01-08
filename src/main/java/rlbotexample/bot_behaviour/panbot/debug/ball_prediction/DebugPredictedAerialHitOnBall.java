@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.prediction.Predictions;
@@ -12,7 +12,7 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class DebugPredictedAerialHitOnBall extends PanBot {
+public class DebugPredictedAerialHitOnBall extends FlyveBot {
 
     private Predictions predictions;
 

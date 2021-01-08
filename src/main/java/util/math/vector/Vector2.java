@@ -122,6 +122,19 @@ public class Vector2 {
     }
 
     /**
+     * This angle represents the amount of radians that seperate 2 vectors, but it's only positive and goes from 0 to 2pi
+     */
+    public double separationAngle(Vector2 v) {
+        double currentRad = correctionAngle(v);
+
+        if(currentRad < 0) {
+            return 2*Math.PI + currentRad;
+        }
+
+        return currentRad;
+    }
+
+    /**
      * Will always return a positive value <= Math.PI
      */
     public static double angle(Vector2 a, Vector2 b) {

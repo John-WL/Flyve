@@ -33,7 +33,7 @@ public class Dribble2 extends SkillController {
         desiredBallPositionOnPlayerCar = new Vector3();
 
         //steerPid = new PidController(1.7, 0, 17);
-        steerPid = new PidController(2, 0, 20);
+        steerPid = new PidController(1, 0, 10);
 
         drivingSpeedController = new DrivingSpeedController(bot);
         groundOrientationController = new GroundOrientationController(bot);

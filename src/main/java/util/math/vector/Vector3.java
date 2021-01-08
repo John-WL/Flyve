@@ -231,6 +231,17 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(frameOfRefWithoutRoll.x, planarProjectionZyOfResult.y, planarProjectionZyOfResult.x);
     }
 
+    public Vector3 rotate(Vector3 r) {
+        final double a = r.magnitude()/2;
+        final Vector2 r2 = new Vector2(Math.cos(a), Math.sin(a));
+        final Vector3 sr = r.scaledToMagnitude(r2.y);
+        final Quaternion qr = new Quaternion(r2.x, sr);
+        final Quaternion qa = new Quaternion(0, this);
+        final Quaternion qr2 = new Quaternion(r2.x, sr.scaled(-1));
+
+        return qr.multiply(qa.multiply(qr2)).toVector3();
+    }
+
     public Vector3 minusAngle(Vector3 rotationVector) {
         // Rotating the vector in xy beforehand
         Vector3 firstRotatedVector = new Vector3(this.flatten().minusAngle(rotationVector.flatten()), this.z);

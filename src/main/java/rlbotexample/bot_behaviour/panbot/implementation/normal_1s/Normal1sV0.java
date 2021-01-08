@@ -2,13 +2,13 @@ package rlbotexample.bot_behaviour.panbot.implementation.normal_1s;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
-public class Normal1sV0 extends PanBot {
+public class Normal1sV0 extends FlyveBot {
 
     private SkillController skillController;
 

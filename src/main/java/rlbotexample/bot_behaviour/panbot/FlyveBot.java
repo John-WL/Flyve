@@ -6,7 +6,7 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import java.awt.*;
 
 // Pan is an abbreviation for PATCHES ARE NEEDED! (Because patches are needed...)
-public abstract class PanBot extends BotBehaviour {
+public abstract class FlyveBot extends BotBehaviour {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {

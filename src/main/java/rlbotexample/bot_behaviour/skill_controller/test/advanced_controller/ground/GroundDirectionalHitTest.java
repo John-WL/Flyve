@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.GroundDirectionalHit;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
@@ -10,7 +10,7 @@ import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
 
-public class GroundDirectionalHitTest extends PanBot {
+public class GroundDirectionalHitTest extends FlyveBot {
 
     private GroundDirectionalHit groundDirectionalHit;
     private TrainingPack gameSituationHandler;

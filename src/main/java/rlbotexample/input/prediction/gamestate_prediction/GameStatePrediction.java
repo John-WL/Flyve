@@ -4,6 +4,7 @@ import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
+import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallBounce;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallStopper;
@@ -47,6 +48,15 @@ public class GameStatePrediction {
             return balls.get(0);
         }
         return balls.get((int)(refreshRate * deltaTime));
+    }
+
+    public Trajectory3D ballAsTrajectory() {
+        return new Trajectory3D() {
+            @Override
+            public Vector3 compute(double time) {
+                return ballAtTime(time).position;
+            }
+        };
     }
 
     public BallData ballAtInterpolatedTime(final double deltaTime) {

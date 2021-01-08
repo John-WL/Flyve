@@ -1,5 +1,7 @@
 package util.controllers;
 
+import util.game_constants.RlConstants;
+
 public class PidController {
 
     private double kp;
@@ -31,17 +33,20 @@ public class PidController {
 
     public double process(double actualValue, double desiredValue) {
         // getting the error
-        double error = actualValue - desiredValue;
+        // YES THIS IS COMPUTED BASED ON 1/30th OF A SECOND
+        double error = (actualValue - desiredValue);
 
         // updating the integral part
         // there are 2 total error variables because adding doubles
         // on a too large scale of magnitude difference does nothing at all
+        // btw, this is not necessary at all and should be removed LOL
         smallTotalError += error;
         if(Math.abs(smallTotalError) > 10) {
             largeTotalError += smallTotalError;
             smallTotalError = 0;
         }
 
+        // clamping
         largeTotalError = Math.max(largeTotalError, -integralMaxValue);
         smallTotalError = Math.max(smallTotalError, -integralMaxValue);
         largeTotalError = Math.min(largeTotalError, integralMaxValue);
@@ -51,7 +56,8 @@ public class PidController {
         previousError = currentError;
         currentError = error;
 
-        return kp*currentError + ki*(largeTotalError + smallTotalError) - kd*(previousError - currentError);
+        // actual pid computation
+        return kp*currentError + ki*(largeTotalError + smallTotalError)/RlConstants.BOT_REFRESH_RATE - kd*(previousError - currentError)*RlConstants.BOT_REFRESH_RATE;
     }
 
     public void resetIntegralValue() {

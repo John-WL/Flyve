@@ -4,7 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.comit_to_ball.KickoffSpecializedOnBall;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.get_boost.KickoffSpecializedOnBoost;
 import rlbotexample.input.boost.BoostManager;
@@ -16,7 +16,7 @@ import util.math.vector.Vector3;
 
 import java.util.List;
 
-public class KickoffBehaviour extends PanBot {
+public class KickoffBehaviour extends FlyveBot {
 
     private final KickoffSpecializedOnBall kickoffSpecializedOnBall;
     private final KickoffSpecializedOnBoost kickoffSpecializedOnBoost;

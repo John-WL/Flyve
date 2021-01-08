@@ -1,29 +1,23 @@
 package util.state_machine;
 
-import java.util.List;
-import java.util.Map;
+import rlbot.render.Renderer;
+import rlbotexample.input.dynamic_data.DataPacket;
 
-public class StateMachine<I, O> {
+public class StateMachine {
+    private State state;
+    private State nextState;
 
-    private State<I, O> currentState;
-    private final Map<State<I, O>, List<Action<I, O>>> states;
-
-    public StateMachine(Map<State<I, O>, List<Action<I, O>>> states, State<I, O> startingState) {
-        this.states = states;
-        this.currentState = startingState;
+    public StateMachine(State initState) {
+        nextState = initState;
     }
 
-    public O update(I input) {
-        O output = currentState.behaviour(input);
+    public void exec(DataPacket input) {
+        state = nextState;
+        state.exec(input);
+        nextState = state.next(input);
+    }
 
-        for(Action<I, O> action: states.get(currentState)) {
-            State<I, O> nextState = action.execute(input);
-            if(currentState != nextState) {
-                currentState = nextState;
-                return output;
-            }
-        }
-
-        return output;
+    public void debug(DataPacket input, Renderer renderer) {
+        state.debug(input, renderer);
     }
 }

@@ -8,6 +8,7 @@ import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.math.vector.Vector2;
 import util.shapes.Circle;
+import util.shapes.Circle3D;
 import util.shapes.Triangle3D;
 import util.math.vector.Vector3;
 
@@ -45,6 +46,19 @@ public class ShapeRenderer {
             previousPoint = point;
             point = circle.findPointOnCircle(i*precision);
             renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
+        }
+    }
+
+    public void renderCircle3D(Circle3D circle, Color color) {
+        int amountOfPoints = 100;
+        double precision = Math.PI*2/amountOfPoints;
+        Vector3 point = circle.findPointOnCircle(0);
+        Vector3 previousPoint;
+
+        for(int i = 1; i < amountOfPoints; i++) {
+            previousPoint = point;
+            point = circle.findPointOnCircle(i*precision);
+            renderer.drawLine3d(color, previousPoint, point);
         }
     }
 

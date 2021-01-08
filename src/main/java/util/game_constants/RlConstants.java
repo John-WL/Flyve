@@ -32,5 +32,5 @@ public class RlConstants {
 
     public static final double AMOUNT_OF_TIME_BEFORE_LOSING_SECOND_JUMP = 1.25;
 
-    public static final double BOT_REFRESH_RATE = 30;
+    public static final double BOT_REFRESH_RATE = 60;
 }

@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.debug.ball_prediction;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;
@@ -10,7 +10,7 @@ import util.game_situation.situations.ball_hit.*;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 
-public class DebugResultingBallFromHit extends PanBot {
+public class DebugResultingBallFromHit extends FlyveBot {
 
     private Predictions predictions;
     private TrainingPack gameSituationHandler;

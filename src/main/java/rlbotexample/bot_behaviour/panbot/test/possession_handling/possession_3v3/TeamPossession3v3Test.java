@@ -5,7 +5,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Flick;
@@ -19,7 +19,7 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 
-public class TeamPossession3v3Test extends PanBot {
+public class TeamPossession3v3Test extends FlyveBot {
 
     private PlayerRoleHandler3V3 playerRoleHandler3V3;
     private PlayerRoleHandler3V3 opponentRoleHandler3V3;

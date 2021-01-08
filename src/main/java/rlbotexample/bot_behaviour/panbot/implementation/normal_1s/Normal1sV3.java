@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.panbot.implementation.normal_1s;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.*;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boost_management.RefuelProximityBoost;
@@ -24,7 +24,7 @@ import util.math.vector.Vector3;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Normal1sV3 extends PanBot {
+public class Normal1sV3 extends FlyveBot {
 
     private Dribble2 dribbleController;
     private Flick flickController;

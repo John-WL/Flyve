@@ -1,6 +1,10 @@
 package util.state_machine;
 
-@FunctionalInterface
-public interface State<I, O> {
-    O behaviour(I input);
+import rlbot.render.Renderer;
+import rlbotexample.input.dynamic_data.DataPacket;
+
+public interface State {
+    void exec(DataPacket input);
+    State next(DataPacket input);
+    void debug(DataPacket input, Renderer renderer);
 }

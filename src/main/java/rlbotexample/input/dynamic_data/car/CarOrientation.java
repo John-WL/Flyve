@@ -50,4 +50,10 @@ public class CarOrientation {
 
         return new CarOrientation(new Vector3(noseX, noseY, noseZ), new Vector3(roofX, roofY, roofZ));
     }
+
+    public Vector3 findRotatorToRotateTo(Orientation orientation) {
+        final Orientation thisOrientation = new Orientation(noseVector, roofVector);
+
+        return thisOrientation.findRotatorToRotateTo(orientation);
+    }
 }

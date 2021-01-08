@@ -4,11 +4,11 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
-public class TripleThreatV0 extends PanBot {
+public class TripleThreatV0 extends FlyveBot {
 
     private KickoffBehaviour kickoffBehaviour;
     private boolean isKickoffReset;

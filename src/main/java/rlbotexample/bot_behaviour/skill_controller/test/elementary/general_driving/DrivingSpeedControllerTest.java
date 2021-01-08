@@ -2,13 +2,13 @@ package rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driv
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
-public class DrivingSpeedControllerTest extends PanBot {
+public class DrivingSpeedControllerTest extends FlyveBot {
 
     private DrivingSpeedController drivingSpeedController;
 

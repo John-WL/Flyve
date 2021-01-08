@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.panbot.debug.rl_utils;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.PanBot;
+import rlbotexample.bot_behaviour.panbot.FlyveBot;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -15,7 +15,7 @@ import util.renderers.ShapeRenderer;
 
 import java.awt.*;
 
-public class ConstantAccelerationToReachAerialDestination extends PanBot {
+public class ConstantAccelerationToReachAerialDestination extends FlyveBot {
 
     private Trajectory3D targetTrajectory;
     private AerialAccelerationFinder aerialAccelerationFinder;

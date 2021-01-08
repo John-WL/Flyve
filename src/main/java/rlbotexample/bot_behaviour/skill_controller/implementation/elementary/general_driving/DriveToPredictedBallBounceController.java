@@ -27,7 +27,7 @@ public class DriveToPredictedBallBounceController extends SkillController {
     public DriveToPredictedBallBounceController(BotBehaviour bot) {
         this.bot = bot;
         this.aerialOrientationHandler = new AerialOrientationHandler(bot);
-        speedToReach = 1410;
+        speedToReach = 2300;
         groundOrientationController = new GroundOrientationController(bot);
         drivingSpeedController = new DrivingSpeedController(bot);
         dribbleController = new Dribble2(bot);
