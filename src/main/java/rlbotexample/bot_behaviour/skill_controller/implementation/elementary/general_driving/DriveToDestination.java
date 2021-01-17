@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.input.dynamic_data.DataPacket;

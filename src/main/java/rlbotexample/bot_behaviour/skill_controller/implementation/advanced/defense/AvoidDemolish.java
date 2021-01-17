@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defense;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;

@@ -2,10 +2,10 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.debug.ball_prediction.DebugPredictedAerialHitOnBall;
+import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugPredictedAerialHitOnBall;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialHit;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.panbot.FlyveBot;
+import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;

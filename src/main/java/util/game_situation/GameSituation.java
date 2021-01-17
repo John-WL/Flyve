@@ -30,11 +30,11 @@ public abstract class GameSituation {
         gameStateDuration.countFrame();
     }
 
-    public GameState getCurrentGameState() {
+    public static GameState getCurrentGameState() {
         return new rlbot.gamestate.GameState();
     }
 
-    public void applyGameState(GameState gameState) {
+    public static void applyGameState(GameState gameState) {
         RLBotDll.setGameState(gameState.buildPacket());
     }
 }

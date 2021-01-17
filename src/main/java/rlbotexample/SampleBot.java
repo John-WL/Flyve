@@ -5,12 +5,11 @@ import rlbot.ControllerState;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
-import util.timer.AutoCorrectingLapse;
 
 public class SampleBot implements Bot {
 

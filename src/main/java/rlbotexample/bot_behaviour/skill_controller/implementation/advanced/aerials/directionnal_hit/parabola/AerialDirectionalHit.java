@@ -1,14 +1,11 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
-import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
 import util.renderers.ShapeRenderer;

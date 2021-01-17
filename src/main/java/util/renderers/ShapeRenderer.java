@@ -3,7 +3,7 @@ package util.renderers;
 import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.prediction.Parabola3D;
+import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 import util.math.vector.Vector2;
@@ -13,7 +13,6 @@ import util.shapes.Triangle3D;
 import util.math.vector.Vector3;
 
 import java.awt.*;
-import java.util.function.Function;
 
 public class ShapeRenderer {
 
@@ -45,6 +44,20 @@ public class ShapeRenderer {
         for(int i = 1; i < amountOfPoints; i++) {
             previousPoint = point;
             point = circle.findPointOnCircle(i*precision);
+            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
+        }
+    }
+
+    public void renderGroundTrajectory2D(GroundTrajectory2DInfo groundTrajectory, double zOffset, Color color) {
+        int amountOfPoints = 100;
+        double precision = Math.PI*2/amountOfPoints;
+        double speed = 1000;
+        Vector2 point = groundTrajectory.findPointFromElapsedTimeAndSpeed(0, speed);
+        Vector2 previousPoint;
+
+        for(int i = 1; i < amountOfPoints; i++) {
+            previousPoint = point;
+            point = groundTrajectory.findPointFromElapsedTimeAndSpeed(i*precision, speed);
             renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
         }
     }

@@ -22,6 +22,12 @@ public class ExtendedCarData extends CarData {
     public final boolean hasFirstJump;
     public final boolean hasSecondJump;
 
+    /** The jump usage of the car. True if the car has actively used its jump */
+    public final boolean hasUsedFirstJump;
+    public final boolean hasUsedSecondJump;
+    public final boolean previousSecondJumpUsage;
+    public final boolean hasJustUsedSecondJump;
+
     /** Counter for the amount of time that has elapsed since the last jump from the ground */
     public final int framesSinceFirstJumpOccurred;
 
@@ -56,7 +62,12 @@ public class ExtendedCarData extends CarData {
         this.hasWheelContact = playerInfo.hasWheelContact();
         this.framesSinceFirstJumpOccurred = RlUtils.getPreviousAmountOfFramesSinceFirstJumpOccurred(playerIndex);
         this.hasFirstJump = hasWheelContact;
-        this.hasSecondJump = !playerInfo.doubleJumped() && hasInfiniteJump(playerInfo.jumped());
+        this.hasUsedFirstJump = playerInfo.jumped();
+        this.hasSecondJump = !playerInfo.doubleJumped() && hasInfiniteJump(hasUsedFirstJump);
+        this.hasUsedSecondJump = playerInfo.doubleJumped();
+        this.previousSecondJumpUsage = RlUtils.getPreviousSecondJumpUsage(playerIndex);
+        RlUtils.setPreviousSecondJumpUsage(playerIndex, hasUsedSecondJump);
+        this.hasJustUsedSecondJump = hasUsedSecondJump && !previousSecondJumpUsage;
 
         this.previousBoost = RlUtils.getPreviousAmountOfBoost(playerIndex);
         this.averageBoostUsage = averageBoostConsumption();

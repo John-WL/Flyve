@@ -4,11 +4,9 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Flip;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
 public class Flick extends SkillController {

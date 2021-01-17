@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.get_boost;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.comit_to_ball.BoostAndFlipToDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.DriveToDestination3;

@@ -1,20 +1,18 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.HitBox;
 import rlbotexample.input.dynamic_data.ground.DrivingTrajectoryInfo;
-import rlbotexample.input.dynamic_data.ground.GroundDrivingTrajectoryFinder;
+import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
-import util.game_constants.RlConstants;
 import util.math.vector.Ray3;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
-import util.shapes.Circle;
 import util.shapes.Circle3D;
 
 import java.awt.*;
@@ -49,7 +47,7 @@ public class GroundDirectionalHit3 extends SkillController {
     @Override
     public void updateOutput(DataPacket input) {
 
-        GroundDrivingTrajectoryFinder drivingTrajectoryFinder = new GroundDrivingTrajectoryFinder(
+        GroundTrajectoryFinder drivingTrajectoryFinder = new GroundTrajectoryFinder(
         // for the bot final destination at any point in time
         new Trajectory3D() {
             @Override
@@ -67,9 +65,9 @@ public class GroundDirectionalHit3 extends SkillController {
 
         info = drivingTrajectoryFinder.findDrivingTrajectoryInfo(input);
 
-        turnRadiusOnBall = GroundDrivingTrajectoryFinder.getLeftTurnCircleOnDestination(new Ray3(input.statePrediction.ballAtTime(info.timeOfDriving).position, ballDestination.minus(input.statePrediction.ballAtTime(info.timeOfDriving).position).normalized()), input.car.orientation.roofVector, input.car.velocity.magnitude());
+        turnRadiusOnBall = GroundTrajectoryFinder.getLeftTurnCircleOnDestination(new Ray3(input.statePrediction.ballAtTime(info.timeOfDriving).position, ballDestination.minus(input.statePrediction.ballAtTime(info.timeOfDriving).position).normalized()), input.car.orientation.roofVector, input.car.velocity.magnitude());
 
-        turnRadiusOnCar = GroundDrivingTrajectoryFinder.getLeftTurnCircleOnDestination(new Ray3(input.car.position, input.car.orientation.noseVector), input.car.orientation.roofVector, input.car.velocity.magnitude());
+        turnRadiusOnCar = GroundTrajectoryFinder.getLeftTurnCircleOnDestination(new Ray3(input.car.position, input.car.orientation.noseVector), input.car.orientation.roofVector, input.car.velocity.magnitude());
 
         straightLineToTravel = new Ray3(info.turningPoint1, info.turningPoint2);
 

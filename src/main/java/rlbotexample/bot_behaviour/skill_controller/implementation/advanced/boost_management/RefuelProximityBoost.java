@@ -1,7 +1,7 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boost_management;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.boost.BoostPad;

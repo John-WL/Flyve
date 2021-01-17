@@ -1,16 +1,15 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.HitBox;
-import rlbotexample.input.dynamic_data.ground.GroundDrivingTrajectoryFinder;
+import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.game_constants.RlConstants;
-import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
 
@@ -43,8 +42,8 @@ public class GroundDirectionalHit2 extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
-        rightTurnTrajectory = GroundDrivingTrajectoryFinder.getRightTurningTrajectory(input.car);
-        leftTurnTrajectory = GroundDrivingTrajectoryFinder.getLeftTurningTrajectory(input.car);
+        rightTurnTrajectory = GroundTrajectoryFinder.getRightTurningTrajectory(input.car);
+        leftTurnTrajectory = GroundTrajectoryFinder.getLeftTurningTrajectory(input.car);
         Trajectory3D ballTrajectory = new Trajectory3D() {
             @Override
             public Vector3 compute(double time) {

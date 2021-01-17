@@ -6,7 +6,8 @@ public class BotOutput {
 
     public BotOutput() {
         // default value (do nothing)
-        output = new ControlsOutput().withThrottle(0)
+        output = new ControlsOutput()
+                .withThrottle(0)
                 .withSteer(0)
                 .withJump(false)
                 .withBoost(false)

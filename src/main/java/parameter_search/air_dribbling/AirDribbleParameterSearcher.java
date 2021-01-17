@@ -3,7 +3,7 @@ package parameter_search.air_dribbling;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.panbot.FlyveBot;
+import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import util.game_situation.situations.air_dribble.AirDribbleSetup1;
 import util.game_situation.miscellaneous.RemoveResidualVelocity;
 import util.machine_learning_models.evaluators.BotEvaluator;

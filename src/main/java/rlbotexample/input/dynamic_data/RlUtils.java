@@ -22,6 +22,7 @@ public class RlUtils {
     private static final List<Integer> amountOfFramesSinceFirstJumpOccurredForAllPlayers = new ArrayList<>();
     private static final List<Double> previousBoostAmountForAllPlayers = new ArrayList<>();
     private static final List<MovingAverage> averageBoostUsageForAllPlayers = new ArrayList<>();
+    private static final List<Boolean> previousSecondJumpUsageForAllPlayers = new ArrayList<>();
     private static final int amountOfFramesForTheAverage = (int) (0.2*RlConstants.BOT_REFRESH_RATE);
 
     public static GameStatePrediction gameStatePrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
@@ -121,5 +122,37 @@ public class RlUtils {
         }
         throw new RuntimeException();
 
+    }
+
+    public static boolean getPreviousSecondJumpUsage(int playerIndex) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                return previousSecondJumpUsageForAllPlayers.get(playerIndex);
+            }
+            catch (Exception e) {
+                previousSecondJumpUsageForAllPlayers.add(false);
+                try {
+                    return previousSecondJumpUsageForAllPlayers.get(playerIndex);
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    public static void setPreviousSecondJumpUsage(int playerIndex, boolean hasUsedSecondJump) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                previousSecondJumpUsageForAllPlayers.set(playerIndex, hasUsedSecondJump);
+                return;
+            } catch (Exception e) {
+                previousSecondJumpUsageForAllPlayers.add(false);
+                try {
+                    previousSecondJumpUsageForAllPlayers.set(playerIndex, hasUsedSecondJump);
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
     }
 }

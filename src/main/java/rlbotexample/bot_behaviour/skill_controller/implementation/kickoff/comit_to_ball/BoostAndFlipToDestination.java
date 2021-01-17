@@ -1,10 +1,9 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.comit_to_ball;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.*;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;

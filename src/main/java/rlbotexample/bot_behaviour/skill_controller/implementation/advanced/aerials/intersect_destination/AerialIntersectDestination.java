@@ -1,12 +1,10 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination;
 
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.BotBehaviour;
+import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.output.BotOutput;

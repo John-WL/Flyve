@@ -2,8 +2,8 @@ package rlbotexample.bot_behaviour.skill_controller.test.elementary.jump;
 
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
-import rlbotexample.bot_behaviour.panbot.FlyveBot;
-import rlbotexample.bot_behaviour.panbot.debug.player_prediction.DebugPlayerPredictedTrajectory;
+import rlbotexample.bot_behaviour.flyve.FlyveBot;
+import rlbotexample.bot_behaviour.flyve.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.*;
 import rlbotexample.input.dynamic_data.DataPacket;
