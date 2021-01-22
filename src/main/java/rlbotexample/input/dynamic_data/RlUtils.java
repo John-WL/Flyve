@@ -23,12 +23,13 @@ public class RlUtils {
     private static final List<Double> previousBoostAmountForAllPlayers = new ArrayList<>();
     private static final List<MovingAverage> averageBoostUsageForAllPlayers = new ArrayList<>();
     private static final List<Boolean> previousSecondJumpUsageForAllPlayers = new ArrayList<>();
+    private static final List<Boolean> previousHasJustUsedSecondJumpForAllPlayers = new ArrayList<>();
     private static final int amountOfFramesForTheAverage = (int) (0.2*RlConstants.BOT_REFRESH_RATE);
 
     public static GameStatePrediction gameStatePrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
         if(playerIndex == 0 && ballPredictionReloadTimeout.isTimeElapsed()) {
             ballPredictionReloadTimeout = new Timer(1.0/RlConstants.BOT_REFRESH_RATE).start();
-            ballPrediction = new GameStatePrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
+            //ballPrediction = new GameStatePrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
         }
         return ballPrediction;
     }
@@ -149,6 +150,38 @@ public class RlUtils {
                 previousSecondJumpUsageForAllPlayers.add(false);
                 try {
                     previousSecondJumpUsageForAllPlayers.set(playerIndex, hasUsedSecondJump);
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    public static boolean getPreviousHasJustUsedSecondJump(int playerIndex) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                return previousHasJustUsedSecondJumpForAllPlayers.get(playerIndex);
+            }
+            catch (Exception e) {
+                previousHasJustUsedSecondJumpForAllPlayers.add(false);
+                try {
+                    return previousHasJustUsedSecondJumpForAllPlayers.get(playerIndex);
+                }
+                catch (Exception ignored) {}
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    public static void setPreviousHasJustUsedSecondJump(int playerIndex, boolean hasJustUsedSecondJump) {
+        for(int i = 0; i <= playerIndex; i++){
+            try {
+                previousHasJustUsedSecondJumpForAllPlayers.set(playerIndex, hasJustUsedSecondJump);
+                return;
+            } catch (Exception e) {
+                previousHasJustUsedSecondJumpForAllPlayers.add(false);
+                try {
+                    previousHasJustUsedSecondJumpForAllPlayers.set(playerIndex, hasJustUsedSecondJump);
                 }
                 catch (Exception ignored) {}
             }

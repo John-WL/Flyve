@@ -6,6 +6,8 @@ import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
+import util.game_constants.RlConstants;
+import util.math.vector.Ray3;
 import util.math.vector.Vector2;
 import util.shapes.Circle;
 import util.shapes.Circle3D;
@@ -63,12 +65,12 @@ public class ShapeRenderer {
     }
 
     public void renderCircle3D(Circle3D circle, Color color) {
-        int amountOfPoints = 100;
+        int amountOfPoints = 30;
         double precision = Math.PI*2/amountOfPoints;
         Vector3 point = circle.findPointOnCircle(0);
         Vector3 previousPoint;
 
-        for(int i = 1; i < amountOfPoints; i++) {
+        for(int i = 1; i <= amountOfPoints; i++) {
             previousPoint = point;
             point = circle.findPointOnCircle(i*precision);
             renderer.drawLine3d(color, previousPoint, point);
@@ -86,7 +88,7 @@ public class ShapeRenderer {
 
     public void renderTrajectory(Trajectory3D parabola, double fromTime, double toTime, Color color) {
         Vector3 previousPosition = parabola.compute(fromTime);
-        for(int i = 1; i < 40; i++) {
+        for(int i = 1; i < 20; i++) {
             double timeToCompute = fromTime + ((i/40.0)*(toTime-fromTime));
             Vector3 nextPosition = parabola.compute(timeToCompute);
             renderer.drawLine3d(color, nextPosition, previousPosition);
@@ -132,5 +134,41 @@ public class ShapeRenderer {
         renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner101);
         renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner110);
         renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner000);
+    }
+
+    public void renderChaoticSphere(Vector3 position, Color color) {
+        Circle3D circle1 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+        Circle3D circle2 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+        Circle3D circle3 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+        Circle3D circle4 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+        Circle3D circle5 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+        renderCircle3D(circle1, color);
+        renderCircle3D(circle2, color);
+        renderCircle3D(circle3, color);
+        renderCircle3D(circle4, color);
+        renderCircle3D(circle5, color);
+    }
+
+    public void renderSwerlingSphere(Vector3 position, double radii, Color color) {
+        Vector3 rotator1 = new Vector3(1, 0, 0).rotate(new Vector3(0, 1, 0).scaled((System.currentTimeMillis()/200.0)%(Math.PI*2)));
+        Vector3 rotator2 = new Vector3(1, 1, 0).rotate(new Vector3(0, 1, 0).scaled((System.currentTimeMillis()/100.0)%(Math.PI*2)));
+        Vector3 orientation1 = new Vector3(0, 0, 1).rotate(rotator1.scaled((System.currentTimeMillis()/700.0)%(Math.PI*2)));
+        Vector3 orientation2 = new Vector3(0, 1, 0).rotate(rotator1.scaled((System.currentTimeMillis()/700.0 + Math.PI/3)%(Math.PI*2)));
+        Vector3 orientation3 = new Vector3(1, 3, 0).rotate(rotator2.scaled((System.currentTimeMillis()/800.0 + Math.PI/7)%(Math.PI*2)));
+        Vector3 orientation4 = new Vector3(1, 0, 2.5).rotate(rotator2.scaled((System.currentTimeMillis()/1000.0 + 3*(Math.PI/13))%(Math.PI*2)));
+        Vector3 orientation5 = new Vector3(1, 2, 3).rotate(rotator2.scaled((System.currentTimeMillis()/600.0 + 5*(Math.PI/17))%(Math.PI*2)));
+        Vector3 orientation6 = new Vector3(10, 7, 19).rotate(rotator2.scaled((System.currentTimeMillis()/800.0 + 7*(Math.PI/31))%(Math.PI*2)));
+        Circle3D circle1 = new Circle3D(new Ray3(position, orientation1), radii);
+        Circle3D circle2 = new Circle3D(new Ray3(position, orientation2), radii);
+        Circle3D circle3 = new Circle3D(new Ray3(position, orientation3), radii);
+        Circle3D circle4 = new Circle3D(new Ray3(position, orientation4), radii);
+        Circle3D circle5 = new Circle3D(new Ray3(position, orientation5), radii);
+        Circle3D circle6 = new Circle3D(new Ray3(position, orientation6), radii);
+        renderCircle3D(circle1, color);
+        renderCircle3D(circle2, color);
+        renderCircle3D(circle3, color);
+        renderCircle3D(circle4, color);
+        renderCircle3D(circle5, color);
+        renderCircle3D(circle6, color);
     }
 }

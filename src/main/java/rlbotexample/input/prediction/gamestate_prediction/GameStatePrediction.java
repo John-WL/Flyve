@@ -28,7 +28,6 @@ public class GameStatePrediction {
     private final BallData initialBall;
     private final List<CarData> initialCars;
     private final rlbotexample.input.prediction.gamestate_prediction.ball.BallStopper ballStopper = new BallStopper();
-    private final StandardMapSplitMesh standardMap = new StandardMapSplitMesh();
     private final List<Integer> nextBallBounceIndexes = new ArrayList<>();
     private final Integer[] carsHitOnBallTimeIndexes;
 
@@ -170,7 +169,7 @@ public class GameStatePrediction {
     }
 
     private BallData updateBallBounceAndRoll(final BallData ball, final double deltaTime, final int predictedINdex) {
-        final Ray3 rayNormal = standardMap.getCollisionRayOrElse(
+        final Ray3 rayNormal = StandardMapSplitMesh.getCollisionRayOrElse(
                 new Sphere(ball.position, RlConstants.BALL_RADIUS),
                 new Ray3());
 
@@ -193,7 +192,7 @@ public class GameStatePrediction {
 
     // this might not work for wheel collisions...
     private CarData updateCarBounceFromMap(final CarData carData, final double deltaTime) {
-        final Ray3 rayNormal = standardMap.getCollisionRayOrElse(carData.hitBox, new Ray3());
+        final Ray3 rayNormal = StandardMapSplitMesh.getCollisionRayOrElse(carData.hitBox, new Ray3());
 
         if(!rayNormal.direction.isZero() && rayNormal.direction.dotProduct(carData.velocity) < 0) {
             return new CarBounce(carData, rayNormal).compute(deltaTime);
