@@ -2,6 +2,7 @@ package rlbotexample.input.dynamic_data.car;
 
 
 import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.dynamic_data.SsrUtils;
 import util.game_constants.RlConstants;
 
 /**
@@ -53,6 +54,11 @@ public class ExtendedCarData extends CarData {
 
     public final int playerIndex;
 
+    /**
+     * value that tells if the hit box of the car is a ball or a car
+     */
+    public final boolean isInBallForm;
+
     public ExtendedCarData(rlbot.flat.PlayerInfo playerInfo, int playerIndex, float elapsedSeconds) {
         super(playerInfo, elapsedSeconds);
         this.playerIndex = playerIndex;
@@ -74,6 +80,10 @@ public class ExtendedCarData extends CarData {
 
         this.previousBoost = RlUtils.getPreviousAmountOfBoost(playerIndex);
         this.averageBoostUsage = averageBoostConsumption();
+
+        // added vars for super smash rocket
+        this.isInBallForm = SsrUtils.getIsInBallForm(playerIndex);
+        SsrUtils.updateIsInBallForm(this);
     }
 
     private boolean hasInfiniteJump(boolean hasJumped) {

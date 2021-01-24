@@ -6,19 +6,13 @@ import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.flyve.implementation.memebots.alternative_physics.GuiOfSsr;
 import rlbotexample.bot_behaviour.flyve.implementation.memebots.alternative_physics.PhysicsOfSsr;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
-import util.renderers.ShapeRenderer;
-
-import java.awt.*;
 
 public class SuperSmashRocket extends FlyveBot {
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         PhysicsOfSsr.execute(input);
-
-
 
         return new BotOutput();
     }

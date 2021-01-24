@@ -27,7 +27,6 @@ public class PhysicsOfSsr {
     }
 
     private static void findAdditionalImpulses(DataPacket input) {
-
         assignedImpulses.clear();
         assignedPenetrations.clear();
 
@@ -43,21 +42,22 @@ public class PhysicsOfSsr {
                 continue;
             }
 
-            if(car.position.minus(otherCar.position).magnitudeSquared() < PLAYERS_RADII * PLAYERS_RADII *4) {
+            if(car.position.minus(otherCar.position).magnitudeSquared() < PLAYERS_RADII*PLAYERS_RADII*4) {
                 Vector3 carPenetration = new Vector3(otherCar.position.minus(car.position))
-                        .scaledToMagnitude(car.position.minus(otherCar.position).magnitude() - 2* PLAYERS_RADII);
+                        .scaledToMagnitude(car.position.minus(otherCar.position).magnitude() - 2*PLAYERS_RADII);
                 Vector3 carImpulse = otherCar.velocity.minus(car.velocity).projectOnto(otherCar.position.minus(car.position))
                         .scaled(1.5)
                         .plus(carPenetration);
                 assignedImpulses.add(new AssignedVector3(car, carImpulse));
-                System.out.println(car.isSupersonic);
-                System.out.println(carImpulse);
+                //System.out.println(car.isSupersonic);
+                //System.out.println(carImpulse);
                 assignedPenetrations.add(new AssignedVector3(car, carPenetration));
             }
         }
 
         Ray3 mapCollisionRay = StandardMapSplitMesh.getCollisionRayOrElse(new Sphere(car.position, PLAYERS_RADII), null);
-        if(mapCollisionRay != null && mapCollisionRay.direction.dotProduct(car.velocity) < 0) {
+        if(mapCollisionRay != null && mapCollisionRay.direction.dotProduct(car.velocity) < 0
+                && car.isInBallForm) {
             Vector3 perpendicularComponent = car.velocity.projectOnto(mapCollisionRay.direction);
             assignedImpulses.add(new AssignedVector3(car, perpendicularComponent.scaled(-1.6)));
             assignedPenetrations.add(new AssignedVector3(car, mapCollisionRay.direction.scaledToMagnitude(0.5)));
