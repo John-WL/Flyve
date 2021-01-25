@@ -21,6 +21,13 @@ dependencies {
     // Fetch the framework jar file
     compile 'org.rlbot.commons:framework:1.+'
 
+    // https://mvnrepository.com/artifact/com.github.jelmerk/hnswlib-core
+    compile group: 'com.github.jelmerk', name: 'hnswlib-core', version: '0.0.46'
+
+    // https://mvnrepository.com/artifact/com.github.jelmerk/hnswlib-utils
+    compile group: 'com.github.jelmerk', name: 'hnswlib-utils', version: '0.0.46'
+
+
     // This is makes it easy to find the dll when running in intellij, where JVM args don't get passed from gradle.
     runtime files(dllDirectory)
 }

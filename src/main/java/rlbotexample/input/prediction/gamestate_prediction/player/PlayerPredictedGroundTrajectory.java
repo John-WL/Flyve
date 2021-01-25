@@ -37,8 +37,6 @@ public class PlayerPredictedGroundTrajectory {
         Vector3 futurePlayerPosition = nextPositionOnCenteredCircle.plus(playerPosition);
         Vector3 futurePlayerSpeed = playerSpeed;
 
-        // TODO
-        //  Rotate that predicted hit box too
         return new CarData(futurePlayerPosition, futurePlayerSpeed, carData.spin, carData.boost, carData.hitBox, secondsInTheFuture);
     }
 

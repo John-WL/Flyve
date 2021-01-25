@@ -4,7 +4,7 @@ import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
 import rlbotexample.bot_behaviour.flyve.debug.player_values.AngularAccelerationLogger;
-import rlbotexample.bot_behaviour.flyve.implementation.memebots.SuperSmashRocket;
+import rlbotexample.bot_behaviour.flyve.implementation.ml.MlCopyMovements;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.*;
 
 public class SamplePythonInterface extends SocketServer {
@@ -14,6 +14,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new SuperSmashRocket());
+        return new SampleBot(index, new MlCopyMovements());
     }
 }
