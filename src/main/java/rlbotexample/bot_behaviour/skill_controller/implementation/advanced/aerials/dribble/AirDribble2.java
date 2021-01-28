@@ -59,7 +59,7 @@ public class AirDribble2 extends SkillController {
         //boolean isBoosting = findOptimalBoostValue(input);
         boolean isBoosting = boostController.process(130 +
                 ballDestination.minus(input.ball.position).z
-                - input.ball.velocity.z);
+                - input.ball.velocity.z/1.5);
         botBehaviour.output().boost(isBoosting);
     }
 
@@ -83,7 +83,7 @@ public class AirDribble2 extends SkillController {
 
     private Vector3 findOptimalDeltaPositionOnCar(DataPacket input) {
         double sensitivity = 0.001;
-        double maxOffset = 4;
+        double maxOffset = 2;
 
         Vector3 deltaPositionOnCar = ballDestination.minus(input.ball.position).scaled(sensitivity);
         if(deltaPositionOnCar.magnitude() > maxOffset) {
@@ -108,17 +108,18 @@ public class AirDribble2 extends SkillController {
         Vector3 closestPointOnCarHitBox = input.car.hitBox.projectPointOnSurface(input.ball.position);
         Vector3 rotator = closestPointOnCarHitBox.crossProduct(input.car.orientation.noseVector).scaledToMagnitude(closestPointOnCarHitBox.angle(input.car.orientation.noseVector));
         Vector3 delta = input.car.orientation.noseVector.rotate(rotator).minus(input.car.orientation.noseVector).scaled(20);
+
         Vector3 noseDestination = input.ball.position
             .minus(new Vector3(0, 0, RlConstants.BALL_RADIUS))
-            .plus(input.car.orientation.roofVector.scaled(-1).scaled(4))
+            .plus(input.car.orientation.roofVector.scaled(-1).scaled(3))
             //.plus(delta)
-            .plus(getPositionFromBall(input).scaled(-0.35, -0.35, 0)
-                    .scaled(new Vector3(1, 1, 1).minus(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)
-                            .scaled(2))))
-            .plus(getVelocityFromBall(input).scaled(-0.11, -0.11, 0)
-                    .scaled(new Vector3(1, 1, 1).minus(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)
-                            .scaled(1.7))));
-            //.plus(getAccelerationFromBall(input).scaled(-0.008, -0.008, 0));
+            .plus(getPositionFromBall(input).scaled(-0.4).scaled(1, 1, 0)
+            .plus(getVelocityFromBall(input).scaled(-0.11).scaled(1, 1, 0))
+                    .projectOnto(Vector3.UP_VECTOR.crossProduct(input.car.orientation.rightVector))
+            .plus(getPositionFromBall(input).scaled(-0.9).scaled(1, 1, 0)
+            .plus(getVelocityFromBall(input).scaled(-0.25).scaled(1, 1, 0))
+                  .projectOnto(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)))
+            );
 
         if(input.car.orientation.roofVector.dotProduct(noseDestination.minus(input.car.position)) > 0) {
             noseDestination = noseDestination.minus(input.ball.position).scaled(0.75).plus(input.ball.position);

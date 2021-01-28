@@ -11,6 +11,7 @@ import rlbotexample.bot_behaviour.flyve.implementation.normal_1s.normal_1s_v4.No
 import rlbotexample.bot_behaviour.flyve.implementation.state_machine_freestyle.DribbleThenJumpAndAerialBot;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.directionnal_hit.AerialDirectionalHit5Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble2Test;
+import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble3Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.Dribble2Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.GroundDirectionalHit2Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.GroundDirectionalHit4Test;

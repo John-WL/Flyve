@@ -15,7 +15,7 @@ public class AirDribbleSetup1 extends GameSituation {
     public void loadGameState() {
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState()
-                .withLocation(new DesiredVector3(0f, 0f, 450f))
+                .withLocation(new DesiredVector3(0f, 10f, 450f))
                 .withVelocity(new DesiredVector3(0f, 0f, 0f))
                 .withRotation(new DesiredRotation(0f, 0f, 0f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))));
