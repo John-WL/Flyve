@@ -100,8 +100,8 @@ public class AirDribble2 extends SkillController {
                 .plus(desiredAcceleration.scaled(1, 1, 0));
     }*/
     private Vector3 findOptimalNoseOrientationDestination(DataPacket input) {
-        return findNeutralNoseDestination(input)
-                .plus(findOptimalDeltaPositionOnCar(input).scaled(1, 1, 0));
+        return findNeutralNoseDestination(input);
+                //.plus(findOptimalDeltaPositionOnCar(input).scaled(1, 1, 0));
     }
 
     private Vector3 findNeutralNoseDestination(DataPacket input) {
@@ -113,11 +113,11 @@ public class AirDribble2 extends SkillController {
             .minus(new Vector3(0, 0, RlConstants.BALL_RADIUS))
             .plus(input.car.orientation.roofVector.scaled(-1).scaled(3))
             //.plus(delta)
-            .plus(getPositionFromBall(input).scaled(-0.4).scaled(1, 1, 0)
+            .plus(getPositionFromBall(input).scaled(-0.42).scaled(1, 1, 0)
             .plus(getVelocityFromBall(input).scaled(-0.11).scaled(1, 1, 0))
                     .projectOnto(Vector3.UP_VECTOR.crossProduct(input.car.orientation.rightVector))
-            .plus(getPositionFromBall(input).scaled(-0.9).scaled(1, 1, 0)
-            .plus(getVelocityFromBall(input).scaled(-0.25).scaled(1, 1, 0))
+            .plus(getPositionFromBall(input).scaled(-0.7).scaled(1, 1, 0)
+            .plus(getVelocityFromBall(input).scaled(-0.28).scaled(1, 1, 0))
                   .projectOnto(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)))
             );
 
