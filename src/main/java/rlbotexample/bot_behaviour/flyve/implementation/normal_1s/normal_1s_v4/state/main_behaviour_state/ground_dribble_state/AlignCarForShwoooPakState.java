@@ -57,15 +57,15 @@ public class AlignCarForShwoooPakState implements State {
         closestPositionOfCar = leftTurn.compute(timeToCheck);
         closestPositionOfBall = ballTrajectory.compute(timeToCheck);
 
-        if(input.ball.velocity.minusAngle(destination.minus(input.ball.position)).y > 0) {
+        if(input.ball.velocity.orderedMinusAngle(destination.minus(input.ball.position)).y > 0) {
             closestPositionOfCar = rightTurn.compute(timeToCheck);
         }
         else {
             closestPositionOfCar = leftTurn.compute(timeToCheck);
         }
         Vector3 groundOrientation = input.car.orientation.noseVector
-                .plusAngle(closestPositionOfBall.minus(input.car.position)
-                        .minusAngle(closestPositionOfCar.minus(input.car.position)));
+                .orderedPlusAngle(closestPositionOfBall.minus(input.car.position)
+                        .orderedMinusAngle(closestPositionOfCar.minus(input.car.position)));
         Vector3 groundDestination = groundOrientation.scaled(300).plus(input.car.position);
 
         groundOrientationController.setDestination(groundDestination);

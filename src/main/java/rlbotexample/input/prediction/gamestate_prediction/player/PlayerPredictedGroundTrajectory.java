@@ -32,7 +32,7 @@ public class PlayerPredictedGroundTrajectory {
         double deltaPositionYOnCircle = Math.sin(deltaRadiansOnCircle) * radius;
         Vector3 initialDeltaPositionOnCircle = new Vector3(radius, 0, 0);
         Vector3 nextDeltaPositionOnCircle = new Vector3(deltaPositionXOnCircle, deltaPositionYOnCircle, 0);
-        Vector3 nextPositionOnCenteredCircle = nextDeltaPositionOnCircle.minus(initialDeltaPositionOnCircle).plusAngle(playerSpeed).plusAngle(new Vector3(0, -1, 0));
+        Vector3 nextPositionOnCenteredCircle = nextDeltaPositionOnCircle.minus(initialDeltaPositionOnCircle).orderedPlusAngle(playerSpeed).orderedPlusAngle(new Vector3(0, -1, 0));
 
         Vector3 futurePlayerPosition = nextPositionOnCenteredCircle.plus(playerPosition);
         Vector3 futurePlayerSpeed = playerSpeed;

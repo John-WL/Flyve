@@ -10,7 +10,7 @@ public class PlayerRoleHandler3V3 {
 
     private final ExtendedCarData offensive;
     private final ExtendedCarData backer;
-    private final ExtendedCarData lasMan;
+    private final ExtendedCarData lastMan;
 
     public PlayerRoleHandler3V3(DataPacket input, int team) {
         final List<ExtendedCarData> carList = input.allCars;
@@ -27,7 +27,7 @@ public class PlayerRoleHandler3V3 {
 
         offensive = teamCarList.get(0);
         backer = teamCarList.get(1);
-        lasMan = teamCarList.get(2);
+        lastMan = teamCarList.get(2);
     }
 
     public ExtendedCarData getPlayerFromRole(PlayerRole playerRole) {
@@ -38,7 +38,7 @@ public class PlayerRoleHandler3V3 {
             return backer;
         }
         else {
-            return lasMan;
+            return lastMan;
         }
     }
 

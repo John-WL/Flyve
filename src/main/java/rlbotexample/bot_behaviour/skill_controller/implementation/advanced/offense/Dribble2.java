@@ -33,7 +33,8 @@ public class Dribble2 extends SkillController {
         desiredBallPositionOnPlayerCar = new Vector3();
 
         //steerPid = new PidController(1.7, 0, 17);
-        steerPid = new PidController(1, 0, 10);
+        //steerPid = new PidController(1, 0, 10);
+        steerPid = new PidController(2, 0, 1);
 
         drivingSpeedController = new DrivingSpeedController(bot);
         groundOrientationController = new GroundOrientationController(bot);
@@ -76,8 +77,8 @@ public class Dribble2 extends SkillController {
 
     private Vector3 findFrontAndBackBallOffsetFromCar(DataPacket input) {
         // front is positive, back negative
-        double sensitivityOfSpeedError = 1300;      // this value is arbitrary, and is tweakable to the desired "aggressivity" of corrections
-        double allowedRangeOfBallPositionOnCar = input.car.hitBox.cornerPosition.x;// + RlConstants.BALL_RADIUS/2;
+        double sensitivityOfSpeedError = 500;      // this value is arbitrary, and is tweakable to the desired "aggressivity" of corrections
+        double allowedRangeOfBallPositionOnCar = input.car.hitBox.cornerPosition.x + RlConstants.BALL_RADIUS/5;
         double optimalFrontAndBackOffsetAmount = clamp((ballTargetSpeed - input.ball.velocity.magnitude())*speedFactorToConvergeToDestination(input), -sensitivityOfSpeedError, sensitivityOfSpeedError);
         optimalFrontAndBackOffsetAmount /= sensitivityOfSpeedError;    // normalize
         optimalFrontAndBackOffsetAmount *= allowedRangeOfBallPositionOnCar;
@@ -103,7 +104,7 @@ public class Dribble2 extends SkillController {
 
     private Vector3 deltaVectorToConvergeToDestination(DataPacket input) {
         Vector3 deltaDestination = input.ball.velocity.scaled(-3)
-                .projectOnto(input.ball.position.minus(ballDestination).minusAngle(new Vector3(0, 1, 0)));
+                .projectOnto(input.ball.position.minus(ballDestination).orderedMinusAngle(new Vector3(0, 1, 0)));
         double maxDeltaFactor = 0.8;
         if(deltaDestination.magnitude() > input.ball.position.minus(ballDestination).magnitude()*maxDeltaFactor) {
             deltaDestination = deltaDestination.scaledToMagnitude(input.ball.position.minus(ballDestination).magnitude()*maxDeltaFactor);

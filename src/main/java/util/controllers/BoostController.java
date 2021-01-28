@@ -14,6 +14,10 @@ public class BoostController {
         currentDeltaV += desiredAverageAcceleration;
         if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
             currentDeltaV -= RlConstants.ACCELERATION_DUE_TO_BOOST;
+            // cap deltaV if we were unreasonable with the acceleration request
+            if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
+                currentDeltaV = RlConstants.ACCELERATION_DUE_TO_BOOST;
+            }
             return true;
         }
 

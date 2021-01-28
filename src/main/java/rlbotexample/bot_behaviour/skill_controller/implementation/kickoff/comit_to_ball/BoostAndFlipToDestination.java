@@ -40,7 +40,7 @@ public class BoostAndFlipToDestination extends SkillController {
         Vector3 playerRoofVector = input.car.orientation.roofVector;
         Vector3 ballPosition = input.ball.position;
 
-        Vector3 localDestination = ballPosition.minus(playerPosition).minusAngle(playerNoseVector);
+        Vector3 localDestination = ballPosition.minus(playerPosition).orderedMinusAngle(playerNoseVector);
 
         callCounter++;
     }

@@ -127,7 +127,7 @@ public class Predictions {
         double deltaPositionYOnCircle = Math.sin(deltaRadiansOnCircle) * radius;
         Vector3 initialDeltaPositionOnCircle = new Vector3(radius, 0, 0);
         Vector3 nextDeltaPositionOnCircle = new Vector3(deltaPositionXOnCircle, deltaPositionYOnCircle, 0);
-        Vector3 nextPositionOnCenteredCircle = nextDeltaPositionOnCircle.minus(initialDeltaPositionOnCircle).plusAngle(playerSpeed).plusAngle(new Vector3(0, -1, 0));
+        Vector3 nextPositionOnCenteredCircle = nextDeltaPositionOnCircle.minus(initialDeltaPositionOnCircle).orderedPlusAngle(playerSpeed).orderedPlusAngle(new Vector3(0, -1, 0));
 
         Vector3 futurePlayerPosition = nextPositionOnCenteredCircle.plus(playerPosition);
         Vector3 futurePlayerSpeed = playerSpeed;
@@ -445,9 +445,9 @@ public class Predictions {
         // normalize the normal just to make sure it doesn't break the calculations
         hitNormal = hitNormal.normalized();
         Vector3 downVector = new Vector3(0, 0, -1);
-        Vector3 localHitNormal = hitNormal.minusAngle(downVector);
-        Vector3 localBallSpeed = ballSpeed.minusAngle(localHitNormal);
-        Vector3 localBallSpin = ballSpin.minusAngle(localHitNormal);
+        Vector3 localHitNormal = hitNormal.orderedMinusAngle(downVector);
+        Vector3 localBallSpeed = ballSpeed.orderedMinusAngle(localHitNormal);
+        Vector3 localBallSpin = ballSpin.orderedMinusAngle(localHitNormal);
 
         // flip that ball speed in the direction of the hit normal
         localBallSpeed = localBallSpeed.scaled(1, 1, -0.6);
@@ -469,8 +469,8 @@ public class Predictions {
         Vector3 newFlattenedBallSpeed = new Vector3(localBallSpeed.flatten(), 0);
         localBallSpin = downVector.crossProduct(newFlattenedBallSpeed).scaled(1/RlConstants.BALL_RADIUS);
 
-        ballSpeed = localBallSpeed.plusAngle(localHitNormal);
-        ballSpin = localBallSpin.plusAngle(localHitNormal);
+        ballSpeed = localBallSpeed.orderedPlusAngle(localHitNormal);
+        ballSpin = localBallSpin.orderedPlusAngle(localHitNormal);
 
         KinematicPoint ball = new KinematicPoint(ballPosition, ballSpeed, 0);
         ball.setSpin(ballSpin);
@@ -500,13 +500,13 @@ public class Predictions {
     private Vector3 predictFutureOrientationVectorFromSpinAndTime(Vector3 currentOrientationVector, Vector3 currentSpin, double timeInTheFuture) {
         // negative because of the right hand rule
         double numberOfRadiansToDo = -currentSpin.magnitude()*timeInTheFuture;
-        Vector3 local = currentOrientationVector.minusAngle(currentSpin);
+        Vector3 local = currentOrientationVector.orderedMinusAngle(currentSpin);
         Vector2 localProjectionYz = new Vector2(local.y, local.z);
         Vector2 rotatoryVector = new Vector2(Math.cos(numberOfRadiansToDo), Math.sin(numberOfRadiansToDo));
         Vector2 localRotatedProjectionYz = localProjectionYz.plusAngle(rotatoryVector);
         Vector3 localRotated = new Vector3(local.x, localRotatedProjectionYz.x, localRotatedProjectionYz.y);
 
-        return localRotated.plusAngle(currentSpin);
+        return localRotated.orderedPlusAngle(currentSpin);
     }
 
     private Vector3 reverseSpeedFromCollisionNormal(Vector3 vectorToReverse, Vector3 hitNormal) {

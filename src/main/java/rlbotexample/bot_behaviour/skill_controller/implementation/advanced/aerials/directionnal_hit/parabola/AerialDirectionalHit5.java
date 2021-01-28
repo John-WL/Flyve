@@ -4,6 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
@@ -25,7 +26,7 @@ import java.awt.*;
 public class AerialDirectionalHit5 extends SkillController {
 
     private BotBehaviour bot;
-    private AerialOrientationController2 aerialOrientationHandler;
+    private AerialOrientationController5 aerialOrientationHandler;
     private JumpController jumpController;
     private BoostController boostController;
 
@@ -42,7 +43,7 @@ public class AerialDirectionalHit5 extends SkillController {
 
     public AerialDirectionalHit5(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialOrientationHandler = new AerialOrientationController2(bot);
+        this.aerialOrientationHandler = new AerialOrientationController5(bot);
         this.jumpController = new JumpController(bot);
         this.boostController = new BoostController();
 
@@ -70,9 +71,9 @@ public class AerialDirectionalHit5 extends SkillController {
         Vector3 orientation = aerialInfo.acceleration;
 
         // orientation handling
-        aerialOrientationHandler.setOrientationDestination(orientation.plus(input.car.position));
+        aerialOrientationHandler.setNoseOrientation(orientation);
         //aerialOrientationHandler.setRollOrientation(targetTrajectory.compute(aerialInfo.timeOfFlight).minus(input.car.position));
-        aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000).minus(input.car.position));
+        aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000));
         aerialOrientationHandler.updateOutput(input);
 
         // boost

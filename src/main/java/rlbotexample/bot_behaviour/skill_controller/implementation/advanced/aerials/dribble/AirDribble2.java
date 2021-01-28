@@ -4,7 +4,9 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.input.dynamic_data.DataPacket;
+import util.controllers.BoostController;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
@@ -21,18 +23,21 @@ public class AirDribble2 extends SkillController {
     private Vector3 previousCarVelocity;
     private Vector3 previousBallVelocity;
 
-    private AerialOrientationController2 aerialOrientationHandler;
+    private AerialOrientationController5 aerialOrientationHandler;
+    private BoostController boostController;
 
     public AirDribble2(BotBehaviour bot) {
         this.botBehaviour = bot;
         this.ballDestination = new Vector3();
-        this.ballTargetSpeed = 500;
+        this.ballTargetSpeed = 300;
         this.ballDestinationOnCar = new Vector3();
         this.neutralBallPositionOnCar = new Vector3();
         this.previousCarVelocity = new Vector3();
         this.previousBallVelocity = new Vector3();
 
-        this.aerialOrientationHandler = new AerialOrientationController2(bot);
+        this.aerialOrientationHandler = new AerialOrientationController5(bot);
+
+        this.boostController = new BoostController();
     }
 
     public void setBallDestination(Vector3 ballDestination) {
@@ -44,13 +49,17 @@ public class AirDribble2 extends SkillController {
         ballDestinationOnCar = findOptimalBallPositionOnCar(input);
 
         Vector3 noseDestination = findOptimalNoseOrientationDestination(input);
-        Vector3 rollDestination = findOptimalRollOrientationDestination(input);
+        //Vector3 rollDestination = findOptimalRollOrientationDestination(input);
+        //Vector3 rollDestination = input.car.position.plus(input.car.orientation.roofVector);
 
-        aerialOrientationHandler.setOrientationDestination(noseDestination);
-        aerialOrientationHandler.setRollOrientation(rollDestination);
+        aerialOrientationHandler.setNoseOrientation(noseDestination.minus(input.car.position));
+        aerialOrientationHandler.setRollOrientation(new Vector3(0, 1, 0));
         aerialOrientationHandler.updateOutput(input);
 
-        boolean isBoosting = findOptimalBoostValue(input);
+        //boolean isBoosting = findOptimalBoostValue(input);
+        boolean isBoosting = boostController.process(130 +
+                ballDestination.minus(input.ball.position).z
+                - input.ball.velocity.z);
         botBehaviour.output().boost(isBoosting);
     }
 
@@ -73,18 +82,15 @@ public class AirDribble2 extends SkillController {
     }
 
     private Vector3 findOptimalDeltaPositionOnCar(DataPacket input) {
-        Vector3 desiredBallVelocityTowardsDestination = ballDestination.minus(input.ball.position).scaledToMagnitude(ballTargetSpeed);
-        Vector3 extraBallVelocity = input.ball.velocity.minus(desiredBallVelocityTowardsDestination);
+        double sensitivity = 0.001;
+        double maxOffset = 4;
 
-        double sensitivity = 0.05;
-        double maxOffset = 1;
-
-        Vector3 deltaPositionOnCar = extraBallVelocity.scaled(-sensitivity);
+        Vector3 deltaPositionOnCar = ballDestination.minus(input.ball.position).scaled(sensitivity);
         if(deltaPositionOnCar.magnitude() > maxOffset) {
             deltaPositionOnCar = deltaPositionOnCar.scaledToMagnitude(maxOffset);
         }
 
-        return deltaPositionOnCar;
+        return deltaPositionOnCar.scaled(-1);
     }
 
     /*private Vector3 findOptimalNoseOrientationDestination(DataPacket input) {
@@ -94,27 +100,43 @@ public class AirDribble2 extends SkillController {
                 .plus(desiredAcceleration.scaled(1, 1, 0));
     }*/
     private Vector3 findOptimalNoseOrientationDestination(DataPacket input) {
-        return findNeutralNoseDestination(input);
-                //.plus(input.ball.position.minus(ballDestinationOnCar).scaled(1, 1, 0));
+        return findNeutralNoseDestination(input)
+                .plus(findOptimalDeltaPositionOnCar(input).scaled(1, 1, 0));
     }
 
     private Vector3 findNeutralNoseDestination(DataPacket input) {
-        return input.ball.position
+        Vector3 closestPointOnCarHitBox = input.car.hitBox.projectPointOnSurface(input.ball.position);
+        Vector3 rotator = closestPointOnCarHitBox.crossProduct(input.car.orientation.noseVector).scaledToMagnitude(closestPointOnCarHitBox.angle(input.car.orientation.noseVector));
+        Vector3 delta = input.car.orientation.noseVector.rotate(rotator).minus(input.car.orientation.noseVector).scaled(20);
+        Vector3 noseDestination = input.ball.position
             .minus(new Vector3(0, 0, RlConstants.BALL_RADIUS))
-                .plus(getPositionFromBall(input).scaled(-0.22, -0.22, 0.02))
-                .plus(getVelocityFromBall(input).scaled(-0.35, -0.35, 0.05));
-                //.plus(getAccelerationFromBall(input).scaled(-0.008, -0.008, 0));
+            .plus(input.car.orientation.roofVector.scaled(-1).scaled(4))
+            //.plus(delta)
+            .plus(getPositionFromBall(input).scaled(-0.35, -0.35, 0)
+                    .scaled(new Vector3(1, 1, 1).minus(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)
+                            .scaled(2))))
+            .plus(getVelocityFromBall(input).scaled(-0.11, -0.11, 0)
+                    .scaled(new Vector3(1, 1, 1).minus(Vector3.UP_VECTOR.crossProduct(input.car.orientation.roofVector)
+                            .scaled(1.7))));
+            //.plus(getAccelerationFromBall(input).scaled(-0.008, -0.008, 0));
+
+        if(input.car.orientation.roofVector.dotProduct(noseDestination.minus(input.car.position)) > 0) {
+            noseDestination = noseDestination.minus(input.ball.position).scaled(0.75).plus(input.ball.position);
+        }
+
+        return noseDestination;
     }
 
     private Vector3 findOptimalRollOrientationDestination(DataPacket input) {
-        return input.car.position.plus(new Vector3(0, 0, 100));
+        return new Vector3(0, 0, 100);
         //return input.ball.position;
     }
 
     private boolean findOptimalBoostValue(DataPacket input) {
         return getVelocityFromBall(input)
                 .dotProduct(getPositionFromBall(input).normalized())
-                > -(70 + ballDestinationOnCar.minus(neutralBallPositionOnCar).z*300);
+                + getPositionFromBall(input).magnitude()
+                > -(50 + ballDestinationOnCar.minus(neutralBallPositionOnCar).z*200);
         /*return getVelocityFromBall(input)
                 .dotProduct(getPositionFromBall(input).normalized()) > -50;*/
     }
@@ -125,17 +147,6 @@ public class AirDribble2 extends SkillController {
 
     private Vector3 getVelocityFromBall(DataPacket input) {
         return input.car.velocity.minus(input.ball.velocity);
-    }
-
-    // oof
-    private Vector3 getAccelerationFromBall(DataPacket input) {
-        Vector3 accelerationFromBall = input.car.velocity.minus(previousCarVelocity)
-                .minus(input.ball.velocity.minus(previousBallVelocity))
-                .scaled(RlConstants.BOT_REFRESH_RATE);
-        previousCarVelocity = input.car.velocity;
-        previousBallVelocity = input.ball.velocity;
-        
-        return accelerationFromBall;
     }
 
     @Override
@@ -157,10 +168,7 @@ public class AirDribble2 extends SkillController {
         //Vector3 accelerationIncentive = input.ball.position.plus(new Vector3(0, 0, -RlConstants.BALL_RADIUS)).minus(input.car.hitBox.projectPointOnSurface(input.car.position.plus(input.car.orientation.noseVector.scaled(200))));
         //renderer.drawLine3d(Color.BLUE, input.car.position, input.car.position.plus(accelerationIncentive.scaled(100)));
 
-
-        Vector3 desiredVelocityFromBall = ballDestinationOnCar.minus(input.ball.position);
-        Vector3 desiredAcceleration = getVelocityFromBall(input).minus(desiredVelocityFromBall).scaled(1, 1, 0);
-        renderer.drawLine3d(Color.YELLOW, input.car.position.plus(new Vector3(0, 0, -100)), input.car.position.plus(new Vector3(0, 0, -100)).plus(desiredAcceleration));
-        renderer.drawRectangle3d(Color.YELLOW, input.car.position.plus(new Vector3(0, 0, -100)).plus(desiredAcceleration), 10, 10, true);
+        aerialOrientationHandler.debug(renderer, input);
+        shapeRenderer.renderHitBox(input.car.hitBox, Color.YELLOW);
     }
 }

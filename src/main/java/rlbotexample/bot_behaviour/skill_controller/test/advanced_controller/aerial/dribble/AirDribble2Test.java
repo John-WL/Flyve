@@ -27,7 +27,8 @@ public class AirDribble2Test extends FlyveBot {
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         gameSituationHandler.update();
 
-        airDribbleController.setBallDestination(new Vector3(0, 0, 1000));
+        //airDribbleController.setBallDestination(new Vector3(0, 0, 1000));
+        airDribbleController.setBallDestination(new Vector3(300, 0, 1000));
         airDribbleController.updateOutput(input);
 
         return super.output();

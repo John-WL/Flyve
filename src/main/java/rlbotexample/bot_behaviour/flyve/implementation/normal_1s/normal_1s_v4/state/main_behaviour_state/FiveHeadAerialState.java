@@ -22,7 +22,7 @@ public class FiveHeadAerialState implements State {
 
     @Override
     public void exec(DataPacket input) {
-        aerialController.setBallDestination(new Vector3());
+        aerialController.setBallDestination(new Vector3(0, 0, 1000));
         aerialController.updateOutput(input);
     }
 

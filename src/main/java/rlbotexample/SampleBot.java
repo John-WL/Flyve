@@ -17,13 +17,13 @@ public class SampleBot implements Bot {
     private BotOutput myBotOutput;
     private BotBehaviour botBehaviour;
     private Renderer renderer;
-    private double averageFps;
+    public static double averageFps;
     private long currentFpsTime;
     private long previousFpsTime;
     private long time1;
     private long time2;
     private long deltaTime;
-    private double currentFps;
+    public static double currentFps;
 
 
     public SampleBot(int playerIndex, BotBehaviour botBehaviour) {

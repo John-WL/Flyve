@@ -1,15 +1,10 @@
 package rlbotexample.input.dynamic_data.ground;
 
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.Trajectory3D;
-import util.game_constants.RlConstants;
-import util.math.vector.Ray2;
 import util.math.vector.Ray3;
-import util.math.vector.Vector2;
 import util.math.vector.Vector3;
-import util.shapes.Circle;
 import util.shapes.Circle3D;
 
 public class GroundTrajectoryFinder {
@@ -72,7 +67,7 @@ public class GroundTrajectoryFinder {
 
         Vector3 distanceBetweenCircles = ballCircle.center.offset.minus(carCircle.center.offset);
 
-        Vector3 vectorToFindPoints = distanceBetweenCircles.plusAngle(new Vector3(0, -1, 0));
+        Vector3 vectorToFindPoints = distanceBetweenCircles.orderedPlusAngle(new Vector3(0, -1, 0));
         Vector3 point1 = carCircle.findClosestPointFrom(vectorToFindPoints.plus(carCircle.center.offset));
         Vector3 point2 = ballCircle.findClosestPointFrom(vectorToFindPoints.plus(ballCircle.center.offset));
 

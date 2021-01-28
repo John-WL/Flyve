@@ -28,13 +28,20 @@ public class AerialOrientationController2 extends SkillController {
         this.rollOrientation = new Vector3();
         this.desiredSpin = new Vector3();
 
+        // previous
         /*this.pitchVelocityPid = new PidController(3, 0, 0.3);
         this.yawVelocityPid = new PidController(3, 0, 0.2);
         this.rollVelocityPid = new PidController(0.6, 0, 0.06);*/
 
-        this.pitchVelocityPid = new PidController(1.5, 0, 0.15);
+        // last best results so far
+        /*this.pitchVelocityPid = new PidController(1.5, 0, 0.15);
         this.yawVelocityPid = new PidController(1.5, 0, 0.1);
-        this.rollVelocityPid = new PidController(0.3, 0, 0.03);
+        this.rollVelocityPid = new PidController(0.3, 0, 0.03);*/
+
+        // best result so far??
+        this.pitchVelocityPid = new PidController(1.5, 0, 0.01);
+        this.yawVelocityPid = new PidController(1.5, 0, 0.01);
+        this.rollVelocityPid = new PidController(0.3, 0, 0);
     }
 
     public void setOrientationDestination(Vector3 globalDestination) {
@@ -76,6 +83,8 @@ public class AerialOrientationController2 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.GREEN, desiredSpin.minus(input.car.spin.toFrameOfReference(input.car.orientation)).scaled(10).plus(new Vector3(0, 0, 700)), new Vector3(0, 0, 700));
+        //renderer.drawLine3d(Color.GREEN, desiredSpin.minus(input.car.spin.toFrameOfReference(input.car.orientation)).scaled(10).plus(new Vector3(0, 0, 700)), new Vector3(0, 0, 700));
+        renderer.drawLine3d(Color.GREEN, orientationDestination, input.car.position);
+        renderer.drawLine3d(Color.blue, rollOrientation, input.car.position);
     }
 }

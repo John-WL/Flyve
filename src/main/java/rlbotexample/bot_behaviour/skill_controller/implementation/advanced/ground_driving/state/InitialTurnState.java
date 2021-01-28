@@ -59,7 +59,7 @@ public class InitialTurnState implements State {
         }
         // if we "got lost" while turning (aka are we too far away from the expected point?), then re-compute the ground trajectory
         // with the initialization state
-        if(expectedPositionOnTrajectory.minus(input.car.position.flatten()).magnitude() > 20) {
+        if(expectedPositionOnTrajectory.minus(input.car.position.flatten()).magnitude() > 10) {
             return initializationState;
         }
 

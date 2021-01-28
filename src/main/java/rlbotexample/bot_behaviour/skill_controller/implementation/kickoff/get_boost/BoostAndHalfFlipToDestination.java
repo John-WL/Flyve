@@ -37,7 +37,7 @@ public class BoostAndHalfFlipToDestination extends SkillController {
         Vector3 playerRoofVector = input.car.orientation.roofVector;
         Vector3 ballPosition = input.ball.position;
 
-        Vector3 localDestination = destination.minus(playerPosition).normalized().minusAngle(playerNoseVector);
+        Vector3 localDestination = destination.minus(playerPosition).normalized().orderedMinusAngle(playerNoseVector);
     }
 
     @Override

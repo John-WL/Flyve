@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerRoleHandler2V2 {
 
     private final ExtendedCarData offensive;
-    private final ExtendedCarData lasMan;
+    private final ExtendedCarData lastMan;
 
     public PlayerRoleHandler2V2(DataPacket input) {
         final List<ExtendedCarData> carList = input.allCars;
@@ -26,7 +26,7 @@ public class PlayerRoleHandler2V2 {
         teamCarList.sort((o1, o2) -> (int) (1000 * PossessionEvaluator.possessionRatio(o2.playerIndex, o1.playerIndex, input)));
 
         offensive = teamCarList.get(0);
-        lasMan = teamCarList.get(1);
+        lastMan = teamCarList.get(1);
     }
 
     public ExtendedCarData getPlayerFromRole(PlayerRole playerRole) {
@@ -34,7 +34,7 @@ public class PlayerRoleHandler2V2 {
             return offensive;
         }
         else if(playerRole == PlayerRole.LAST_MAN) {
-            return lasMan;
+            return lastMan;
         }
         else {
             throw new IllegalArgumentException();

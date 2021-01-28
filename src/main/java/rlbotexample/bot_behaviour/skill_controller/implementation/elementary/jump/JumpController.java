@@ -60,7 +60,7 @@ public class JumpController extends SkillController {
             jumpType = new Wait();
         }
         bot.output().jump(false);
-        jumpType.jump(input, bot.output(), jumpDestination.minus(input.car.position).normalized().minusAngle(input.car.orientation.noseVector.scaled(-1)));
+        jumpType.jump(input, bot.output(), jumpDestination.minus(input.car.position).normalized().orderedMinusAngle(input.car.orientation.noseVector.scaled(-1)));
     }
 
     private boolean hasFirstJump(DataPacket input) {

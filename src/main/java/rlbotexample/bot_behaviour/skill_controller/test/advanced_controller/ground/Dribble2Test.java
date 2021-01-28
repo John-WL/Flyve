@@ -18,16 +18,16 @@ public class Dribble2Test extends FlyveBot {
     private TrainingPack gameSituationHandler;
 
     public Dribble2Test() {
-        gameSituationHandler = new CircularTrainingPack();
-        gameSituationHandler.add(new GroundDribbleSetup1());
-        gameSituationHandler.add(new GroundDribbleSetup2());
+        //gameSituationHandler = new CircularTrainingPack();
+        //gameSituationHandler.add(new GroundDribbleSetup1());
+        //gameSituationHandler.add(new GroundDribbleSetup2());
         dribbleController = new Dribble2(this);
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        gameSituationHandler.update();
+        //gameSituationHandler.update();
 
         double t = System.currentTimeMillis()/1000.0;
         double x = Math.cos(t/3)*3000;
@@ -39,12 +39,12 @@ public class Dribble2Test extends FlyveBot {
             destination2 = new Vector3(0, 5200, 0);
         }
         else {
-            destination2 = new Vector3(0, -5200, 0);
+            destination2 = new Vector3(0, 5200, 0);
         }
 
         dribbleController.setBallDestination(destination2);
         //dribbleController.setBallDestination(destination);
-        //dribbleController.setBallDestination(input.allCars.get(1-input.playerIndex).position.scaled(-1, 1, 1));
+        //dribbleController.setBallDestination(input.allCars.get(1-input.playerIndex).position.scaled(1, 1, 1));
         //dribbleController.setBallDestination(new Vector3(0, 0, 0));
         dribbleController.updateOutput(input);
 

@@ -28,6 +28,18 @@ public class Quaternion {
                 r*other.k + k*other.r + i*other.j - j*other.i);
     }
 
+    // e^this
+    public Quaternion exp() {
+        double eP = Math.exp(this.r);
+        Vector3 v = new Vector3(i, j, k);
+        double vMag = v.magnitude();
+
+        double resultReal = eP * Math.cos(vMag);
+        Vector3 resultIm = v.scaledToMagnitude(eP * Math.sin(vMag));
+
+        return new Quaternion(resultReal, resultIm);
+    }
+
     public Vector3 toVector3() {
         return new Vector3(i, j, k);
     }

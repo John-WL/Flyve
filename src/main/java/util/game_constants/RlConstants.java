@@ -1,5 +1,7 @@
 package util.game_constants;
 
+import util.math.vector.Vector3;
+
 public class RlConstants {
 
     public static final double BALL_MASS = 30;
@@ -24,6 +26,7 @@ public class RlConstants {
     public static final double ACCELERATION_DUE_TO_JUMP = 291.667;
 
     public static final double NORMAL_GRAVITY_STRENGTH = 650;
+    public static final Vector3 GRAVITY_VECTOR = Vector3.DOWN_VECTOR.scaled(NORMAL_GRAVITY_STRENGTH);
 
     public static final double CEILING_HEIGHT = 2044;
     public static final double WALL_DISTANCE_X = 4096;
@@ -33,4 +36,5 @@ public class RlConstants {
     public static final double AMOUNT_OF_TIME_BEFORE_LOSING_SECOND_JUMP = 1.25;
 
     public static final double BOT_REFRESH_RATE = 60;
+    public static final double BOT_REFRESH_TIME_PERIOD = 1/BOT_REFRESH_RATE;
 }

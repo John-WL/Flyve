@@ -38,9 +38,9 @@ public class AerialDirectionalHit5Test extends FlyveBot {
 
         // do the thing
         if (input.team == 1) {
-            aerialDirectionalHitController.setBallDestination(new Vector3(0, -5200, 100));
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, -5200, 10000));
         } else {
-            aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 100));
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 10000));
         }
         aerialDirectionalHitController.updateOutput(input);
 

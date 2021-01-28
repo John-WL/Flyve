@@ -18,6 +18,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
 
     public static final Vector3 UP_VECTOR = new Vector3(0, 0, 1);
     public static final Vector3 DOWN_VECTOR = new Vector3(0, 0, -1);
+    public static final Vector3 X_VECTOR = new Vector3(1, 0, 0);
 
     public Vector3(double x, double y, double z) {
         super((float) x, (float) y, (float) z);
@@ -148,7 +149,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector3 result = new Vector3(this);
 
         // roll
-        Vector3 rotatedRoll = roofFacingVector.minusAngle(forwardFacingVector);
+        Vector3 rotatedRoll = roofFacingVector.orderedMinusAngle(forwardFacingVector);
         Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
         Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
         result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
@@ -158,7 +159,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector2 localPointProjection = new Vector2(result.x, result.z);
         Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
         result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
-        result = result.plusAngle(new Vector3(forwardFacingVector.flatten(), 0));
+        result = result.orderedPlusAngle(new Vector3(forwardFacingVector.flatten(), 0));
 
         return result;
     }
@@ -167,7 +168,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector3 result = new Vector3(this);
 
         // roll
-        Vector3 rotatedRoll = orientation.getRoof().minusAngle(orientation.getNose());
+        Vector3 rotatedRoll = orientation.getRoof().orderedMinusAngle(orientation.getNose());
         Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
         Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
         result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
@@ -177,7 +178,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector2 localPointProjection = new Vector2(result.x, result.z);
         Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
         result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
-        result = result.plusAngle(new Vector3(orientation.getNose().flatten(), 0));
+        result = result.orderedPlusAngle(new Vector3(orientation.getNose().flatten(), 0));
 
         return result;
     }
@@ -186,7 +187,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector3 result = new Vector3(this);
 
         // roll
-        Vector3 rotatedRoll = orientation.roofVector.minusAngle(orientation.noseVector);
+        Vector3 rotatedRoll = orientation.roofVector.orderedMinusAngle(orientation.noseVector);
         Vector2 rollProjection = new Vector2(rotatedRoll.z, rotatedRoll.y);
         Vector2 rotatedInRollLocalPointProjection = new Vector2(result.z, result.y).minusAngle(rollProjection).plusAngle(new Vector2(0, 1));
         result = new Vector3(result.x, rotatedInRollLocalPointProjection.x, rotatedInRollLocalPointProjection.y);
@@ -196,7 +197,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector2 localPointProjection = new Vector2(result.x, result.z);
         Vector2 rotatedLocalPointProjection = localPointProjection.minusAngle(pitchProjection);
         result = new Vector3(rotatedLocalPointProjection.x, result.y, rotatedLocalPointProjection.y);
-        result = result.plusAngle(new Vector3(orientation.noseVector.flatten(), 0));
+        result = result.orderedPlusAngle(new Vector3(orientation.noseVector.flatten(), 0));
 
         return result;
     }
@@ -214,11 +215,11 @@ public class Vector3 extends rlbot.vector.Vector3 {
     public Vector3 toFrameOfReference(Vector3 frontDirection, Vector3 topDirection)
     {
         // Calculate the vector without any roll yet (the roll is calculated from the topDirection vector)
-        Vector3 frameOfRefWithoutRoll = this.minusAngle(frontDirection);
+        Vector3 frameOfRefWithoutRoll = this.orderedMinusAngle(frontDirection);
         // Calculate the roll vector in the frame of ref so we can use it to do a planar projection followed by a rotation later on.
         // Basically, the vector is going to do nothing if it faces upward, and it's going to subtract its angle from
         // that top position if it has any
-        Vector3 rollInFrameOfRef = topDirection.minusAngle(frontDirection);
+        Vector3 rollInFrameOfRef = topDirection.orderedMinusAngle(frontDirection);
 
         // Calculating the 2D equivalents in the planar projection
         Vector2 flattenedFrameOfRefWithoutRoll = new Vector2(frameOfRefWithoutRoll.z, frameOfRefWithoutRoll.y);
@@ -232,7 +233,7 @@ public class Vector3 extends rlbot.vector.Vector3 {
     }
 
     public Vector3 rotate(Vector3 r) {
-        final double a = r.magnitude()/2;
+        final double a = r.magnitude()*0.5;
         final Vector2 r2 = new Vector2(Math.cos(a), Math.sin(a));
         final Vector3 sr = r.scaledToMagnitude(r2.y);
         final Quaternion qr = new Quaternion(r2.x, sr);
@@ -242,7 +243,8 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return qr.multiply(qa.multiply(qr2)).toVector3();
     }
 
-    public Vector3 minusAngle(Vector3 rotationVector) {
+    @Deprecated
+    public Vector3 orderedMinusAngle(Vector3 rotationVector) {
         // Rotating the vector in xy beforehand
         Vector3 firstRotatedVector = new Vector3(this.flatten().minusAngle(rotationVector.flatten()), this.z);
         Vector3 firstRotationVector = new Vector3(rotationVector.flatten().magnitude(), 0, rotationVector.z);
@@ -255,7 +257,8 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector3(projectedVectorXz.x, firstRotatedVector.y, projectedVectorXz.y);
     }
 
-    public Vector3 plusAngle(Vector3 rotationVector) {
+    @Deprecated
+    public Vector3 orderedPlusAngle(Vector3 rotationVector) {
         // Rotating the vector in xy beforehand
         Vector3 firstRotatedVector = new Vector3(this.flatten().plusAngle(rotationVector.flatten()), this.z);
         Vector3 firstRotationVector = new Vector3(rotationVector.flatten().plusAngle(rotationVector.flatten()), rotationVector.z);
@@ -267,6 +270,20 @@ public class Vector3 extends rlbot.vector.Vector3 {
         Vector2 resultXy = firstRotatedVector.flatten().scaledToMagnitude(projectedVectorXyXyz.x);
         // We can now add the x and the z coordinates separately from the firstly calculated y coordinate
         return new Vector3(resultXy.x, resultXy.y, projectedVectorXyXyz.y);
+    }
+
+    public Vector3 minusAngle(Vector3 rotationVector) {
+        // find the correct rotation vector
+        Vector3 rotator = rotationVector.crossProduct(X_VECTOR).scaledToMagnitude(rotationVector.angle(X_VECTOR));
+
+        return rotate(rotator);
+    }
+
+    public Vector3 plusAngle(Vector3 rotationVector) {
+        // find the correct rotation vector
+        Vector3 rotator = X_VECTOR.crossProduct(rotationVector).scaledToMagnitude(X_VECTOR.angle(rotationVector));
+
+        return rotate(rotator);
     }
 
     public Vector3 projectOnto(final Triangle3D triangle) {
@@ -324,5 +341,16 @@ public class Vector3 extends rlbot.vector.Vector3 {
     @Override
     public int hashCode() {
         return Objects.hash((int)x, (int)y, (int)z);
+    }
+
+    public Quaternion toQuaternion() {
+        return new Quaternion(0, this);
+    }
+
+    public Vector3 findRotator(Vector3 v) {
+        if(minus(v).magnitudeSquared() < 0.000001) {
+            return new Vector3();
+        }
+        return crossProduct(v).scaledToMagnitude(angle(v));
     }
 }

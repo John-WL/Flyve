@@ -17,24 +17,24 @@ public class AlgorithmOfRotatorForOrientations extends FlyveBot {
     private Orientation orientation;
     private Vector3 rotator;
 
-    private AerialOrientationController3 aerialOrientationController;
+    //private AerialOrientationController3 aerialOrientationController;
 
     public AlgorithmOfRotatorForOrientations() {
         this.orientation = new Orientation(new Vector3(1, 0, 0), Vector3.UP_VECTOR);
 
-        aerialOrientationController = new AerialOrientationController3(this);
+        //aerialOrientationController = new AerialOrientationController3(this);
     }
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        rotator = input.car.orientation.findRotatorToRotateTo(orientation);
+        rotator = input.allCars.get(1-input.playerIndex).orientation.findRotatorToRotateTo(orientation);
 
-        aerialOrientationController.setNoseOrientation(input.allCars.get(1-input.playerIndex).position.minus(input.car.position));
-        aerialOrientationController.setRollOrientation(new Vector3(0, 0, 1));
+        //aerialOrientationController.setNoseOrientation(input.allCars.get(1-input.playerIndex).position.minus(input.car.position));
+        //aerialOrientationController.setRollOrientation(new Vector3(0, 0, 1));
 
-        aerialOrientationController.updateOutput(input);
+        //aerialOrientationController.updateOutput(input);
 
-        output().boost(true);
+        //output().boost(true);
 
         return super.output();
     }
@@ -44,7 +44,7 @@ public class AlgorithmOfRotatorForOrientations extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         renderer.drawLine3d(Color.GREEN, rotator.scaled(300).plus(new Vector3(0, 0, 300)), new Vector3(0, 0, 300));
 
-        renderer.drawLine3d(Color.red, input.car.orientation.roofVector.rotate(rotator).scaled(300).plus(new Vector3(0, 0, 300)), new Vector3(0, 0, 300));
+        renderer.drawLine3d(Color.red, input.allCars.get(1-input.playerIndex).orientation.roofVector.rotate(rotator).scaled(300).plus(new Vector3(0, 0, 300)), new Vector3(0, 0, 300));
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(new Vector3(300, 0, 0), Color.red);

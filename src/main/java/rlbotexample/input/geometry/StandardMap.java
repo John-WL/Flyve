@@ -53,19 +53,19 @@ public class StandardMap extends MapMeshGeometry {
         if(!isInNet(globalPoint, bevel)) {
             // (RIGHT AND LEFT BY LOOKING TOWARDS THE ORANGE NET)
             // orange right
-            if(globalPoint.minusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).x + bevel > WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
+            if(globalPoint.orderedMinusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).x + bevel > WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
                 return new Vector3(1, 1, 0).normalized();
             }
             // blue left
-            else if(globalPoint.minusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).x - bevel < -WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
+            else if(globalPoint.orderedMinusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).x - bevel < -WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
                 return new Vector3(-1, -1, 0).normalized();
             }
             // orange left
-            if(globalPoint.minusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).y + bevel > WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
+            if(globalPoint.orderedMinusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).y + bevel > WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
                 return new Vector3(-1, 1, 0).normalized();
             }
             // blue right
-            else if(globalPoint.minusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).y - bevel < -WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
+            else if(globalPoint.orderedMinusAngle(VECTOR_OF_45_DEGREE_ANGLE_XY).y - bevel < -WIDTH_OF_SQUARE_THAT_DIAGONAL_WALLS_ARE_PART_OF) {
                 return new Vector3(1, -1, 0).normalized();
             }
         }

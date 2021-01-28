@@ -16,6 +16,13 @@ public class Parabola3D extends Trajectory3D {
         this.airDragCoefficient = airDragCoefficient;
     }
 
+    public Parabola3D(Vector3 initialPosition, Vector3 initialVelocity, Vector3 acceleration) {
+        this.initialPosition = initialPosition;
+        this.initialVelocity = initialVelocity;
+        this.acceleration = acceleration;
+        this.airDragCoefficient = 0;
+    }
+
     public Vector3 compute(double deltaTime) {
         final Vector3 deltaVelocity = initialVelocity.scaled(deltaTime * (1-airDragCoefficient));
         final double accelerationFactor = deltaTime * deltaTime / 2;

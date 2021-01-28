@@ -33,7 +33,6 @@ public class PidController {
 
     public double process(double actualValue, double desiredValue) {
         // getting the error
-        // YES THIS IS COMPUTED BASED ON 1/30th OF A SECOND
         double error = (actualValue - desiredValue);
 
         // updating the integral part
@@ -47,6 +46,7 @@ public class PidController {
         }
 
         // clamping
+        // this is so wrong who made this?
         largeTotalError = Math.max(largeTotalError, -integralMaxValue);
         smallTotalError = Math.max(smallTotalError, -integralMaxValue);
         largeTotalError = Math.min(largeTotalError, integralMaxValue);
@@ -57,7 +57,7 @@ public class PidController {
         currentError = error;
 
         // actual pid computation
-        return kp*currentError + ki*(largeTotalError + smallTotalError)/RlConstants.BOT_REFRESH_RATE - kd*(previousError - currentError)*RlConstants.BOT_REFRESH_RATE;
+        return kp*currentError + ki*(largeTotalError + smallTotalError)*RlConstants.BOT_REFRESH_TIME_PERIOD - kd*(previousError - currentError)*RlConstants.BOT_REFRESH_RATE;
     }
 
     public void resetIntegralValue() {

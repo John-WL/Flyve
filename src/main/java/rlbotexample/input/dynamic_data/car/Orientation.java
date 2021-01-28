@@ -37,7 +37,7 @@ public class Orientation {
         Vector3 rotatorMiddlePosition = this.nose.crossProduct(orientation.nose).normalized();
         // avoid the edge-case where our vectors have the same orientation
         if(rotatorMiddlePosition.magnitudeSquared() == 0) {
-            rotatorMiddlePosition = this.nose.crossProduct(orientation.nose.plusAngle(new Vector3(0, 1, 0))).normalized();
+            rotatorMiddlePosition = this.nose.crossProduct(orientation.nose.orderedPlusAngle(new Vector3(0, 1, 0))).normalized();
         }
         // this rotator is the "naive" rotation that rotates the nose, but not the roof at the correct spot
         final double shortestAngleBetweenNoses = this.nose.angle(orientation.nose);
@@ -92,6 +92,14 @@ public class Orientation {
 
         // return the scaled vector
         return unscaledRotator.scaledToMagnitude(angleBetweenNoses);
+    }
+
+    public Vector3 findRotatorToRotateToV2(Orientation orientation) {
+        Vector3 firstRotation = this.nose.crossProduct(orientation.nose).scaledToMagnitude(this.nose.angle(orientation.nose));
+        //Vector3 tempRoof = this.roof.rotate(firstRotation);
+        //Vector3 secondRotation = tempRoof.crossProduct(orientation.roof).scaledToMagnitude(tempRoof.angle(orientation.roof));
+
+        return firstRotation;//.plus(secondRotation);
     }
 
     public Vector3 getNose() {

@@ -54,6 +54,6 @@ public class CarOrientation {
     public Vector3 findRotatorToRotateTo(Orientation orientation) {
         final Orientation thisOrientation = new Orientation(noseVector, roofVector);
 
-        return thisOrientation.findRotatorToRotateTo(orientation);
+        return thisOrientation.findRotatorToRotateToV2(orientation);
     }
 }
