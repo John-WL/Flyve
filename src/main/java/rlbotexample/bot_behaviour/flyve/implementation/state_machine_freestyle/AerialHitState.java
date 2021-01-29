@@ -16,16 +16,16 @@ public class AerialHitState implements State {
 
     private final BotBehaviour bot;
 
-    private final AerialDirectionalHit6 aerialController;
+    private final AirDribble2 aerialController;
 
     public AerialHitState(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialController = new AerialDirectionalHit6(bot);
+        this.aerialController = new AirDribble2(bot);
     }
 
     @Override
     public void exec(DataPacket input) {
-        aerialController.setBallDestination(new Vector3(0, -5200, 2000));
+        aerialController.setBallDestination(new Vector3(0, -5200, 1000));
         aerialController.updateOutput(input);
     }
 

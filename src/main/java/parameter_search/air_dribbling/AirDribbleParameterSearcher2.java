@@ -65,7 +65,7 @@ public class AirDribbleParameterSearcher2 extends FlyveBot {
         }
 
         // do the thing
-        skillController.setupAndUpdateOutputs(input);
+        skillController.setupAndUpdateOutput(input);
 
         // return the calculated bot output
         return super.output();

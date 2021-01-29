@@ -26,8 +26,8 @@ public class RlUtils {
     private static final int amountOfFramesForTheAverage = (int) (0.2*RlConstants.BOT_REFRESH_RATE);
 
     public static GameStatePrediction gameStatePrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
-        if(playerIndex == 0 && ballPredictionReloadTimeout.isTimeElapsed()) {
-            ballPredictionReloadTimeout = new Timer(1.0/RlConstants.BOT_REFRESH_RATE).start();
+        if (playerIndex == DataPacket.indexOfBotThatReloadsPredictions.get() && ballPredictionReloadTimeout.isTimeElapsed()) {
+            ballPredictionReloadTimeout = new Timer(1.0 / RlConstants.BOT_REFRESH_RATE).start();
             ballPrediction = new GameStatePrediction(ballData, allCars, BALL_PREDICTION_TIME, BALL_PREDICTION_REFRESH_RATE);
         }
         return ballPrediction;

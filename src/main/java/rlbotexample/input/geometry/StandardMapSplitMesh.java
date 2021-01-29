@@ -11,6 +11,7 @@ public class StandardMapSplitMesh {
     public static final MeshSplitter3D STANDARD_MAP_MESH = new MeshSplitter3D(ObjFileReader.loadMeshFromFile(ObjFileReader.STANDARD_MAP_MESH_GEOMETRY_PATH));
 
     public Ray3 getCollisionRayOrElse(final Sphere sphere, final Ray3 defaultRay) {
+
         final Ray3 collisionRay = STANDARD_MAP_MESH.collideWith(sphere);
 
         if(collisionRay.direction.magnitude() > 0) {

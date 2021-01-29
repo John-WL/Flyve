@@ -2,7 +2,7 @@ package rlbotexample.input.prediction;
 
 import util.math.vector.Vector3;
 
-public class Parabola3D extends Trajectory3D {
+public class Parabola3D implements Trajectory3D {
 
     private final Vector3 initialPosition;
     private final Vector3 initialVelocity;

@@ -23,7 +23,7 @@ public class MeshSplitter3D {
 
     private final Mesh3D initialMesh;
     private final Mesh3D[][][] meshArray;
-    private static final List<Mesh3D> meshRegions = new ArrayList<>();
+    public static final List<Mesh3D> meshRegions = new ArrayList<>();
 
     public MeshSplitter3D(Mesh3D mesh) {
         this.initialMesh = mesh;
@@ -68,6 +68,7 @@ public class MeshSplitter3D {
             }
         }
 
+
         // do an average of all the ray normals that collide with the sphere
         int numberOfCollidingTriangles = 0;
         for(Triangle3D triangle : removedTriangleDuplicates) {
@@ -83,6 +84,7 @@ public class MeshSplitter3D {
                 resultingRay.direction = resultingRay.direction.plus(n.scaled(sphere.radius - separation));
             }
         }
+
 
         // finish the average
         if(numberOfCollidingTriangles > 0) {

@@ -13,7 +13,12 @@ public class ArbitraryValueSerializer {
     public static final String BALL_PREDICTION_SPIN_INFLUENCE_ON_VELOCITY = ARBITRARY_CFG_PATH + "ball_prediction_spin_influence_on_velocity.arb";
     public static final String BALL_PREDICTION_VELOCITY_INFLUENCE_ON_SPIN = ARBITRARY_CFG_PATH + "ball_prediction_velocity_influence_on_spin.arb";
 
-    public static double serialize(String fileName) {
-        return Double.valueOf(IOFile.getFileContent(fileName).get(0));
+    public static final String AIR_DRIBBLE_DISTANCE_FRONT_BACK_COEF = ARBITRARY_CFG_PATH + "air_dribble/distance_front_back_coef.arb";
+    public static final String AIR_DRIBBLE_DISTANCE_LEFT_RIGHT_COEF = ARBITRARY_CFG_PATH + "air_dribble/distance_left_right_coef.arb";
+    public static final String AIR_DRIBBLE_VELOCITY_FRONT_BACK_COEF = ARBITRARY_CFG_PATH + "air_dribble/velocity_front_back_coef.arb";
+    public static final String AIR_DRIBBLE_VELOCITY_LEFT_RIGHT_COEF = ARBITRARY_CFG_PATH + "air_dribble/velocity_left_right_coef.arb";
+
+    public static double deserialize(String fileName) {
+        return Double.parseDouble(IOFile.getFileContent(fileName).get(0));
     }
 }

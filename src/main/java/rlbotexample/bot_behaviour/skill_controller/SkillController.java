@@ -9,7 +9,7 @@ public abstract class SkillController {
 
     private static final double TIME_BEFORE_RELOADING_PIDS = 1;
 
-    private Timer pidParamReloadTime;
+    private final Timer pidParamReloadTime;
 
     public SkillController() {
         pidParamReloadTime = new Timer(TIME_BEFORE_RELOADING_PIDS);
@@ -20,7 +20,7 @@ public abstract class SkillController {
     public abstract void setupController();
     public abstract void debug(Renderer renderer, DataPacket input);
 
-    public void setupAndUpdateOutputs(DataPacket input) {
+    public void setupAndUpdateOutput(DataPacket input) {
         // setup PIDs and other useful variables
         if(pidParamReloadTime.isTimeElapsed()) {
             pidParamReloadTime.start();

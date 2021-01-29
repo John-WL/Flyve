@@ -3,6 +3,8 @@ package rlbotexample;
 import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
+import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugCustomBallPrediction;
+import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugPlayerDistanceFromMap;
 import rlbotexample.bot_behaviour.flyve.debug.player_values.AngularSpinLogger;
 import rlbotexample.bot_behaviour.flyve.debug.rl_utils.AlgorithmOfRotatorForOrientations;
 import rlbotexample.bot_behaviour.flyve.debug.rl_utils.Circle2DIntersections;
@@ -12,9 +14,7 @@ import rlbotexample.bot_behaviour.flyve.implementation.state_machine_freestyle.D
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.directionnal_hit.AerialDirectionalHit5Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble2Test;
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble3Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.Dribble2Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.GroundDirectionalHit2Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.GroundDirectionalHit4Test;
+import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.*;
 import rlbotexample.bot_behaviour.skill_controller.test.elementary.aerial_orientation.*;
 
 public class SamplePythonInterface extends SocketServer {

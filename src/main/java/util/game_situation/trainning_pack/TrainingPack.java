@@ -1,5 +1,6 @@
 package util.game_situation.trainning_pack;
 
+import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_situation.GameSituation;
 import util.game_situation.miscellaneous.UnhandledGameState;
 
@@ -30,6 +31,10 @@ public abstract class TrainingPack {
                 currentGameSituation.reloadGameState();
             }
         }
+    }
+
+    public boolean canLoad(DataPacket input) {
+        return currentGameSituation.canLoad(input);
     }
 
     public void reset() {

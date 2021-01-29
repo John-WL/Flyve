@@ -65,7 +65,7 @@ public class RefuelProximityBoost extends SkillController {
         if(closestNotTakenPad != null) {
 
             // got to destination
-            driveToDestination.setupAndUpdateOutputs(input);
+            driveToDestination.setupAndUpdateOutput(input);
             bot.output().boost(false);
             bot.output().jump(false);
         }

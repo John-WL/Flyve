@@ -4,7 +4,7 @@ import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
-public class ExperimentalCurlingTrajectory3D extends Trajectory3D {
+public class ExperimentalCurlingTrajectory3D implements Trajectory3D {
 
     private final Vector3 initialPosition;
     private final Vector3 initialVelocity;
@@ -36,18 +36,16 @@ public class ExperimentalCurlingTrajectory3D extends Trajectory3D {
 
         double distanceScalar = 1/angularMomentum.magnitudeSquared();
         double velocityScalar = 1/angularMomentum.magnitude();
-        Trajectory3D localRotatingBody = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return acceleration.rotate(angularMomentum.scaled(time)).rotate(angularMomentum.scaledToMagnitude(Math.PI)).scaled(distanceScalar);
-            }
-        };
-        Trajectory3D localRotatingBodyVelocity = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return acceleration.rotate(angularMomentum.scaled(time)).rotate(angularMomentum.scaledToMagnitude(Math.PI/2)).scaled(velocityScalar);
-            }
-        };
+        Trajectory3D localRotatingBody =
+                t -> acceleration
+                        .rotate(angularMomentum.scaled(t))
+                        .rotate(angularMomentum.scaledToMagnitude(Math.PI))
+                        .scaled(distanceScalar);
+        Trajectory3D localRotatingBodyVelocity =
+                t -> acceleration
+                        .rotate(angularMomentum.scaled(t))
+                        .rotate(angularMomentum.scaledToMagnitude(Math.PI/2))
+                        .scaled(velocityScalar);
 
         //Vector3 lrb0 = localRotatingBody.compute(0);
         Vector3 lrb0 = acceleration.rotate(angularMomentum.scaledToMagnitude(Math.PI)).scaled(distanceScalar);

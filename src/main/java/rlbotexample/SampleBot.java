@@ -8,6 +8,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
 
@@ -46,6 +47,9 @@ public class SampleBot implements Bot {
      * Modify it to make your bot smarter!
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
+
+        // update the "raw" ball trajectory
+        RawBallTrajectory.update();
 
         // refresh boostPads information so we can utilize it
         BoostManager.loadGameTickPacket(packet);

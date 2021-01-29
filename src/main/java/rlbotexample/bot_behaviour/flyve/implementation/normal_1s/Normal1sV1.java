@@ -37,7 +37,7 @@ public class Normal1sV1 extends FlyveBot {
         if(input.ball.velocity.magnitude() < 0.1) {
 
             // drive to it
-            driveToDestinationController.setupAndUpdateOutputs(input);
+            driveToDestinationController.setupAndUpdateOutput(input);
         }
         else {
             // destination on enemy net
@@ -45,11 +45,11 @@ public class Normal1sV1 extends FlyveBot {
 
             // simply dribble and refuel if no threat
             if (predictivePlayerPossessionRatio > 600) {
-                dribbleController.setupAndUpdateOutputs(input);
+                dribbleController.setupAndUpdateOutput(input);
             }
             // flick the getNativeBallPrediction if threat
             else {
-                flickController.setupAndUpdateOutputs(input);
+                flickController.setupAndUpdateOutput(input);
             }
         }
 

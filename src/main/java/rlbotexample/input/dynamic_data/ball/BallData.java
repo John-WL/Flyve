@@ -2,6 +2,7 @@ package rlbotexample.input.dynamic_data.ball;
 
 
 import rlbot.flat.BallInfo;
+import rlbot.flat.Physics;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
@@ -16,6 +17,13 @@ public class BallData {
     public final Vector3 velocity;
     public final Vector3 spin;
     public final double time;
+
+    public BallData(Physics physics) {
+        position = new Vector3(physics.location());
+        velocity = new Vector3(physics.velocity());
+        spin = new Vector3(physics.angularVelocity());
+        time = 0;
+    }
 
     public BallData(final BallInfo ball) {
         this.position = new Vector3(ball.physics().location());

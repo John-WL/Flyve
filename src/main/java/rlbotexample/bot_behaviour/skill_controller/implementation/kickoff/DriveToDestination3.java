@@ -104,8 +104,8 @@ public class DriveToDestination3 extends SkillController {
         // instantiate new pid controllers based on the data files that corresponds
         //throttlePid = PidSerializer.fromFileToPid(PidSerializer.THROTTLE_FILENAME, throttlePid);
 
-        boostForThrottleThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_THRESHOLD_FILENAME);
-        driftForSteerThreshold = ArbitraryValueSerializer.serialize(ArbitraryValueSerializer.DRIFT_FOR_STEERING_THRESHOLD_FILENAME);
+        boostForThrottleThreshold = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.BOOST_FOR_THROTTLE_THRESHOLD_FILENAME);
+        driftForSteerThreshold = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.DRIFT_FOR_STEERING_THRESHOLD_FILENAME);
     }
 
     @Override

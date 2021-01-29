@@ -20,7 +20,7 @@ public class Normal1sV0 extends FlyveBot {
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
 
         // do the thing
-        skillController.setupAndUpdateOutputs(input);
+        skillController.setupAndUpdateOutput(input);
 
         // return the calculated bot output
         return super.output();

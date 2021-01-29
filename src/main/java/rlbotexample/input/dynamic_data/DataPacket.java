@@ -9,6 +9,7 @@ import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is here for your convenience, it is NOT part of the framework. You can change it as much
@@ -32,8 +33,15 @@ public class DataPacket {
     /** The index of your player */
     public final int playerIndex;
 
+    /** The index of the bot that is going to reload the ball prediction (if there is many bots) */
+    public static final AtomicInteger indexOfBotThatReloadsPredictions = new AtomicInteger(-1);
+
     public DataPacket(GameTickPacket request, int playerIndex) {
         this.playerIndex = playerIndex;
+        synchronized (indexOfBotThatReloadsPredictions) {
+            // game state prediction disabled for now
+            //indexOfBotThatReloadsPredictions.set(playerIndex);
+        }
         this.allCars = new ArrayList<>();
         List<CarData> carsForGameStatePrediction = new ArrayList<>();
         for (int i = 0; i < request.playersLength(); i++) {

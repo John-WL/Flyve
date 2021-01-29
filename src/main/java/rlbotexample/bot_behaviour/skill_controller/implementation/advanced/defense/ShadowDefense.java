@@ -81,7 +81,7 @@ public class ShadowDefense extends SkillController {
             shadowPosition = new Vector3(-RlConstants.WALL_DISTANCE_X + 400, shadowPosition.y, shadowPosition.z);
         }
 
-        driveToDestinationController.setupAndUpdateOutputs(input);
+        driveToDestinationController.setupAndUpdateOutput(input);
         bot.output().jump(false);
     }
 

@@ -5,13 +5,29 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.geometry.StandardMap;
+import rlbotexample.input.geometry.StandardMapSplitMesh;
+import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
+import util.math.vector.Vector3;
+import util.renderers.ShapeRenderer;
+import util.shapes.Triangle3D;
+import util.shapes.meshes.Mesh3D;
+import util.shapes.meshes.MeshSplitter3D;
 
 import java.awt.*;
+import java.util.stream.Collectors;
 
 public class DebugCustomBallPrediction extends FlyveBot {
 
+    private double timePrediction;
+    private Vector3 predictedPosition;
+
     public DebugCustomBallPrediction() {
+        timePrediction = 0;
+        predictedPosition = new Vector3();
     }
 
     @Override
@@ -23,11 +39,16 @@ public class DebugCustomBallPrediction extends FlyveBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
-        // custom ball prediction is purple
+        if(System.currentTimeMillis()/1000.0 % 4 < 0.1) {
+            timePrediction = input.car.elapsedSeconds + 4;
+        }
         // native one is red
+        renderer.drawLine3d(Color.cyan, RawBallTrajectory.trajectory.compute(timePrediction - input.car.elapsedSeconds), input.allCars.get(1-input.playerIndex).position);
 
         // my ball prediction
+        predictedPosition = input.statePrediction.ballAtTime(timePrediction - input.car.elapsedSeconds).position;
 
+        // custom ball prediction is purple
         BallData previousBall = input.ball;
         int divisor = 0;
         for(BallData nextBall: input.statePrediction.balls) {
@@ -40,10 +61,12 @@ public class DebugCustomBallPrediction extends FlyveBot {
             }
         }
 
-        /*AdvancedBallPrediction advancedBallPrediction = new AdvancedBallPrediction(input.ball, input.allCars, 0.01,120);
+        renderer.drawLine3d(Color.blue, predictedPosition,input.allCars.get(1-input.playerIndex).position);
+
+        /*GameStatePrediction advancedBallPrediction = new GameStatePrediction(input.ball, input.allCars.stream().map(car -> (CarData)car).collect(Collectors.toList()), 0.01,120);
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
-        for(Mesh3D mesh: advancedBallPrediction.standardMap.STANDARD_MAP_MESH.meshRegions) {
+        for(Mesh3D mesh: MeshSplitter3D.meshRegions) {
             if(mesh != null) {
                 for (Triangle3D triangle : mesh.triangleList) {
                     renderer.drawLine3d(new Color(130, 207, 192), triangle.getCenterPosition(), triangle.getCenterPosition().plus(triangle.getNormal().scaledToMagnitude(100)));

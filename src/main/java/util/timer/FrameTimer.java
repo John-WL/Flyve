@@ -2,8 +2,8 @@ package util.timer;
 
 public class FrameTimer {
 
-    int numberOfFramesToCount;
-    int frameCounter;
+    public int numberOfFramesToCount;
+    private int frameCounter;
 
     public FrameTimer(int numberOfFramesToCount) {
         this.numberOfFramesToCount = numberOfFramesToCount;

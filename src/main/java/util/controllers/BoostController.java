@@ -12,6 +12,9 @@ public class BoostController {
 
     public boolean process(double desiredAverageAcceleration) {
         currentDeltaV += desiredAverageAcceleration;
+        if(currentDeltaV < 0) {
+            currentDeltaV = 0;
+        }
         if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
             currentDeltaV -= RlConstants.ACCELERATION_DUE_TO_BOOST;
             // cap deltaV if we were unreasonable with the acceleration request

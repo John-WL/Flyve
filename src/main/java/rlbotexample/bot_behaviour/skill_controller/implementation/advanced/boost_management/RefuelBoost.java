@@ -48,7 +48,7 @@ public class RefuelBoost extends SkillController {
         // update the destination
 
         // got to destination
-        driveToDestination.setupAndUpdateOutputs(input);
+        driveToDestination.setupAndUpdateOutput(input);
         bot.output().boost(false);
     }
 

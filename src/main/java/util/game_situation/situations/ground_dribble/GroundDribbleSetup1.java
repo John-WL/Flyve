@@ -13,7 +13,7 @@ public class GroundDribbleSetup1 extends GameSituation {
     @Override
     public void loadGameState() {
         GameState gameState = getCurrentGameState();
-        gameState.withBallState(new BallState(new PhysicsState().withLocation(new DesiredVector3(0f, 3980f, 120f))
+        gameState.withBallState(new BallState(new PhysicsState().withLocation(new DesiredVector3(0f, 1980f/*3980f*/, 90f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))
                 .withRotation(new DesiredRotation(0f, 0f, 0f))
                 .withVelocity(new DesiredVector3(0f, 0f, 0f))));

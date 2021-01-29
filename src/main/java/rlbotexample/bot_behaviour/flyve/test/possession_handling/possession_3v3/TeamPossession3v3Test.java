@@ -71,9 +71,9 @@ public class TeamPossession3v3Test extends FlyveBot {
 
     private void processInputOfOffensivePlayer(DataPacket input, GameTickPacket packet) {
         Vector3 destination = new Vector3(0, -5200 * ((input.team*2)-1), 500);
-        dribbleController.setupAndUpdateOutputs(input);
+        dribbleController.setupAndUpdateOutput(input);
         if((opponentRoleHandler3V3.getPlayerFromRole(PlayerRole.OFFENSIVE).position.minus(input.car.position)).magnitude() < 500) {
-            flickController.setupAndUpdateOutputs(input);
+            flickController.setupAndUpdateOutput(input);
         }
         if(input.car.position.minus(input.ball.position).magnitude() > 1000) {
             output().boost(true);

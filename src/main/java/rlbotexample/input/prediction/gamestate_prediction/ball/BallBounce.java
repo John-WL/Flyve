@@ -36,12 +36,13 @@ public class BallBounce {
     }
 
     public BallData compute(final double deltaTime) {
-        if(parallelVelocityComponent.magnitude() > 200) {
+        return computeRoll(deltaTime);
+        /*if(parallelVelocityComponent.magnitude() > 200) {
             return computeBounces();
         }
         else {
             return computeRoll(deltaTime);
-        }
+        }*/
     }
 
     public BallData computeRoll(final double deltaTime) {
@@ -63,7 +64,8 @@ public class BallBounce {
         Vector3 J = J_perp.plus(J_para);
 
         Vector3 newSpin = spin.minus(L.crossProduct(J).scaled(1.0 / BALL_INERTIA));
-        Vector3 newVelocity = initialVelocity.plus(J.scaled(1.0 / BALL_MASS).plus(initialVelocity.scaled(-RlConstants.BALL_AIR_DRAG_COEFFICIENT * deltaTime)));
+        Vector3 newVelocity = initialVelocity.plus(J.scaled(1.0 / BALL_MASS)
+                .plus(initialVelocity.scaled(-RlConstants.BALL_AIR_DRAG_COEFFICIENT * deltaTime)));
         Vector3 newPosition = initialPosition.plus(newVelocity.scaled(deltaTime));
 
         double penetration = RlConstants.BALL_RADIUS - (newPosition.minus(p)).dotProduct(n);

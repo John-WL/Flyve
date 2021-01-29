@@ -197,7 +197,7 @@ public class Normal1sV3 extends FlyveBot {
         }
 
         // do something about it
-        skillController.setupAndUpdateOutputs(input);
+        skillController.setupAndUpdateOutput(input);
 
         if(input.car.position.minus(input.ball.position).magnitude() < 300) {
             isRefueling = false;
@@ -205,7 +205,7 @@ public class Normal1sV3 extends FlyveBot {
 
         if(isRefueling) {
             // refuels boost if there is a pad near by
-            refuelProximityBoostController.setupAndUpdateOutputs(input);
+            refuelProximityBoostController.setupAndUpdateOutput(input);
             controllerLabel = "refuelProximity";
             //System.out.println("refueling");
         }

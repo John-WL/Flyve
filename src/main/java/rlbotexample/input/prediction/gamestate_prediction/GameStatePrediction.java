@@ -22,6 +22,9 @@ import java.util.List;
 
 public class GameStatePrediction {
 
+    //long currentTime = 0;
+    //double previousTime = 0;
+
     public final List<BallData> balls = new ArrayList<>();
     public final List<List<CarData>> cars = new ArrayList<>();
     private final double refreshRate;
@@ -111,6 +114,8 @@ public class GameStatePrediction {
         cars.clear();
         cars.add(initialCars);
 
+        //previousTime = System.currentTimeMillis()/1000.0;
+
         nextBallBounceIndexes.clear();
 
         // instantiate useful values
@@ -162,6 +167,10 @@ public class GameStatePrediction {
             previousPredictedCars = predictedCars;
             predictedCars = new ArrayList<>();
         }
+
+        //if(System.currentTimeMillis() % 1000 <= 30) {
+            //System.out.println((System.currentTimeMillis()/1000.0) - previousTime);
+        //}
     }
 
     private BallData updateAerialBall(final BallData ballData, final double deltaTime) {
