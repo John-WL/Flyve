@@ -39,7 +39,7 @@ public class DataPacket {
     public DataPacket(GameTickPacket request, int playerIndex) {
         this.playerIndex = playerIndex;
         synchronized (indexOfBotThatReloadsPredictions) {
-            // game state prediction disabled for now
+            // indent this to disable the game state prediction
             //indexOfBotThatReloadsPredictions.set(playerIndex);
         }
         this.allCars = new ArrayList<>();

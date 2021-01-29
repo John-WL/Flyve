@@ -2,7 +2,6 @@ package rlbotexample.input.prediction.gamestate_prediction;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
@@ -139,7 +138,7 @@ public class GameStatePrediction {
 
             // bounce the ball off of cars
             for(CarData predictedCar: predictedCars) {
-                //predictedBall = updateBallFromCollision(predictedBall, predictedCar, 1/refreshRate);
+                predictedBall = updateBallFromCollision(predictedBall, predictedCar, 1/refreshRate);
             }
 
             // bounce the cars off of the saved ball
@@ -218,8 +217,8 @@ public class GameStatePrediction {
     */
 
     private BallData updateBallFromCollision(final BallData ballData, final CarData carData, final double deltaTime) {
-        final Vector3 carCenterHitBoxPosition = carData.hitBox.centerPosition;
-        final Vector3 pointOnCarSurfaceTowardBall = carData.hitBox.projectPointOnSurface(ballData.position);
+        final Vector3 carCenterHitBoxPosition = carData.hitBox.centerPositionOfHitBox;
+        final Vector3 pointOnCarSurfaceTowardBall = carData.hitBox.closestPointOnSurface(ballData.position);
         final double specificCarRadiusWithRespectToBall = pointOnCarSurfaceTowardBall.minus(carCenterHitBoxPosition).magnitude();
 
         if(carCenterHitBoxPosition.minus(ballData.position).magnitude() < specificCarRadiusWithRespectToBall + RlConstants.BALL_RADIUS) {
@@ -230,8 +229,8 @@ public class GameStatePrediction {
     }
 
     private CarData updateCarFromCollision(final CarData carData, final BallData ballData, final int playerIndex, final int predictedFrameCount, final double deltaTime) {
-        final Vector3 carCenterHitBoxPosition = carData.hitBox.centerPosition;
-        final Vector3 pointOnCarSurfaceTowardBall = carData.hitBox.projectPointOnSurface(ballData.position);
+        final Vector3 carCenterHitBoxPosition = carData.hitBox.centerPositionOfHitBox;
+        final Vector3 pointOnCarSurfaceTowardBall = carData.hitBox.closestPointOnSurface(ballData.position);
         final double specificCarRadiusWithRespectToBall = pointOnCarSurfaceTowardBall.minus(carCenterHitBoxPosition).magnitude();
 
         if(carCenterHitBoxPosition.minus(ballData.position).magnitude() < specificCarRadiusWithRespectToBall + RlConstants.BALL_RADIUS) {

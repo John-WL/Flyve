@@ -31,6 +31,6 @@ public class CarData {
     }
 
     public final Vector3 surfaceVelocity(final Vector3 normal) {
-        return spin.crossProduct(normal).scaled(hitBox.projectPointOnSurface(normal.scaled(100)).minus(hitBox.centerPosition).magnitude());
+        return spin.crossProduct(normal).scaled(hitBox.closestPointOnSurface(normal.scaled(100)).minus(hitBox.centerPositionOfHitBox).magnitude());
     }
 }

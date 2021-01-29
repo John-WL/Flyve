@@ -112,7 +112,7 @@ public class AerialDirectionalHit6 extends SkillController {
                 .minus(carPredictedTrajectory.derivative(aerialInfo.timeOfFlight)).normalized();
 
         futureHitBox = input.car.hitBox.generateHypotheticalHitBox(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
-        Vector3 hitPointOnCar = futureHitBox.projectPointOnSurface(input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position);
+        Vector3 hitPointOnCar = futureHitBox.closestPointOnSurface(input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position);
         Vector3 carOffset = hitPointOnCar.minus(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
 
         ballTrajectoryWithCarHitBox = new Trajectory3D() {

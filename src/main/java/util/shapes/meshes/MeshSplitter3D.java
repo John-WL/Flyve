@@ -102,7 +102,7 @@ public class MeshSplitter3D {
 
         // rasterize a sphere with voxels
         final double hitBoxMaxRadius = hitBox.cornerPosition.magnitude();
-        final Vector3 hitBoxCenter = hitBox.centerPosition;
+        final Vector3 hitBoxCenter = hitBox.centerPositionOfHitBox;
         int searchSize = (int)(hitBoxMaxRadius*2/SPLIT_SIZE);
         int offset = 1;
         List<Vector3> indexToTest = new ArrayList<>();
@@ -137,7 +137,7 @@ public class MeshSplitter3D {
         for(Triangle3D triangle : removedTriangleDuplicates) {
             final Vector3 p = triangle.getCenterPosition();
             final Vector3 pr = hitBoxCenter.projectOnto(triangle);
-            final Vector3 hitPointOnHitBox = hitBox.projectPointOnSurface(pr.plus(pr.minus(hitBoxCenter).scaledToMagnitude(10000)));
+            final Vector3 hitPointOnHitBox = hitBox.closestPointOnSurface(pr.plus(pr.minus(hitBoxCenter).scaledToMagnitude(10000)));
             final Vector3 n = triangle.getNormal();
             final double separation = hitBoxCenter.minus(p).dotProduct(n);
             final Vector3 hitBoxVectorFromTriangle = hitBoxCenter.minus(pr);
@@ -208,7 +208,7 @@ public class MeshSplitter3D {
                     final Vector3 boxCenterPosition = new Vector3(i, j, k).scaled(SPLIT_SIZE).minus(OFFSET_POSITION);
                     final HitBox voxelHitBox = new HitBox(boxCenterPosition, new Vector3(SPLIT_SIZE/2, SPLIT_SIZE/2, SPLIT_SIZE/2));
                     final Vector3 projectedPointOnTriangle = boxCenterPosition.projectOnto(triangle);
-                    final Vector3 projectedPointOnVoxel = voxelHitBox.projectPointOnSurface(projectedPointOnTriangle);
+                    final Vector3 projectedPointOnVoxel = voxelHitBox.closestPointOnSurface(projectedPointOnTriangle);
                     if(projectedPointOnTriangle.minus(projectedPointOnVoxel).magnitude() < 1) {
                         voxels.add(new Vector3Int(i, j, k));
                     }

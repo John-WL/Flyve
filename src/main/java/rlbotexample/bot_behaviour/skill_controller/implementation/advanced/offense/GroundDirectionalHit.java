@@ -82,7 +82,7 @@ public class GroundDirectionalHit extends SkillController {
     }
 
     private double findOptimalTimeBeforeHittingTheBall(DataPacket input) {
-        Vector3 offsetCarPosition = input.car.hitBox.projectPointOnSurface(input.ball.position);
+        Vector3 offsetCarPosition = input.car.hitBox.closestPointOnSurface(input.ball.position);
         Vector3 offsetBallPosition = input.ball.position.plus(offsetCarPosition.minus(input.ball.position).scaledToMagnitude(RlConstants.BALL_RADIUS));
         double distance = offsetBallPosition.minus(offsetCarPosition).magnitude();
         //double speed = input.ball.velocity.scaled(1, 1, 0).minus(input.car.velocity).magnitude();//.dotProduct(offsetBallPosition.minus(offsetCarPosition).normalized());
@@ -111,21 +111,21 @@ public class GroundDirectionalHit extends SkillController {
         Vector3 alignedHitBoxCenterPosition = futureBallPosition.minus(ballDestination).scaledToMagnitude(2*RlConstants.BALL_RADIUS);
         Vector3 hitBoxClosestRadiusTowardsBall = input.car.hitBox
                 .generateHypotheticalHitBox(alignedHitBoxCenterPosition)
-                .projectPointOnSurface(futureBallPosition)
+                .closestPointOnSurface(futureBallPosition)
                 .minus(alignedHitBoxCenterPosition);
         HitBox bestHitBoxGuess = input.car.hitBox.generateHypotheticalHitBox(desiredHitPositionOnBall.minus(hitBoxClosestRadiusTowardsBall));
 
         int resolution = 20;
         for(int i = 0; i < resolution; i++) {
             hitBoxClosestRadiusTowardsBall = bestHitBoxGuess
-                    .projectPointOnSurface(futureBallPosition)
-                    .minus(bestHitBoxGuess.centerPosition);
+                    .closestPointOnSurface(futureBallPosition)
+                    .minus(bestHitBoxGuess.centerPositionOfHitBox);
             bestHitBoxGuess = input.car.hitBox.generateHypotheticalHitBox(desiredHitPositionOnBall.minus(hitBoxClosestRadiusTowardsBall));
         }
 
         futureHitBox = bestHitBoxGuess;
 
-        return bestHitBoxGuess.centerPosition;
+        return bestHitBoxGuess.centerPositionOfHitBox;
     }
 
     @Override

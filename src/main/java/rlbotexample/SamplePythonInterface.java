@@ -6,6 +6,7 @@ import rlbot.pyinterop.SocketServer;
 import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugCustomBallPrediction;
 import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugPlayerDistanceFromMap;
 import rlbotexample.bot_behaviour.flyve.debug.player_values.AngularSpinLogger;
+import rlbotexample.bot_behaviour.flyve.debug.player_values.DebugPlayerHitBox;
 import rlbotexample.bot_behaviour.flyve.debug.rl_utils.AlgorithmOfRotatorForOrientations;
 import rlbotexample.bot_behaviour.flyve.debug.rl_utils.Circle2DIntersections;
 import rlbotexample.bot_behaviour.flyve.debug.rl_utils.ExperimentalCurlingTrajectory3DDisplay;
@@ -24,6 +25,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new AirDribble2Test());
+        return new SampleBot(index, new DebugCustomBallPrediction());
     }
 }

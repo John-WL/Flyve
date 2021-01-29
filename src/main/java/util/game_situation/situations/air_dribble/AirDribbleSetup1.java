@@ -8,14 +8,14 @@ import util.timer.FrameTimer;
 public class AirDribbleSetup1 extends GameSituation {
 
     public AirDribbleSetup1() {
-        super(new FrameTimer((int)(10*RlConstants.BOT_REFRESH_RATE)));
+        super(new FrameTimer((int)(20*RlConstants.BOT_REFRESH_RATE)));
     }
 
     @Override
     public void loadGameState() {
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState()
-                .withLocation(new DesiredVector3(0f, 0f, 450f))
+                .withLocation(new DesiredVector3(1f, 0f, 450f))
                 .withVelocity(new DesiredVector3(0f, 0f, 0f))
                 .withRotation(new DesiredRotation(0f, 0f, 0f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))));

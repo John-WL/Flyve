@@ -258,7 +258,7 @@ public class Predictions {
             if(bestPlayerDistanceFromBall > futurePlayerDistanceFromFutureBall) {
                 bestPlayerDistanceFromBall = futurePlayerDistanceFromFutureBall;
             }
-            double playerRadius = playerHitBox.projectPointOnSurface(futureBallPosition).minus(playerPosition).magnitude();
+            double playerRadius = playerHitBox.closestPointOnSurface(futureBallPosition).minus(playerPosition).magnitude();
             if(bestPlayerDistanceFromBall < RlConstants.BALL_RADIUS + playerRadius) {
                 timeOfImpact = secondsInTheFuture;
                 break;
@@ -295,7 +295,7 @@ public class Predictions {
             if(bestPlayerDistanceFromBall > futurePlayerDistanceFromFutureBall) {
                 bestPlayerDistanceFromBall = futurePlayerDistanceFromFutureBall;
             }
-            double playerRadius = playerHitBox.projectPointOnSurface(futureBallPosition).minus(playerPosition).magnitude();
+            double playerRadius = playerHitBox.closestPointOnSurface(futureBallPosition).minus(playerPosition).magnitude();
             if(bestPlayerDistanceFromBall < RlConstants.BALL_RADIUS + playerRadius) {
                 timeOfImpact = secondsInTheFuture;
                 break;
@@ -359,7 +359,7 @@ public class Predictions {
             HitBox futureHitBox = carData.hitBox.generateHypotheticalHitBox(futurePlayerPosition, new Orientation(carData.orientation.noseVector, carData.orientation.roofVector));
 
             // get the normal vector of the hit so we can flip the getNativeBallPrediction speed with respect to it
-            Vector3 scaledHitNormal = futureHitBox.projectPointOnSurface(futureBallPosition).minus(futureBallPosition);
+            Vector3 scaledHitNormal = futureHitBox.closestPointOnSurface(futureBallPosition).minus(futureBallPosition);
             Vector3 hitNormal = scaledHitNormal.normalized();
 
             // add the player's speed difference from the getNativeBallPrediction to find the result of the hit

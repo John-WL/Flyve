@@ -80,7 +80,7 @@ public class Dribble5 extends SkillController {
         Vector3 lowestPointOfBall = input.ball.position
                 .plus(Vector3.DOWN_VECTOR.scaled(RlConstants.BALL_RADIUS));
         Vector3 highestPointOnRoofOfCarHitBox = input.car.hitBox
-                .projectPointOnSurface(input.car.orientation.roofVector.scaled(100));
+                .closestPointOnSurface(input.car.orientation.roofVector.scaled(100));
 
         return lowestPointOfBall.minus(highestPointOnRoofOfCarHitBox).magnitude() < 160
                 && input.car.hasWheelContact;

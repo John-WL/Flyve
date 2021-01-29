@@ -45,7 +45,7 @@ public class CarBounce {
         this.parallelVelocityComponent = initialVelocity.projectOnto(rayNormal.direction);
         this.perpendicularVelocityComponent = initialVelocity.minus(parallelVelocityComponent);
 
-        this.initialCarDynamicRadius = initialHitBox.projectPointOnSurface(rayNormal.offset).minus(initialPosition).magnitude();
+        this.initialCarDynamicRadius = initialHitBox.closestPointOnSurface(rayNormal.offset).minus(initialPosition).magnitude();
 
         // !!!!!! NOT RIGHT !!! NOT RIGHT !!!
         carIntertia = 0.4 * CAR_MASS * initialCarDynamicRadius * initialCarDynamicRadius;
@@ -99,7 +99,7 @@ public class CarBounce {
         final Vector3 slipSpeed = perpendicularVelocityComponent.minus(surfaceVelocity);
         final double surfaceSpeedRatio = parallelVelocityComponent.magnitude()/slipSpeed.magnitude();
 
-        final Vector3 projectedHitPointOnHitBox = initialHitBox.projectPointOnSurface(initialHitBox.centerPosition.plus(rayNormal.direction.scaledToMagnitude(10000))).minus(initialHitBox.centerPosition);
+        final Vector3 projectedHitPointOnHitBox = initialHitBox.closestPointOnSurface(initialHitBox.centerPositionOfHitBox.plus(rayNormal.direction.scaledToMagnitude(10000))).minus(initialHitBox.centerPositionOfHitBox);
         final double bounceAlignmentRatio = rayNormal.direction.dotProduct(projectedHitPointOnHitBox)/projectedHitPointOnHitBox.magnitude();
         final Vector3 newParallelVelocity = parallelVelocityComponent.scaled(-CAR_BOUNCE_RESTITUTION).scaled(bounceAlignmentRatio);
         Vector3 perpendicularDeltaVelocity = slipSpeed.scaled(-Math.min(1.0, 2*surfaceSpeedRatio) * 0.285);

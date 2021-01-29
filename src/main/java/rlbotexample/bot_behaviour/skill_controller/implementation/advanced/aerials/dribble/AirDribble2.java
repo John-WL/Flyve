@@ -3,7 +3,6 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aeri
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.controllers.BoostController;
@@ -52,8 +51,6 @@ public class AirDribble2 extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
-        ballDestinationOnCar = findOptimalBallPositionOnCar(input);
-
         Vector3 noseDestination = findOptimalNoseOrientationDestination(input);
         //Vector3 rollDestination = findOptimalRollOrientationDestination(input);
         //Vector3 rollDestination = input.car.position.plus(input.car.orientation.roofVector);
@@ -84,16 +81,19 @@ public class AirDribble2 extends SkillController {
 
     private double findCarHitBoxNoseLength(DataPacket input) {
         return input.car.position.minus(
-                input.car.hitBox.projectPointOnSurface(
+                input.car.hitBox.closestPointOnSurface(
                         input.car.position.plus(input.car.orientation.noseVector.scaled(200))))
                 .magnitude();
     }
 
     private Vector3 findOptimalDeltaPositionOnCar(DataPacket input) {
-        double sensitivity = 0.001;
-        double maxOffset = 2;
+        Vector3 desiredBallVelocityTowardsDestination = ballDestination.minus(input.ball.position).scaledToMagnitude(ballTargetSpeed);
+        Vector3 extraBallVelocity = input.ball.velocity.minus(desiredBallVelocityTowardsDestination);
 
-        Vector3 deltaPositionOnCar = ballDestination.minus(input.ball.position).scaled(sensitivity);
+        double sensitivity = 0.05;
+        double maxOffset = 1.3;
+
+        Vector3 deltaPositionOnCar = extraBallVelocity.scaled(-sensitivity);
         if(deltaPositionOnCar.magnitude() > maxOffset) {
             deltaPositionOnCar = deltaPositionOnCar.scaledToMagnitude(maxOffset);
         }
@@ -102,8 +102,8 @@ public class AirDribble2 extends SkillController {
     }
 
     private Vector3 findOptimalNoseOrientationDestination(DataPacket input) {
-        return findNeutralNoseDestination(input);
-                //.plus(findOptimalDeltaPositionOnCar(input).scaled(1, 1, 0));
+        return findNeutralNoseDestination(input)
+                .plus(findOptimalDeltaPositionOnCar(input).scaled(1, 1, 0));
     }
 
     private Vector3 findNeutralNoseDestination(DataPacket input) {
@@ -124,7 +124,7 @@ public class AirDribble2 extends SkillController {
 
         Vector3 noseOrientation = input.ball.position
             .minus(new Vector3(0, 0, RlConstants.BALL_RADIUS))
-            .plus(input.car.orientation.roofVector.scaled(-1).scaled(4))
+            .plus(input.car.orientation.roofVector.scaled(-1).scaled(3))
             .plus(frontDribbleNoseDestination)
             .plus(sideDribbleNoseDestination);
 

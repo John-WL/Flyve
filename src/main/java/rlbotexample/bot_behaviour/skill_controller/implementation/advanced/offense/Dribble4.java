@@ -75,7 +75,7 @@ public class Dribble4 extends SkillController {
 
     private Vector3 findFrontAndBackBallOffsetFromCar(DataPacket input) {
         // front is positive, back negative
-        double centerOffsetDistanceY = input.car.hitBox.centerPosition.minus(input.car.position)
+        double centerOffsetDistanceY = input.car.hitBox.centerPositionOfHitBox.minus(input.car.position)
                 .flatten()
                 .magnitude();
         double allowedRangeOfBallPositionOnCar = input.car.hitBox.cornerPosition.x + RlConstants.BALL_RADIUS/5;
