@@ -4,6 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController6;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.controllers.BoostController;
 import util.game_constants.RlConstants;
@@ -17,28 +18,36 @@ public class AirDribble2 extends SkillController {
 
     private BotBehaviour botBehaviour;
     private Vector3 ballDestination;
+    private Vector3 smoothedOutBallDestination;
     private double ballTargetSpeed;
     private Vector3 ballDestinationOnCar;
     private Vector3 neutralBallPositionOnCar;
     private Vector3 previousCarVelocity;
     private Vector3 previousBallVelocity;
 
+    private Vector3 deltaPositionOnCar;
+
     private double distanceFrontBackCoef = -0.35;
-    private double velocityFrontBackCoef = -0.11;
+    private double velocityFrontBackCoef = -0.105;
     private double distanceLeftRightCoef = -0.86;
-    private double velocityLeftRightCoef = -0.28;
+    private double velocityLeftRightCoef = -0.275;
 
     private AerialOrientationController5 aerialOrientationHandler;
     private BoostController boostController;
 
+    // you need to make a new object each time you're starting to aerials #2!
+    // we're using a convergent destination, so it won't be equal to zero if we're reusing a previously used one!
     public AirDribble2(BotBehaviour bot) {
         this.botBehaviour = bot;
         this.ballDestination = new Vector3();
-        this.ballTargetSpeed = 300;
+        this.smoothedOutBallDestination = new Vector3();
+        this.ballTargetSpeed = 1000;
         this.ballDestinationOnCar = new Vector3();
         this.neutralBallPositionOnCar = new Vector3();
         this.previousCarVelocity = new Vector3();
         this.previousBallVelocity = new Vector3();
+
+        this.deltaPositionOnCar = new Vector3();
 
         this.aerialOrientationHandler = new AerialOrientationController5(bot);
 
@@ -51,20 +60,29 @@ public class AirDribble2 extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
+        if(smoothedOutBallDestination.isZero()) {
+            smoothedOutBallDestination = ballDestination;
+        }
+        double convergenceRateForBallDestination = 0.03;
+        smoothedOutBallDestination = smoothedOutBallDestination.scaled(1-convergenceRateForBallDestination)
+                .plus(ballDestination.scaled(convergenceRateForBallDestination));
+
         Vector3 noseDestination = findOptimalNoseOrientationDestination(input);
         //Vector3 rollDestination = findOptimalRollOrientationDestination(input);
         //Vector3 rollDestination = input.car.position.plus(input.car.orientation.roofVector);
 
         aerialOrientationHandler.setNoseOrientation(noseDestination.minus(input.car.position));
-        aerialOrientationHandler.setRollOrientation(new Vector3(0, 1, 0));
+        aerialOrientationHandler.setRollOrientation(
+                smoothedOutBallDestination.minus(input.ball.position).normalized()
+                .plus(input.ball.velocity.normalized())
+                .plus(input.car.orientation.roofVector.scaled(11)));
         aerialOrientationHandler.updateOutput(input);
 
         //boolean isBoosting = findOptimalBoostValue(input);
         boolean isBoosting = boostController.process(
-                130
-                + ballDestination.minus(input.ball.position).z
-                + input.ball.position.minus(input.car.position).z
-                - input.ball.velocity.z/1.5);
+                smoothedOutBallDestination.minus(input.ball.position).z
+                        + input.ball.position.minus(input.car.position).z / 0.75
+                        - input.ball.velocity.z/1.5);
         botBehaviour.output().boost(isBoosting);
     }
 
@@ -90,10 +108,12 @@ public class AirDribble2 extends SkillController {
         Vector3 desiredBallVelocityTowardsDestination = ballDestination.minus(input.ball.position).scaledToMagnitude(ballTargetSpeed);
         Vector3 extraBallVelocity = input.ball.velocity.minus(desiredBallVelocityTowardsDestination);
 
-        double sensitivity = 0.05;
-        double maxOffset = 1.3;
+        double sensitivity = 0.008;
+        double maxOffset = 2;
+        double convergenceRate = 0.01;
 
-        Vector3 deltaPositionOnCar = extraBallVelocity.scaled(-sensitivity);
+        deltaPositionOnCar = deltaPositionOnCar.scaled(1-convergenceRate)
+            .plus(extraBallVelocity.scaled(-sensitivity).scaled(convergenceRate));
         if(deltaPositionOnCar.magnitude() > maxOffset) {
             deltaPositionOnCar = deltaPositionOnCar.scaledToMagnitude(maxOffset);
         }
@@ -150,16 +170,17 @@ public class AirDribble2 extends SkillController {
 
     @Override
     public void setupController() {
-        distanceFrontBackCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_DISTANCE_FRONT_BACK_COEF);
-        velocityFrontBackCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_VELOCITY_FRONT_BACK_COEF);
-        distanceLeftRightCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_DISTANCE_LEFT_RIGHT_COEF);
-        velocityLeftRightCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_VELOCITY_LEFT_RIGHT_COEF);
+        //distanceFrontBackCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_DISTANCE_FRONT_BACK_COEF);
+        //velocityFrontBackCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_VELOCITY_FRONT_BACK_COEF);
+        //distanceLeftRightCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_DISTANCE_LEFT_RIGHT_COEF);
+        //velocityLeftRightCoef = ArbitraryValueSerializer.deserialize(ArbitraryValueSerializer.AIR_DRIBBLE_VELOCITY_LEFT_RIGHT_COEF);
     }
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.red);
+        shapeRenderer.renderCross(smoothedOutBallDestination, Color.magenta);
 
         aerialOrientationHandler.debug(renderer, input);
         shapeRenderer.renderHitBox(input.car.hitBox, Color.YELLOW);

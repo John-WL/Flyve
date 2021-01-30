@@ -47,8 +47,8 @@ public class AerialOrientationController5 extends SkillController {
         previousNoseOrientation = noseOrientation;
         previousRollOrientation = rollOrientation;
 
-        correctedNoseDestination = noseOrientation.rotate(noseDestinationAngularVelocity.scaled(0.3));
-        correctedRollDestination = rollOrientation.rotate(rollDestinationAngularVelocity.scaled(0.3));
+        correctedNoseDestination = noseOrientation.rotate(noseDestinationAngularVelocity.scaled(0.33));
+        correctedRollDestination = rollOrientation.rotate(rollDestinationAngularVelocity.scaled(0));
 
         orientationController.setOrientationDestination(input.car.position.plus(correctedNoseDestination));
         orientationController.setRollOrientation(input.car.position.plus(correctedRollDestination));

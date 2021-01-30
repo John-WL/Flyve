@@ -29,7 +29,7 @@ public class Dribble4Test extends FlyveBot {
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         if(gameSituationHandler.canLoad(input)) {
-            gameSituationHandler.update();
+            //gameSituationHandler.update();
         }
 
         dribbleController.throttle(1);

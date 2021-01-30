@@ -50,7 +50,10 @@ public class Dribble4 extends SkillController {
         desiredBallPositionOnPlayerCar = findOptimalBallPositionOnPlayerCar(input);
         final Vector3 playerDeltaDestination = input.ball.position.minus(desiredBallPositionOnPlayerCar);
 
-        final double rawSteeringAmount = playerDeltaDestination.plus(input.car.orientation.noseVector.scaled(200)).flatten().correctionAngle(input.car.orientation.noseVector.flatten());
+        final double rawSteeringAmount = playerDeltaDestination
+                .plus(input.car.orientation.noseVector.scaled(200))
+                .flatten()
+                .correctionAngle(input.car.orientation.noseVector.flatten());
         double steerAmount = steerPid.process(rawSteeringAmount, 0);
         bot.output().steer(steerAmount);
         bot.output().drift(steerAmount > 5);

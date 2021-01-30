@@ -4,12 +4,10 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.aerials.PitchVelocityOffsetFinder;
-import rlbotexample.input.dynamic_data.aerials.RollVelocityOffsetFinder;
-import rlbotexample.input.dynamic_data.aerials.YawVelocityOffsetFinder;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.orientation6_functions.PitchVelocityOffsetFinder;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.orientation6_functions.RollVelocityOffsetFinder;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.orientation6_functions.YawVelocityOffsetFinder;
 import rlbotexample.output.BotOutput;
-import util.controllers.PidController;
-import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
 import java.awt.*;

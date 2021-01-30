@@ -3,7 +3,7 @@ package util.state_machine;
 import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.DataPacket;
 
-public class StateMachine {
+public class StateMachine implements Behaviour, Debuggable {
     private State state;
     private State nextState;
 
