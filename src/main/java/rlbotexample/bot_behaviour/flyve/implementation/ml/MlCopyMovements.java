@@ -3,11 +3,10 @@ package rlbotexample.bot_behaviour.flyve.implementation.ml;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.CarOrientation;
-import rlbotexample.input.dynamic_data.car.Orientation;
 import rlbotexample.output.BotOutput;
+import util.game_constants.RlConstants;
 import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 
@@ -17,19 +16,25 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MlCopyMovements extends FlyveBot implements MouseListener {
+public class MlCopyMovements extends FlyveBot {
 
-    private static volatile boolean leftMouseDown = false;
-    private static volatile boolean rightMouseDown = false;
-    private GeneralLinearApproximator botFunction;
+
+    private Vector3 previousVelocity;
+    private Vector3 previousSpin;
+    private OOfNGeneralLinearApproximator botFunction;
 
     public MlCopyMovements() {
-        botFunction = new GeneralLinearApproximator();
+        botFunction = new OOfNGeneralLinearApproximator();
+
+        previousVelocity = new Vector3();
+        previousSpin = new Vector3();
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
+
+
         // gathering training data
         float trainingBotBoostAmount = (float)input.allCars.get(1-input.playerIndex).boost;
         Vector3 trainingBotPosition = input.allCars.get(1-input.playerIndex).position.scaled(-1);
@@ -51,152 +56,62 @@ public class MlCopyMovements extends FlyveBot implements MouseListener {
                 input.car.orientation.roofVector.scaled(-1));
         Vector3 trainingOpponentSpin = input.car.spin.scaled(-1);
 
-        // gathering user keyboard inputs
-        Vector2 trainingWasdMovements = new Vector2();
-        double trainingIsDrifting = 0;
-        double trainingIsBoosting = 0;
-        double trainingIsJumping = 0;
+        Vector2 wVec = input.allCars.get(1-input.playerIndex).hasWheelContact ?
+                input.allCars.get(1-input.playerIndex).velocity
+                        .minus(previousVelocity)
+                        .dotProduct(input.allCars.get(1-input.playerIndex).orientation.noseVector) > 0 ?
+                        new Vector2(1, 0) : new Vector2() :
+                input.allCars.get(1-input.playerIndex).spin.minus(previousSpin)
+                        .toFrameOfReference(input.allCars.get(1-input.playerIndex).orientation)
+                        .y * RlConstants.BOT_REFRESH_RATE > 1 ?
+                        new Vector2(1, 0) : new Vector2();
+        Vector2 sVec = input.allCars.get(1-input.playerIndex).hasWheelContact ?
+                input.allCars.get(1-input.playerIndex).velocity
+                        .minus(previousVelocity)
+                        .dotProduct(input.allCars.get(1-input.playerIndex).orientation.noseVector)
+                        * RlConstants.BOT_REFRESH_RATE < -1000 ?
+                        new Vector2(-1, 0) : new Vector2() :
+                input.allCars.get(1-input.playerIndex).spin
+                        .minus(previousSpin)
+                        .toFrameOfReference(input.allCars.get(1-input.playerIndex).orientation)
+                        .y * RlConstants.BOT_REFRESH_RATE < -1 ?
+                        new Vector2(-1, 0) : new Vector2();
 
-        final AtomicBoolean wPressed = new AtomicBoolean(false);
-        final AtomicBoolean aPressed = new AtomicBoolean(false);
-        final AtomicBoolean sPressed = new AtomicBoolean(false);
-        final AtomicBoolean dPressed = new AtomicBoolean(false);
-        final AtomicBoolean shiftPressed = new AtomicBoolean(false);
-        final AtomicBoolean qPressed = new AtomicBoolean(false);
-        final AtomicBoolean ePressed = new AtomicBoolean(false);
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
-            synchronized (MlCopyMovements.class) {
-                switch (ke.getID()) {
-                    case KeyEvent.KEY_PRESSED:
-                        if (ke.getKeyCode() == KeyEvent.VK_W) {
-                            wPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_A) {
-                            aPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_S) {
-                            sPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_D) {
-                            dPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
-                            shiftPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_Q) {
-                            qPressed.set(true);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_E) {
-                            ePressed.set(true);
-                        }
-                        break;
+        System.out.println(sVec);
 
-                    case KeyEvent.KEY_RELEASED:
-                        if (ke.getKeyCode() == KeyEvent.VK_W) {
-                            wPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_A) {
-                            aPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_S) {
-                            sPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_D) {
-                            dPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
-                            shiftPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_Q) {
-                            qPressed.set(false);
-                        }
-                        if (ke.getKeyCode() == KeyEvent.VK_E) {
-                            ePressed.set(false);
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
-
-        Vector2 wVec = new Vector2();
         Vector2 aVec = new Vector2();
-        Vector2 sVec = new Vector2();
         Vector2 dVec = new Vector2();
-        double trainingRollDirection = 0;
-        synchronized (MlCopyMovements.class) {
-            if(wPressed.get()) {
-                wVec = new Vector2(1, 0);
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(aPressed.get()) {
-                aVec = new Vector2(0, 1);
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(sPressed.get()) {
-                sVec = new Vector2(-1, 0);
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(dPressed.get()) {
-                dVec = new Vector2(0, -1);
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(shiftPressed.get()) {
-                trainingIsDrifting = 1;
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(leftMouseDown) {
-                trainingIsBoosting = 1;
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(rightMouseDown) {
-                trainingIsJumping = 1;
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(qPressed.get()) {
-                trainingRollDirection += 1;
-            }
-        }
-        synchronized (MlCopyMovements.class) {
-            if(ePressed.get()) {
-                trainingRollDirection += -1;
-            }
-        }
-        trainingWasdMovements = wVec.plus(aVec).plus(sVec).plus(dVec);
 
+        Vector2 trainingWasdMovements = wVec.plus(aVec).plus(sVec).plus(dVec);
+
+        if(input.car.elapsedSeconds % 1 < 0.1)
         botFunction.addSamplePoint(
-                new GeneralLinearApproximator.Input(
-                        trainingBotBoostAmount,
-                        trainingBotPosition.x, trainingBotPosition.y, trainingBotPosition.z,
-                        trainingBotVelocity.x, trainingBotVelocity.y, trainingBotVelocity.z,
+                new OOfNGeneralLinearApproximator.Input(
+                        trainingBotBoostAmount/100,
+                        trainingBotPosition.x/(float)RlConstants.WALL_DISTANCE_X, trainingBotPosition.y/(float)RlConstants.WALL_DISTANCE_Y, trainingBotPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                        trainingBotVelocity.x/(float)RlConstants.CAR_MAX_SPEED, trainingBotVelocity.y/(float)RlConstants.CAR_MAX_SPEED, trainingBotVelocity.z/(float)RlConstants.CAR_MAX_SPEED,
                         trainingBotOrientation.noseVector.x, trainingBotOrientation.noseVector.y, trainingBotOrientation.noseVector.z,
                         trainingBotOrientation.roofVector.x, trainingBotOrientation.roofVector.y, trainingBotOrientation.roofVector.z,
-                        trainingBotSpin.x, trainingBotSpin.y, trainingBotSpin.z,
+                        trainingBotSpin.x/(float)RlConstants.BALL_MAX_SPIN, trainingBotSpin.y/(float)RlConstants.BALL_MAX_SPIN, trainingBotSpin.z/(float)RlConstants.BALL_MAX_SPIN,
 
-                        trainingBallPosition.x, trainingBallPosition.y, trainingBallPosition.z,
-                        trainingBallVelocity.x, trainingBallVelocity.y, trainingBallVelocity.z,
-                        trainingBallSpin.x, trainingBallSpin.y, trainingBallSpin.z,
+                        trainingBallPosition.x/(float)RlConstants.WALL_DISTANCE_X, trainingBallPosition.y/(float)RlConstants.WALL_DISTANCE_Y, trainingBallPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                        trainingBallVelocity.x/(float)RlConstants.BALL_MAX_SPEED, trainingBallVelocity.y/(float)RlConstants.BALL_MAX_SPEED, trainingBallVelocity.z/(float)RlConstants.BALL_MAX_SPEED,
+                        trainingBallSpin.x/(float)RlConstants.BALL_MAX_SPIN, trainingBallSpin.y/(float)RlConstants.BALL_MAX_SPIN, trainingBallSpin.z/(float)RlConstants.BALL_MAX_SPIN,
 
-                        trainingOpponentBoostAmount,
-                        trainingOpponentPosition.x, trainingOpponentPosition.y, trainingOpponentPosition.z,
-                        trainingOpponentVelocity.x, trainingOpponentVelocity.y, trainingOpponentVelocity.z,
+                        trainingOpponentBoostAmount/100,
+                        trainingOpponentPosition.x/(float)RlConstants.WALL_DISTANCE_X, trainingOpponentPosition.y/(float)RlConstants.WALL_DISTANCE_Y, trainingOpponentPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                        trainingOpponentVelocity.x/(float)RlConstants.CAR_MAX_SPEED, trainingOpponentVelocity.y/(float)RlConstants.CAR_MAX_SPEED, trainingOpponentVelocity.z/(float)RlConstants.CAR_MAX_SPEED,
                         trainingOpponentOrientation.noseVector.x, trainingOpponentOrientation.noseVector.y, trainingOpponentOrientation.noseVector.z,
                         trainingOpponentOrientation.roofVector.x, trainingOpponentOrientation.roofVector.y, trainingOpponentOrientation.roofVector.z,
-                        trainingOpponentSpin.x, trainingOpponentSpin.y, trainingOpponentSpin.z
+                        trainingOpponentSpin.x/(float)RlConstants.BALL_MAX_SPIN, trainingOpponentSpin.y/(float)RlConstants.BALL_MAX_SPIN, trainingOpponentSpin.z/(float)RlConstants.BALL_MAX_SPIN
                 ),
-                new GeneralLinearApproximator.Output(
+                new OOfNGeneralLinearApproximator.Output(
                         trainingWasdMovements.x, trainingWasdMovements.y,
-                        trainingIsBoosting,
+                        0, 0, 0, 0
+                        /*trainingIsBoosting,
                         trainingIsJumping,
                         trainingIsDrifting,
-                        trainingRollDirection
+                        trainingRollDirection*/
                 )
         );
 
@@ -222,25 +137,25 @@ public class MlCopyMovements extends FlyveBot implements MouseListener {
 
 
         if(botFunction.getSizeOfDataset() > 100) {
-            GeneralLinearApproximator.Output keyboardOutput = botFunction.process(
-                    new GeneralLinearApproximator.Input(
-                            botBoostAmount,
-                            botPosition.x, botPosition.y, botPosition.z,
-                            botVelocity.x, botVelocity.y, botVelocity.z,
+            OOfNGeneralLinearApproximator.Output keyboardOutput = botFunction.process(
+                    new OOfNGeneralLinearApproximator.Input(
+                            botBoostAmount/100,
+                            botPosition.x/(float)RlConstants.WALL_DISTANCE_X, botPosition.y/(float)RlConstants.WALL_DISTANCE_Y, botPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                            botVelocity.x/(float)RlConstants.CAR_MAX_SPEED, botVelocity.y/(float)RlConstants.CAR_MAX_SPEED, botVelocity.z/(float)RlConstants.CAR_MAX_SPEED,
                             botOrientation.noseVector.x, botOrientation.noseVector.y, botOrientation.noseVector.z,
                             botOrientation.roofVector.x, botOrientation.roofVector.y, botOrientation.roofVector.z,
-                            botSpin.x, botSpin.y, botSpin.z,
+                            botSpin.x/(float)RlConstants.BALL_MAX_SPIN, botSpin.y/(float)RlConstants.BALL_MAX_SPIN, botSpin.z/(float)RlConstants.BALL_MAX_SPIN,
 
-                            ballPosition.x, ballPosition.y, ballPosition.z,
-                            ballVelocity.x, ballVelocity.y, ballVelocity.z,
-                            ballSpin.x, ballSpin.y, ballSpin.z,
+                            ballPosition.x/(float)RlConstants.WALL_DISTANCE_X, ballPosition.y/(float)RlConstants.WALL_DISTANCE_Y, ballPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                            ballVelocity.x/(float)RlConstants.BALL_MAX_SPEED, ballVelocity.y/(float)RlConstants.BALL_MAX_SPEED, ballVelocity.z/(float)RlConstants.BALL_MAX_SPEED,
+                            ballSpin.x/(float)RlConstants.BALL_MAX_SPIN, ballSpin.y/(float)RlConstants.BALL_MAX_SPIN, ballSpin.z/(float)RlConstants.BALL_MAX_SPIN,
 
                             opponentBoostAmount,
-                            opponentPosition.x, opponentPosition.y, opponentPosition.z,
-                            opponentVelocity.x, opponentVelocity.y, opponentVelocity.z,
+                            opponentPosition.x/(float)RlConstants.WALL_DISTANCE_X, opponentPosition.y/(float)RlConstants.WALL_DISTANCE_Y, opponentPosition.z/(float)RlConstants.CEILING_HEIGHT,
+                            opponentVelocity.x/(float)RlConstants.CAR_MAX_SPEED, opponentVelocity.y/(float)RlConstants.CAR_MAX_SPEED, opponentVelocity.z/(float)RlConstants.CAR_MAX_SPEED,
                             opponentOrientation.noseVector.x, opponentOrientation.noseVector.y, opponentOrientation.noseVector.z,
                             opponentOrientation.roofVector.x, opponentOrientation.roofVector.y, opponentOrientation.roofVector.z,
-                            opponentSpin.x, opponentSpin.y, opponentSpin.z
+                            opponentSpin.x/(float)RlConstants.BALL_MAX_SPIN, opponentSpin.y/(float)RlConstants.BALL_MAX_SPIN, opponentSpin.z/(float)RlConstants.BALL_MAX_SPIN
                     )
             );
 
@@ -255,6 +170,9 @@ public class MlCopyMovements extends FlyveBot implements MouseListener {
             output().roll((output().drift() ? keyboardOutput.get(1) : 0) + keyboardOutput.get(5));
         }
 
+        previousVelocity = input.allCars.get(1-input.playerIndex).velocity;
+        previousSpin = input.allCars.get(1-input.playerIndex).spin;
+
         // return the calculated bot output
         return super.output();
     }
@@ -262,44 +180,5 @@ public class MlCopyMovements extends FlyveBot implements MouseListener {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        synchronized (MlCopyMovements.class) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                leftMouseDown = true;
-            }
-            if(e.getButton() == MouseEvent.BUTTON2) {
-                rightMouseDown = true;
-            }
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        synchronized (MlCopyMovements.class) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                leftMouseDown = false;
-            }
-            if(e.getButton() == MouseEvent.BUTTON2) {
-                rightMouseDown = false;
-            }
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }

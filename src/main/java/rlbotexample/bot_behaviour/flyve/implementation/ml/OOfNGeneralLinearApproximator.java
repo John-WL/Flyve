@@ -1,52 +1,40 @@
 package rlbotexample.bot_behaviour.flyve.implementation.ml;
 
-import com.github.jelmerk.knn.DistanceFunctions;
-import com.github.jelmerk.knn.Item;
-import com.github.jelmerk.knn.SearchResult;
-import com.github.jelmerk.knn.hnsw.HnswIndex;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.hash;
-import static jdk.nashorn.internal.runtime.regexp.joni.Syntax.Java;
-
-public class GeneralLinearApproximator {
+public class OOfNGeneralLinearApproximator {
 
     private final Map<Input, Output> function = new HashMap<>();
-    private HnswIndex<float[], float[], Input, Float> hnswIndex;
 
-    public GeneralLinearApproximator() {
-        hnswIndex = HnswIndex
-                .newBuilder(41, DistanceFunctions.FLOAT_EUCLIDEAN_DISTANCE, 10000)
-                .withM(16)
-                .withEf(200)
-                .withEfConstruction(200)
-                .build();
+    public OOfNGeneralLinearApproximator() {
     }
 
     public void addSamplePoint(Input input, Output output) {
         function.put(input, output);
-        hnswIndex.add(input);
     }
 
 
     public Output process(Input input) {
-        int numberOfPointsToFind = input.values.length + 1;
-        List<SearchResult<Input, Float>> approximateResults = hnswIndex.asExactIndex().findNeighbors(input.values, numberOfPointsToFind);
+        //int numberOfPointsToFind = input.values.length + 1;
+        Output result = findClosestPointOrElse(input, new Output(0, 0, 0, 0, 0, 0));
 
-        List<Output> results = new ArrayList<>();
-        for(SearchResult<Input, Float> result: approximateResults) {
-            results.add(function.get(result.item()));
+        return result;
+    }
+
+    private Output findClosestPointOrElse(Input input, Output defaultValue) {
+        Output result = defaultValue;
+        double bestDistanceYet = Double.MAX_VALUE;
+
+        for(Input element: function.keySet()) {
+            double testDistance = input.distanceSquared(input);
+            if(bestDistanceYet > testDistance) {
+                bestDistanceYet = testDistance;
+                result = function.get(element);
+            }
         }
 
-        // AHHHH just for testing don't mind me...
-        if(results.size() == 0) {
-            return new Output(0, 0, 0, 0, 0, 0);
-        }
-        return results.get(0);
+        return result;
     }
 
     public int getSizeOfDataset() {
@@ -54,26 +42,21 @@ public class GeneralLinearApproximator {
     }
 
 
-    public static class Input implements Item<float[], float[]> {
+    public static class Input {
         public final float[] values;
 
         public Input(float... values) {
             this.values = values;
         }
 
-        @Override
-        public float[] id() {
-            return values;
-        }
+        public double distanceSquared(Input input) {
+            double distanceSquared = 0;
 
-        @Override
-        public float[] vector() {
-            return values;
-        }
+            for (float value : values) {
+                distanceSquared += value * value;
+            }
 
-        @Override
-        public int dimensions() {
-            return values.length;
+            return distanceSquared;
         }
     }
 
