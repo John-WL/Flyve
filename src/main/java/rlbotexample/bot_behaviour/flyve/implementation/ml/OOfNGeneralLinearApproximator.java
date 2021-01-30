@@ -34,8 +34,7 @@ public class GeneralLinearApproximator {
 
 
     public Output process(Input input) {
-        //int numberOfPointsToFind = input.values.length + 1;
-        int numberOfPointsToFind = 1;
+        int numberOfPointsToFind = input.values.length + 1;
         List<SearchResult<Input, Float>> approximateResults = hnswIndex.asExactIndex().findNeighbors(input.values, numberOfPointsToFind);
 
         List<Output> results = new ArrayList<>();
@@ -45,7 +44,7 @@ public class GeneralLinearApproximator {
 
         // AHHHH just for testing don't mind me...
         if(results.size() == 0) {
-            return new Output(1, 0, 0, 0, 0, 0);
+            return new Output(0, 0, 0, 0, 0, 0);
         }
         return results.get(0);
     }
