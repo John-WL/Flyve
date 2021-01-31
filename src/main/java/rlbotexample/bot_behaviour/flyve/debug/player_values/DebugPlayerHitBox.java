@@ -29,8 +29,8 @@ public class DebugPlayerHitBox extends FlyveBot {
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderHitBox(playerCar.hitBox, Color.YELLOW);
-        shapeRenderer.renderCross(playerCar.hitBox.projectPointOnSurfaceFromCenterOfMass(input.ball.position), Color.CYAN);
-        shapeRenderer.renderCross(playerCar.hitBox.closestPointOnSurface(input.ball.position), Color.red);
-        renderer.drawLine3d(Color.GREEN, input.ball.position, playerCar.position);
+        //shapeRenderer.renderCross(playerCar.hitBox.projectPointOnSurfaceFromCenterOfMass(input.ball.position), Color.CYAN);
+        //shapeRenderer.renderCross(playerCar.hitBox.closestPointOnSurface(input.ball.position), Color.red);
+        //renderer.drawLine3d(Color.GREEN, input.ball.position, playerCar.position);
     }
 }

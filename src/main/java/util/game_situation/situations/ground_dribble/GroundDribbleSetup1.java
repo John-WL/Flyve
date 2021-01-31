@@ -15,10 +15,10 @@ public class GroundDribbleSetup1 extends GameSituation {
     public void loadGameState() {
         GameState gameState = getCurrentGameState();
         gameState.withBallState(new BallState(new PhysicsState()
-                .withLocation(new DesiredVector3(0f, 1980f/*3980f*/, 100f))
+                .withLocation(new DesiredVector3(0f, 4900f/*3980f*/, 100f))
                 .withAngularVelocity(new DesiredVector3(0f, 0f, 0f))
                 .withRotation(new DesiredRotation(0f, 0f, 0f))
-                .withVelocity(new DesiredVector3(0f, 100f, 200f))));
+                .withVelocity(new DesiredVector3(0f, -100f, -100f))));
 
         gameState.withCarState(0, new CarState()
                 .withPhysics(new PhysicsState()

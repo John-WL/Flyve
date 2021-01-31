@@ -11,7 +11,7 @@ import util.math.vector.Vector3;
 
 public class DribbleUtils {
 
-    private static final double MAX_DISTANCE_FROM_CAR_ROOF = 150;
+    private static final double MAX_DISTANCE_FROM_CAR_ROOF = 160;
     private static final double BALL_VELOCITY_Z_LIMIT_FOR_CONTROLLED_DRIBBLE = 300;
     private static final double BALL_VELOCITY_Z_LIMIT_FOR_SWIPE = 200;
     private static final double BALL_POSITION_Z_LIMIT_FOR_SWIPE = 250;

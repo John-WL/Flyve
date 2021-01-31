@@ -40,11 +40,10 @@ public class GiveItANudgeState implements State {
     @Override
     public void exec(DataPacket input) {
         destination = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.direction.z <= -40)
+                .remove(movingPoint -> movingPoint.currentState.direction.z <= -50)
                 .remove(movingPoint -> {
                     double distanceFromBall = movingPoint.currentState.offset
-                            .distance(input.car.hitBox
-                                    .closestPointOnSurface(movingPoint.currentState.offset));
+                            .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
 
@@ -52,31 +51,45 @@ public class GiveItANudgeState implements State {
                 })
                 .remove(movingPoint -> {
                     double distanceFromBall = movingPoint.currentState.offset
-                            .distance(input.car.hitBox
-                                    .closestPointOnSurface(movingPoint.currentState.offset));
+                            .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
                     double accelerationToReach = (speedToReach - input.car.velocity.magnitude())/timeToReach;
                     double averageSpeedToReach = (speedToReach + input.car.velocity.magnitude())/2;
-                    double orientationScalarToTheBall = input.car.orientation.noseVector
-                            .dotProduct(movingPoint.currentState.offset
-                                    .minus(input.car.position).normalized());
-                    if(accelerationToReach >
-                            RlConstants.ACCELERATION_DUE_TO_BOOST*(input.car.boost/100)
-                            + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach)) {
-                        return true;
-                    }
-                    if(speedToReach > distanceFromBall*2.4) {
-                        return true;
-                    }
-                    return false;
+
+                    return accelerationToReach >
+                            RlConstants.ACCELERATION_DUE_TO_BOOST
+                                    + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
+                })
+                .remove(movingPoint -> {
+                    double distanceFromBall = movingPoint.currentState.offset
+                            .distance(input.car.position);
+                    double timeToReach = movingPoint.time;
+                    double speedToReach = distanceFromBall/timeToReach;
+                    double averageSpeedToReach = (speedToReach + input.car.velocity.magnitude())/2;
+
+                    return speedToReach - input.car.velocity.magnitude() >
+                            RlConstants.ACCELERATION_DUE_TO_BOOST * (input.car.boost/100)
+                            + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
+                })
+                .remove(movingPoint -> {
+                    double distanceFromBall = movingPoint.currentState.offset
+                            .distance(input.car.position);
+                    double timeToReach = movingPoint.time;
+                    double speedToReach = distanceFromBall/timeToReach;
+
+                    return speedToReach > distanceFromBall*2.4;
                 })
                 .firstValid(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
+        // no destination found
         if(destination == null) {
             return;
         }
 
-        double desiredSpeed = destination.currentState.offset.distance(input.car.position)/destination.time;
+        double distanceFromBall = destination.currentState.offset
+                .distance(input.car.position);
+        double desiredSpeed = distanceFromBall/destination.time;
+        //System.out.println(desiredSpeed);
         double accelerationToReach = (desiredSpeed - input.car.velocity.magnitude())/destination.time;
         boolean isBoosting = accelerationToReach > MaxAccelerationFromThrottleFinder.compute(input.car.velocity.magnitude())
                 && input.car.velocity.magnitude() < 2290;
@@ -91,13 +104,15 @@ public class GiveItANudgeState implements State {
 
     @Override
     public State next(DataPacket input) {
-        double speedOfBallTowardCar = input.ball.velocity.minus(input.car.velocity)
+        double ballSpeedFromCarSpeedTowardCar = input.ball.velocity
                 .dotProduct(input.car.position
                         .minus(input.ball.position)
                         .normalized());
         double speedOfBallInZ = input.ball.velocity.z;
-        if(speedOfBallTowardCar < -5
-            && Math.abs(speedOfBallInZ) < 10) {
+        double positionOfBallInZ = input.ball.position.z;
+        if(ballSpeedFromCarSpeedTowardCar < -50
+                && Math.abs(speedOfBallInZ) < 40
+                && positionOfBallInZ-RlConstants.BALL_RADIUS < 40) {
             bot.output().boost(false);
             return new SwipeState(bot, masterDribbleController);
         }

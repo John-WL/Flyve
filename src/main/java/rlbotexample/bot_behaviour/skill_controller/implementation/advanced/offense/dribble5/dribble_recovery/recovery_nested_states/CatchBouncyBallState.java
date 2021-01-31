@@ -35,10 +35,9 @@ public class CatchBouncyBallState implements State {
 
     @Override
     public void exec(DataPacket input) {
-        double maxBallHeight = RlConstants.BALL_RADIUS + (RlConstants.OCTANE_ROOF_ELEVATION_WHEN_DRIVING);
-        Trajectory3D ballsReachableFromGround = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.offset.z > maxBallHeight);
-        MovingPoint firstValidBall = ballsReachableFromGround
+        final double maxBallHeight = RlConstants.BALL_RADIUS + (RlConstants.OCTANE_ROOF_ELEVATION_WHEN_DRIVING);
+        MovingPoint firstValidBall = RawBallTrajectory.trajectory
+                .remove(movingPoint -> movingPoint.currentState.offset.z > maxBallHeight)
                 .firstValid(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
         // if there's no valid ball, then we can't do anything, so we return
         // this only happens when the ball is going into net and is not gonna bounce

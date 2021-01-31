@@ -17,8 +17,8 @@ public class Dribble5Test extends FlyveBot {
     private TrainingPack gameSituationHandler;
 
     public Dribble5Test() {
-        gameSituationHandler = new CircularTrainingPack();
-        gameSituationHandler.add(new GroundDribbleSetup1());
+        //gameSituationHandler = new CircularTrainingPack();
+        //gameSituationHandler.add(new GroundDribbleSetup1());
         //gameSituationHandler.add(new GroundDribbleSetup2());
         dribbleController = new Dribble5(this);
     }
@@ -26,9 +26,9 @@ public class Dribble5Test extends FlyveBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        if(gameSituationHandler.canLoad(input)) {
-            gameSituationHandler.update();
-        }
+        //if(gameSituationHandler.canLoad(input)) {
+            //gameSituationHandler.update();
+        //}
 
         dribbleController.throttle(0);
         dribbleController.steer(0);
