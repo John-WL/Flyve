@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
 import rlbotexample.input.dynamic_data.car.CarOrientation;
 import rlbotexample.input.dynamic_data.car.Orientation;
+import util.shapes.Plane3D;
 import util.shapes.Triangle3D;
 
 import java.util.Objects;
@@ -134,6 +135,11 @@ public class Vector3 extends rlbot.vector.Vector3 {
 
     public Vector3 projectOnto(Vector3 vectorToProjectOnto) {
         return vectorToProjectOnto.scaled(this.dotProduct(vectorToProjectOnto)/vectorToProjectOnto.magnitudeSquared());
+    }
+
+    public Vector3 projectOnto(Plane3D plane) {
+        return this.minus(this.projectOnto(plane.normal.direction))
+                .plus(plane.normal.offset.projectOnto(plane.normal.direction));
     }
 
     public double angleWith(Vector3 vector) {

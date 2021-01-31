@@ -79,7 +79,9 @@ public class ShapeRenderer {
         Vector3 previousPosition = parabola.compute(0);
         for(int i = 1; i < 40; i++) {
             Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/40);
-            renderer.drawLine3d(color, nextPosition, previousPosition);
+            if(nextPosition != null && previousPosition != null) {
+                renderer.drawLine3d(color, nextPosition, previousPosition);
+            }
             previousPosition = nextPosition;
         }
     }

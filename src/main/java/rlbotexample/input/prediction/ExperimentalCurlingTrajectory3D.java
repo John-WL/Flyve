@@ -21,13 +21,13 @@ public class ExperimentalCurlingTrajectory3D implements Trajectory3D {
     public ExperimentalCurlingTrajectory3D(ExtendedCarData carData) {
         this.initialPosition = carData.position;
         this.initialVelocity = carData.velocity;
-        this.acceleration = carData.orientation.noseVector.scaled(RlConstants.ACCELERATION_DUE_TO_BOOST);
+        this.acceleration = carData.orientation.noseVector.scaled(1060/*RlConstants.ACCELERATION_DUE_TO_BOOST*/);
         this.angularMomentum = carData.spin;
     }
 
     public Vector3 compute(double time) {
         final Vector3 angularMomentum;
-        if(this.angularMomentum.magnitude() < 0.02) {
+        if(this.angularMomentum.magnitude() < 0.2) {
             angularMomentum = acceleration;
         }
         else {

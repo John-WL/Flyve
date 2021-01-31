@@ -49,7 +49,7 @@ public class SampleBot implements Bot {
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
 
         // update the "raw" ball trajectory
-        RawBallTrajectory.update();
+        RawBallTrajectory.update(input);
 
         // refresh boostPads information so we can utilize it
         BoostManager.loadGameTickPacket(packet);

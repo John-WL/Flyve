@@ -18,11 +18,11 @@ public class BallData {
     public final Vector3 spin;
     public final double time;
 
-    public BallData(Physics physics) {
+    public BallData(Physics physics, final double time) {
         position = new Vector3(physics.location());
         velocity = new Vector3(physics.velocity());
         spin = new Vector3(physics.angularVelocity());
-        time = 0;
+        this.time = time;
     }
 
     public BallData(final BallInfo ball) {

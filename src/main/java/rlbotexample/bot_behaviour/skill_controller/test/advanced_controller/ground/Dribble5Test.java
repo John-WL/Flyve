@@ -19,7 +19,7 @@ public class Dribble5Test extends FlyveBot {
     public Dribble5Test() {
         gameSituationHandler = new CircularTrainingPack();
         gameSituationHandler.add(new GroundDribbleSetup1());
-        gameSituationHandler.add(new GroundDribbleSetup2());
+        //gameSituationHandler.add(new GroundDribbleSetup2());
         dribbleController = new Dribble5(this);
     }
 
