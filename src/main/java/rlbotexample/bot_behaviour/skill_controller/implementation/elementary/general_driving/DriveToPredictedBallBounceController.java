@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.elementary.ge
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;

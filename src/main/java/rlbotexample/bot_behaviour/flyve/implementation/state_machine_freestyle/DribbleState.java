@@ -2,8 +2,7 @@ package rlbotexample.bot_behaviour.flyve.implementation.state_machine_freestyle;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
-import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Dribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble6;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
@@ -13,19 +12,19 @@ public class DribbleState implements State {
 
     private BotBehaviour bot;
 
-    private final Dribble2 dribbleController;
+    private final Dribble6 dribbleController;
     private int dribblingCounter;
 
     public DribbleState(BotBehaviour bot) {
         this.bot = bot;
-        this.dribbleController = new Dribble2(bot);
+        this.dribbleController = new Dribble6(bot);
         this.dribblingCounter = 0;
     }
 
     @Override
     public void exec(DataPacket input) {
         dribbleController.setBallDestination(new Vector3(0, -5200, 100));
-        dribbleController.setBallSpeed(1200);
+        dribbleController.setTargetSpeed(1200);
         dribbleController.updateOutput(input);
     }
 

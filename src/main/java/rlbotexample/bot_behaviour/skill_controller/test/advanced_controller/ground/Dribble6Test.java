@@ -3,46 +3,43 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble6;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
+import util.renderers.ShapeRenderer;
 
-public class Dribble2Test extends FlyveBot {
+import java.awt.*;
 
-    private Dribble2 dribbleController;
+public class Dribble6Test extends FlyveBot {
+
+    private Dribble6 dribbleController;
     private TrainingPack gameSituationHandler;
 
-    public Dribble2Test() {
+    private Vector3 validGoalPosition;
+
+    public Dribble6Test() {
         //gameSituationHandler = new CircularTrainingPack();
         //gameSituationHandler.add(new GroundDribbleSetup1());
         //gameSituationHandler.add(new GroundDribbleSetup2());
-        dribbleController = new Dribble2(this);
+        dribbleController = new Dribble6(this);
+
+        validGoalPosition = new Vector3();
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        //gameSituationHandler.update();
+        //if(gameSituationHandler.canLoad(input)) {
+            //gameSituationHandler.update();
+        //}
 
-        double t = System.currentTimeMillis()/1000.0;
-        double x = Math.cos(t/3)*3000;
-        double y = Math.sin(t/3)*3000;
-        Vector3 destination = new Vector3(x, y, 0);
-
-        Vector3 destination2;
-        if(t % 16 < 8) {
-            destination2 = new Vector3(0, 5200, 0);
-        }
-        else {
-            destination2 = new Vector3(0, 5200, 0);
-        }
-
-        dribbleController.setBallDestination(destination2);
-        //dribbleController.setBallDestination(destination);
-        //dribbleController.setBallDestination(input.allCars.get(1-input.playerIndex).position.scaled(1, 1, 1));
-        //dribbleController.setBallDestination(new Vector3(0, 0, 0));
+        validGoalPosition = StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.ball.position);
+        validGoalPosition = validGoalPosition.scaled(0.5, 1, 1);
+        dribbleController.setBallDestination(validGoalPosition);
+        dribbleController.setTargetSpeed(800);
         dribbleController.updateOutput(input);
 
         return super.output();
@@ -53,5 +50,7 @@ public class Dribble2Test extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         dribbleController.debug(renderer, input);
 
+        ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
+        shapeRenderer.renderCross(validGoalPosition, Color.MAGENTA);
     }
 }

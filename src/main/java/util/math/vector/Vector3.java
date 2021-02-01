@@ -349,6 +349,17 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return Objects.hash((int)x, (int)y, (int)z);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof Vector3)) {
+            return false;
+        }
+        Vector3 that = (Vector3)o;
+        return this.x == that.x
+            && this.y == that.y
+            && this.z == that.z;
+    }
+
     public Quaternion toQuaternion() {
         return new Quaternion(0, this);
     }

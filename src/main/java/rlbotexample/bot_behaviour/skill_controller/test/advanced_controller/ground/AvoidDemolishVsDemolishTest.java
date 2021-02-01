@@ -4,7 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defense.AvoidDemolish;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.Demolish;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.demos.Demolish;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.CircularTrainingPack;

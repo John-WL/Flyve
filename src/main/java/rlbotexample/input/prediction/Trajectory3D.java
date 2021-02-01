@@ -7,35 +7,21 @@ import util.math.vector.Ray3;
 import util.math.vector.Vector3;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @FunctionalInterface
 public interface Trajectory3D {
 
-    default Trajectory3D remove(Function<MovingPoint, Boolean> isRemoved) {
-        return time -> {
-            Vector3 position = compute(time);
-            if(position == null) {
-                return null;
-            }
-            Vector3 velocity = derivative(time);
-            if(velocity == null) {
-                return null;
-            }
-            MovingPoint movingPosition = new MovingPoint(new Ray3(position, velocity), time);
-            return isRemoved.apply(movingPosition) ? null : movingPosition.currentState.offset;
-        };
-    }
-
     Vector3 compute(double time);
 
     default Vector3 derivative(double time) {
         double h = 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE;
-        Vector3 position = compute(time + h);
+        Vector3 position = compute(time - h);
         if(position == null) {
             return null;
         }
-        Vector3 result = position.minus(compute(time));
+        Vector3 result = compute(time).minus(position);
         result = result.scaled(1/h);
 
         return result;
@@ -70,6 +56,9 @@ public interface Trajectory3D {
         return bestTime;
     }
 
+    /** finds the first non-null element
+     *  worst case is O(duration * dt)
+     * */
     default MovingPoint firstValid(final double amountOfTimeToSearch, final double precision) {
         MovingPoint movingPoint = null;
         Vector3 tempPoint;
@@ -87,4 +76,53 @@ public interface Trajectory3D {
 
         return movingPoint;
     }
+
+    /** lazy removal of some parts of the trajectory */
+    default Trajectory3D remove(Function<MovingPoint, Boolean> isRemoved) {
+        return time -> {
+            Vector3 position = compute(time);
+            if(position == null) {
+                return null;
+            }
+            Vector3 velocity = derivative(time);
+            if(velocity == null) {
+                return null;
+            }
+            MovingPoint movingPosition = new MovingPoint(new Ray3(position, velocity), time);
+            return isRemoved.apply(movingPosition) ? null : movingPosition.currentState.offset;
+        };
+    }
+
+    /** lazy keeping of some parts of the trajectory */
+    default Trajectory3D keep(Function<MovingPoint, Boolean> isKept) {
+        return time -> {
+            Vector3 position = compute(time);
+            if(position == null) {
+                return null;
+            }
+            Vector3 velocity = derivative(time);
+            if(velocity == null) {
+                return null;
+            }
+            MovingPoint movingPosition = new MovingPoint(new Ray3(position, velocity), time);
+            return isKept.apply(movingPosition) ? movingPosition.currentState.offset : null;
+        };
+    }
+
+    /** lazy modification of the trajectory */
+    default Trajectory3D modify(Function<MovingPoint, Vector3> movingPointFunction) {
+        return time -> {
+            Vector3 position = compute(time);
+            if(position == null) {
+                return null;
+            }
+            Vector3 velocity = derivative(time);
+            if(velocity == null) {
+                return null;
+            }
+            MovingPoint movingPosition = new MovingPoint(new Ray3(position, velocity), time);
+            return movingPointFunction.apply(movingPosition);
+        };
+    }
+
 }

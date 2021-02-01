@@ -77,8 +77,23 @@ public class ShapeRenderer {
 
     public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color color) {
         Vector3 previousPosition = parabola.compute(0);
-        for(int i = 1; i < 40; i++) {
-            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/40);
+        for(int i = 1; i < 600; i++) {
+            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/600);
+            if(nextPosition != null && previousPosition != null) {
+                renderer.drawLine3d(color, nextPosition, previousPosition);
+            }
+            previousPosition = nextPosition;
+        }
+    }
+
+    public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color fromColor, Color toColor) {
+        Vector3 previousPosition = parabola.compute(0);
+        for(int i = 1; i < 200; i++) {
+            Color color = new Color((int)(fromColor.getRed()*(1-(i/200.0)) + toColor.getRed()*(i/200.0)),
+                    (int)(fromColor.getGreen()*(1-(i/200.0)) + toColor.getGreen()*(i/200.0)),
+                    (int)(fromColor.getBlue()*(1-(i/200.0)) + toColor.getBlue()*(i/200.0)));
+
+            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/200);
             if(nextPosition != null && previousPosition != null) {
                 renderer.drawLine3d(color, nextPosition, previousPosition);
             }

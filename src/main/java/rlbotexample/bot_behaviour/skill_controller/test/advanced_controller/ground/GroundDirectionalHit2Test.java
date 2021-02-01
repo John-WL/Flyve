@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.GroundDirectionalHit2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.GroundDirectionalHit2;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.CircularTrainingPack;
