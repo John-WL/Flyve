@@ -370,4 +370,8 @@ public class Vector3 extends rlbot.vector.Vector3 {
         }
         return crossProduct(v).scaledToMagnitude(angle(v));
     }
+
+    public double distanceSquared(Vector3 that) {
+        return this.x*that.x + this.y*that.y + this.z*that.z;
+    }
 }

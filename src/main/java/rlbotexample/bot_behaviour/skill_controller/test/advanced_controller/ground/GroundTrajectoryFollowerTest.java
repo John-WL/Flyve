@@ -40,7 +40,7 @@ public class GroundTrajectoryFollowerTest extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
-        MovingPoint movingPoint = trajectoryFollower.pathToFollow.firstValid(5, 1.0/60);
+        MovingPoint movingPoint = trajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
             shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
         }

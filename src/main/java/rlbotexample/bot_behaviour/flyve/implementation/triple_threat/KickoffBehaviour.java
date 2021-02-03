@@ -7,8 +7,8 @@ import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.comit_to_ball.KickoffSpecializedOnBall;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.get_boost.KickoffSpecializedOnBoost;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
@@ -91,31 +91,31 @@ public class KickoffBehaviour extends FlyveBot {
 
     private Vector3 getProperKickoffBoost(PlayerRoleHandler3V3 playerRoleHandler, DataPacket input) {
         if((input.car.position.x < 10) == (input.team == 0)) {
-            return getLeftKickoffBoost(input).getLocation();
+            return getLeftKickoffBoost(input).location;
         }
         else if((getClosestPlayer(input).position.x > 0) == (input.team == 0)) {
-            return getLeftKickoffBoost(input).getLocation();
+            return getLeftKickoffBoost(input).location;
         }
         else {
-            return getRightKickoffBoost(input).getLocation();
+            return getRightKickoffBoost(input).location;
         }
     }
 
     private BoostPad getLeftKickoffBoost(DataPacket input) {
         if(input.team == 0) {
-            List<BoostPad> boostPads = BoostManager.getFullBoosts();
+            List<BoostPad> boostPads = BoostManager.bigBoosts;
             for(BoostPad boostPad: boostPads) {
-                if(boostPad.getLocation().x < -1000
-                        && boostPad.getLocation().y < -1000) {
+                if(boostPad.location.x < -1000
+                        && boostPad.location.y < -1000) {
                     return boostPad;
                 }
             }
         }
         else {
-            List<BoostPad> boostPads = BoostManager.getFullBoosts();
+            List<BoostPad> boostPads = BoostManager.bigBoosts;
             for(BoostPad boostPad: boostPads) {
-                if(boostPad.getLocation().x > 1000
-                        && boostPad.getLocation().y > 1000) {
+                if(boostPad.location.x > 1000
+                        && boostPad.location.y > 1000) {
                     return boostPad;
                 }
             }
@@ -125,19 +125,19 @@ public class KickoffBehaviour extends FlyveBot {
 
     private BoostPad getRightKickoffBoost(DataPacket input) {
         if(input.team == 0) {
-            List<BoostPad> boostPads = BoostManager.getFullBoosts();
+            List<BoostPad> boostPads = BoostManager.bigBoosts;
             for(BoostPad boostPad: boostPads) {
-                if(boostPad.getLocation().x > 1000
-                        && boostPad.getLocation().y < -1000) {
+                if(boostPad.location.x > 1000
+                        && boostPad.location.y < -1000) {
                     return boostPad;
                 }
             }
         }
         else {
-            List<BoostPad> boostPads = BoostManager.getFullBoosts();
+            List<BoostPad> boostPads = BoostManager.bigBoosts;
             for(BoostPad boostPad: boostPads) {
-                if(boostPad.getLocation().x < -1000
-                        && boostPad.getLocation().y > 1000) {
+                if(boostPad.location.x < -1000
+                        && boostPad.location.y > 1000) {
                     return boostPad;
                 }
             }

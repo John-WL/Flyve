@@ -4,6 +4,7 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.game_constants.RlConstants;
+import util.math.vector.MovingPoint;
 import util.math.vector.Vector3;
 
 public class AerialAccelerationFinder {
@@ -26,15 +27,16 @@ public class AerialAccelerationFinder {
                 //.minus(carData.orientation.roofVector.scaled(carData.hasSecondJump ? RlConstants.ACCELERATION_DUE_TO_JUMP : 0))
         ;
 
-        double ax = findAcceleration(xi.x, xf.x, vi.x, t);
-        double ay = findAcceleration(xi.y, xf.y, vi.y, t);
-        double az = findAcceleration(xi.z, xf.z, vi.z, t);
-
-        return new Vector3(ax, ay, az);
+        return findAcceleration(xi, xf, vi, t);
     }
 
     private double findAcceleration(double xi, double xf, double vi, double t) {
         return 2*(xf - xi - (vi*t))/(t*t);
+    }
+
+    private Vector3 findAcceleration(Vector3 xi, Vector3 xf, Vector3 vi, double t) {
+        return (xf.minus(xi).minus(vi.scaled(t)))
+                .scaled(2/(t*t));
     }
 
     private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
@@ -65,5 +67,22 @@ public class AerialAccelerationFinder {
         }
 
         return findAerialTrajectoryInfo(input);
+    }
+
+    private AerialTrajectoryInfo findAerialTrajectoryInfo2(DataPacket input) {
+        Trajectory3D accelerationCurve = time ->
+                findConstantAccelerationNeededToReachAerialDestination(input.car, targetTrajectory.compute(time), time)
+                        .plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
+
+        accelerationCurve
+                .keep(movingPoint ->
+                        movingPoint.currentState.offset.magnitudeSquared()
+                                < RlConstants.ACCELERATION_DUE_TO_BOOST * RlConstants.ACCELERATION_DUE_TO_BOOST);
+        MovingPoint accelerationInfo = accelerationCurve.first(5, 120);
+
+        if(accelerationInfo != null) {
+            return new AerialTrajectoryInfo(accelerationInfo.currentState.offset, accelerationInfo.time);
+        }
+        return new AerialTrajectoryInfo();
     }
 }

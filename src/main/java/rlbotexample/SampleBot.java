@@ -6,9 +6,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
-import rlbotexample.input.boost.BoostManager;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
 
@@ -47,12 +45,6 @@ public class SampleBot implements Bot {
      * Modify it to make your bot smarter!
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
-
-        // update the "raw" ball trajectory
-        RawBallTrajectory.update(input);
-
-        // refresh boostPads information so we can utilize it
-        BoostManager.loadGameTickPacket(packet);
 
         // Bot behaviour
         myBotOutput = botBehaviour.processInput(input, packet);
@@ -95,9 +87,6 @@ public class SampleBot implements Bot {
             // Just return immediately if something looks wrong with the data. This helps us avoid stack traces.
             return new ControlsOutput();
         }
-
-        // Update the boost manager and tile manager with the latest data
-        BoostManager.loadGameTickPacket(packet);
 
         // Translate the raw packet data (which is in an unpleasant format) into our custom DataPacket class.
         // The DataPacket might not include everything from GameTickPacket, so improve it if you need to!

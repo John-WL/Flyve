@@ -16,18 +16,19 @@ public interface Trajectory3D {
     Vector3 compute(double time);
 
     default Vector3 derivative(double time) {
-        double h = 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE;
-        Vector3 position = compute(time - h);
-        if(position == null) {
+        double h = 2.0/RawBallTrajectory.PREDICTION_REFRESH_RATE;
+        Vector3 position1 = compute(time - h);
+        Vector3 position2 = compute(time);
+        if(position1 == null || position2 == null) {
             return null;
         }
-        Vector3 result = compute(time).minus(position);
-        result = result.scaled(1/h);
+        Vector3 result = position2.minus(position1);
+        result = result.scaled(1 / h);
 
         return result;
     }
 
-    static double findTimeOfClosestApproachBetween(Trajectory3D trajectory1, Trajectory3D trajectory2, double maxTime, double resolution) {
+    static double findTimeOfClosestApproachBetween(Trajectory3D trajectory1, Trajectory3D trajectory2, double duration, double resolution) {
         double bestTime = 0;
         Vector3 initialPosition1 = trajectory1.compute(0);
         Vector3 initialPosition2 = trajectory2.compute(0);
@@ -39,7 +40,7 @@ public interface Trajectory3D {
             bestDistanceBetweenTrajectories = initialPosition1.minus(trajectory2.compute(0)).magnitude();
         }
 
-        for(int i = 1; i < maxTime*resolution; i++) {
+        for(int i = 1; i < duration*resolution; i++) {
             double testedTime = i/resolution;
             Vector3 position1 = trajectory1.compute(testedTime);
             Vector3 position2 = trajectory2.compute(testedTime);
@@ -59,12 +60,12 @@ public interface Trajectory3D {
     /** finds the first non-null element
      *  worst case is O(duration * dt)
      * */
-    default MovingPoint firstValid(final double amountOfTimeToSearch, final double precision) {
+    default MovingPoint first(final double duration, final double precision) {
         MovingPoint movingPoint = null;
         Vector3 tempPoint;
         double tempTime;
 
-        for(int i = 0; i < amountOfTimeToSearch/precision; i++) {
+        for(int i = 0; i < duration/precision; i++) {
             tempTime = i*precision;
             tempPoint = compute(tempTime);
 
@@ -125,4 +126,23 @@ public interface Trajectory3D {
         };
     }
 
+    /** iterate on every valid element */
+    default void forEach(Function<MovingPoint, Void> iterationFunction, double duration, double precision) {
+        Vector3 tempPoint;
+        Vector3 tempDerivative;
+        double tempTime;
+
+        for(int i = 0; i < duration/precision; i++) {
+            tempTime = i*precision;
+            tempPoint = compute(tempTime);
+            if(tempPoint == null) {
+                continue;
+            }
+            tempDerivative = derivative(tempTime);
+
+            if(tempDerivative != null) {
+                iterationFunction.apply(new MovingPoint(new Ray3(tempPoint, tempDerivative), tempTime));
+            }
+        }
+    }
 }

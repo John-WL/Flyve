@@ -6,7 +6,6 @@ import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
-import util.math.vector.Ray3;
 import util.math.vector.Vector3;
 
 public class DribbleUtils {
@@ -43,7 +42,7 @@ public class DribbleUtils {
                 .remove(movingPoint -> movingPoint.currentState.offset.z > BALL_POSITION_Z_LIMIT_FOR_SWIPE
                         || Math.abs(movingPoint.currentState.direction.z) > BALL_VELOCITY_Z_LIMIT_FOR_SWIPE);
         MovingPoint firstValidMovingPoint = trimmedBallTrajectory
-                .firstValid(
+                .first(
                         input.car.position.minus(input.ball.position).magnitude()/RlConstants.CAR_MAX_SPEED,
                         1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
 

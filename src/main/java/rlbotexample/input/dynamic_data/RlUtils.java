@@ -1,5 +1,7 @@
 package rlbotexample.input.dynamic_data;
 
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
@@ -24,6 +26,8 @@ public class RlUtils {
     private static final List<MovingAverage> averageBoostUsageForAllPlayers = new ArrayList<>();
     private static final List<Boolean> previousSecondJumpUsageForAllPlayers = new ArrayList<>();
     private static final int amountOfFramesForTheAverage = (int) (0.2*RlConstants.BOT_REFRESH_RATE);
+
+    private static final List<Timer> boostPadTimers = new ArrayList<>(40);
 
     public static GameStatePrediction gameStatePrediction(int playerIndex, BallData ballData, List<CarData> allCars) {
         if (playerIndex == DataPacket.indexOfBotThatReloadsPredictions.get() && ballPredictionReloadTimeout.isTimeElapsed()) {
@@ -154,5 +158,43 @@ public class RlUtils {
             }
         }
         throw new RuntimeException();
+    }
+
+    public static void updateBoostPadReloadingTimer(BoostPad pad) {
+        if(boostPadTimers.size() == pad.boostId) {
+            boostPadTimers.add(new Timer(pad.isBigBoost ?
+                    BoostManager.BIG_BOOST_RELOAD_TIME :
+                    BoostManager.SMALL_BOOST_RELOAD_TIME));
+        }
+
+        // wtf
+        if(pad.boostId > boostPadTimers.size()) {
+            return;
+        }
+
+        // get the timer
+        Timer currentReloadTimer = boostPadTimers.get(pad.boostId);
+        // if pad is taken
+        if(!pad.isActive) {
+            // if timer hasn't started yet
+            if(currentReloadTimer.isTimeElapsed()) {
+                // start it
+                currentReloadTimer.start();
+            }
+        }
+        // if the boost is active
+        else {
+            // elapse the counter
+            currentReloadTimer.end();
+        }
+    }
+
+    public static double getTimeBeforePadReloads(BoostPad pad) {
+        // wtf #2
+        if(pad.boostId >= boostPadTimers.size()) {
+            return 0;
+        }
+
+        return boostPadTimers.get(pad.boostId).remainingTime();
     }
 }

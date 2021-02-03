@@ -3,8 +3,8 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boos
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.math.vector.Vector3;
 
@@ -26,13 +26,13 @@ public class RefuelBoost extends SkillController {
 
         // regroup all boost pads in one single list
         List<BoostPad> boostPads = new ArrayList<>();
-        boostPads.addAll(BoostManager.getFullBoosts());
-        boostPads.addAll(BoostManager.getSmallBoosts());
+        boostPads.addAll(BoostManager.bigBoosts);
+        boostPads.addAll(BoostManager.smallBoosts);
 
         // get only those that are not taken
         List<BoostPad> notTakenBoostPads = new ArrayList<>();
         for (BoostPad boostPad : boostPads) {
-            if (boostPad.isActive()) {
+            if (boostPad.isActive) {
                 notTakenBoostPads.add(boostPad);
             }
         }
@@ -40,7 +40,7 @@ public class RefuelBoost extends SkillController {
         // get closest from car
         BoostPad closestNotTakenPad = notTakenBoostPads.get(0);
         for(int i = 1; i < notTakenBoostPads.size(); i++) {
-            if(closestNotTakenPad.getLocation().minus(playerPosition).magnitude() > notTakenBoostPads.get(i).getLocation().minus(playerPosition).magnitude()) {
+            if(closestNotTakenPad.location.minus(playerPosition).magnitude() > notTakenBoostPads.get(i).location.minus(playerPosition).magnitude()) {
                 closestNotTakenPad = notTakenBoostPads.get(i);
             }
         }

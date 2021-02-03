@@ -66,7 +66,7 @@ public class GroundTrajectoryFollower extends SkillController {
                         return speedNeeded > RlConstants.CAR_MAX_SPEED;
                     }
                 })
-                .firstValid(AMOUNT_OF_TIME_TO_SEARCH, PRECISION);
+                .first(AMOUNT_OF_TIME_TO_SEARCH, PRECISION);
         if(destination == null) {
             drivingSpeedController.setSpeed(0);
             drivingSpeedController.updateOutput(input);
@@ -93,7 +93,7 @@ public class GroundTrajectoryFollower extends SkillController {
                 && boostEnabled;
         bot.output().boost(isBoosting);
 
-        System.out.println(desiredSpeed);
+        //System.out.println(desiredSpeed);
 
         drivingSpeedController.setSpeed(desiredSpeed);
         drivingSpeedController.updateOutput(input);

@@ -3,8 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.CushionBouncyBall;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.SimpleBounceDrive;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_bounces.SimpleBounceDrive;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 

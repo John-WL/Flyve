@@ -2,11 +2,11 @@ package util.timer;
 
 public class Timer
 {
-    private double secondsToCount;
+    private double duration;
     private long timeOfStartMillis;
 
-    public Timer(double secondsToCount) {
-        this.secondsToCount = secondsToCount;
+    public Timer(double duration) {
+        this.duration = duration;
     }
 
     public Timer start()
@@ -15,23 +15,27 @@ public class Timer
         return this;
     }
 
+    public void end() {
+        timeOfStartMillis = System.currentTimeMillis() - ((int)(duration*1000));
+    }
+
     public boolean isTimeElapsed()
     {
-        return (System.currentTimeMillis() - timeOfStartMillis)/(double)1000 >= secondsToCount;
+        return (System.currentTimeMillis() - timeOfStartMillis)/(double)1000 >= duration;
     }
 
-    public float timeRemaining()
+    public float remainingTime()
     {
-        return (float)(secondsToCount - (System.currentTimeMillis() - timeOfStartMillis)/1000.0);
+        return (float)(duration - (System.currentTimeMillis() - timeOfStartMillis)/1000.0);
     }
 
-    public float timeElapsed()
+    public boolean timeElapsed()
     {
-        return ((float)secondsToCount) - timeRemaining();
+        return  remainingTime() >= duration;
     }
 
-    public double getSecondsToCount()
+    public double duration()
     {
-        return secondsToCount;
+        return duration;
     }
 }

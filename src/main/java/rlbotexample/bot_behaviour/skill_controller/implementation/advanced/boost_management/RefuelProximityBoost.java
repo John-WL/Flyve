@@ -3,8 +3,8 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boos
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.math.vector.Vector3;
 
@@ -27,13 +27,13 @@ public class RefuelProximityBoost extends SkillController {
 
         // regroup all boost pads in one single list
         List<BoostPad> boostPads = new ArrayList<>();
-        boostPads.addAll(BoostManager.getFullBoosts());
-        boostPads.addAll(BoostManager.getSmallBoosts());
+        boostPads.addAll(BoostManager.bigBoosts);
+        boostPads.addAll(BoostManager.smallBoosts);
 
         // get only those that are not taken
         List<BoostPad> notTakenBoostPads = new ArrayList<>();
         for (BoostPad boostPad : boostPads) {
-            if (boostPad.isActive()) {
+            if (boostPad.isActive) {
                 notTakenBoostPads.add(boostPad);
             }
         }
@@ -44,8 +44,8 @@ public class RefuelProximityBoost extends SkillController {
         // alright to change slightly the current trajectory so we
         // take a boost while going to destination?)
         for(BoostPad pad: notTakenBoostPads) {
-            if(pad.getLocation().minus(playerPosition).magnitude() < 600
-                    && Math.abs(playerNoseOrientation.flatten().correctionAngle(pad.getLocation().flatten())) < Math.PI/((input.car.velocity.magnitude()*6/2300) + 4)) {
+            if(pad.location.minus(playerPosition).magnitude() < 600
+                    && Math.abs(playerNoseOrientation.flatten().correctionAngle(pad.location.flatten())) < Math.PI/((input.car.velocity.magnitude()*6/2300) + 4)) {
                 withinRangePads.add(pad);
             }
         }
@@ -54,8 +54,8 @@ public class RefuelProximityBoost extends SkillController {
         BoostPad closestNotTakenPad = null;
         double distanceOfClosest = Double.MAX_VALUE;
         for (BoostPad withinRangePad : withinRangePads) {
-            if (withinRangePad.getLocation().minus(playerPosition).magnitude() < distanceOfClosest) {
-                distanceOfClosest = withinRangePad.getLocation().minus(playerPosition).magnitude();
+            if (withinRangePad.location.minus(playerPosition).magnitude() < distanceOfClosest) {
+                distanceOfClosest = withinRangePad.location.minus(playerPosition).magnitude();
                 closestNotTakenPad = withinRangePad;
             }
         }

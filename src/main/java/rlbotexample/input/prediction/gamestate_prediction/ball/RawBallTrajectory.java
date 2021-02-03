@@ -19,12 +19,12 @@ public class RawBallTrajectory {
     public static final int PREDICTION_REFRESH_RATE = 60;
     private static BallPrediction ballPrediction;
 
-    public static void update(DataPacket input) {
+    public static void update(BallData ballData) {
         try {
             ballPrediction = RLBotDll.getBallPrediction();
         } catch (RLBotInterfaceException e) {
             // assuming the ball isn't moving and is centered in the field
-            trajectory = time -> input.ball.position;
+            trajectory = time -> ballData.position;
         }
         trajectory = new Trajectory3D() {
             @Override

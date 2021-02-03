@@ -7,8 +7,8 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.gen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SpeedFlip;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.math.vector.Vector3;
 import util.state_machine.State;
@@ -50,18 +50,18 @@ public class TakeBoostState implements State {
     }
 
     Vector3 getClosestBigBoostPosition(DataPacket input) {
-        List<BoostPad> boosts = BoostManager.getFullBoosts();
+        List<BoostPad> boosts = BoostManager.bigBoosts;
         BoostPad closest = boosts.get(0);
 
         for(BoostPad boostPad: boosts) {
-            if(boostPad.getLocation().minus(input.car.position).magnitude() < closest.getLocation().minus(input.car.position).magnitude()) {
-                if(boostPad.isActive()) {
+            if(boostPad.location.minus(input.car.position).magnitude() < closest.location.minus(input.car.position).magnitude()) {
+                if(boostPad.isActive) {
                     closest = boostPad;
                 }
             }
         }
 
-        return closest.getLocation();
+        return closest.location;
     }
 
     @Override

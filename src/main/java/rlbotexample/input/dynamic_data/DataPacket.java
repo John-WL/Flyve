@@ -1,11 +1,12 @@
 package rlbotexample.input.dynamic_data;
 
 import rlbot.flat.GameTickPacket;
-import rlbotexample.input.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +36,20 @@ public class DataPacket {
 
     /** The index of the bot that is going to reload the ball prediction (if there is many bots) */
     public static final AtomicInteger indexOfBotThatReloadsPredictions = new AtomicInteger(-1);
+    public static final AtomicInteger indexOfBotThatLoadsData = new AtomicInteger(-1);
+
+    private static volatile boolean dataLoaded = false;
 
     public DataPacket(GameTickPacket request, int playerIndex) {
         this.playerIndex = playerIndex;
         synchronized (indexOfBotThatReloadsPredictions) {
-            // indent this to disable the game state prediction
-            //indexOfBotThatReloadsPredictions.set(playerIndex);
+            // indent to disable features
+            if(indexOfBotThatLoadsData.get() == -1) {
+                //indexOfBotThatReloadsPredictions.set(playerIndex);
+            }
+            if(indexOfBotThatLoadsData.get() == -1) {
+                indexOfBotThatLoadsData.set(playerIndex);
+            }
         }
         this.allCars = new ArrayList<>();
         List<CarData> carsForGameStatePrediction = new ArrayList<>();
@@ -55,7 +64,21 @@ public class DataPacket {
         this.ball = new BallData(request.ball());
         this.statePrediction = RlUtils.gameStatePrediction(playerIndex, this.ball, carsForGameStatePrediction);
 
-        // load boost
+        // omg
+        if(indexOfBotThatLoadsData.get() == playerIndex) {
+            loadData(request);
+            dataLoaded = true;
+        }
+        // omg kill me
+        //noinspection StatementWithEmptyBody
+        while(!dataLoaded);
+    }
+
+    private void loadData(GameTickPacket request) {
+        // update the "raw" ball trajectory
+        RawBallTrajectory.update(ball);
+
+        // refresh boostPads information so we can utilize it
         BoostManager.loadGameTickPacket(request);
     }
 }

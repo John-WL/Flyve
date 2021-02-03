@@ -21,6 +21,7 @@ public class RlConstants {
     public static final double BALL_MINIMUM_RPM_WHEN_ROLLING_BEFORE_COMPLETE_STOP = 10;
 
     public static final double CAR_MAX_SPEED = 2300;
+    public static final double CAR_MAX_BOOST_AMOUNT = 100;
     public static final double CAR_MASS = 180;
     public static final double OCTANE_ROOF_ELEVATION_WHEN_DRIVING = 55.934654;
 

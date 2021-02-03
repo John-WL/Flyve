@@ -48,7 +48,7 @@ public class CatchBouncyBallState implements State {
                 .remove(movingPoint -> input.car.position
                         .distance(movingPoint.currentState.offset) / movingPoint.time
                         > RlConstants.CAR_MAX_SPEED/2)
-                .firstValid(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
+                .first(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
         // if there's no valid ball, then we can't do anything, so we return
         // this only happens when the ball is going into net and is not gonna bounce
         // on the ground anymore, so I think it's fine

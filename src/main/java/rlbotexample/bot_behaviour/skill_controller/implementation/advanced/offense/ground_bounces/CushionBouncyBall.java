@@ -1,8 +1,9 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_bounces;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.GroundTrajectoryFollower;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;
@@ -44,7 +45,7 @@ public class CushionBouncyBall extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
-        MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.firstValid(5, 1.0/60);
+        MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
             shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
         }

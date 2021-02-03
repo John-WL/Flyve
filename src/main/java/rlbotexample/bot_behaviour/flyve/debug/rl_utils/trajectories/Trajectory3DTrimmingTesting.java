@@ -9,7 +9,6 @@ import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
-import util.math.vector.Ray3;
 import util.renderers.ShapeRenderer;
 
 import java.awt.*;
@@ -34,7 +33,7 @@ public class Trajectory3DTrimmingTesting extends FlyveBot {
         Trajectory3D ballsReachableFromGround = RawBallTrajectory.trajectory
                 .remove(movingPoint -> movingPoint.currentState.offset.z > maxBallHeight);
         MovingPoint firstValidBall = ballsReachableFromGround
-                .firstValid(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
+                .first(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
 
         if(firstValidBall != null) {
             shapeRenderer.renderCross(firstValidBall.currentState.offset, Color.MAGENTA);

@@ -4,8 +4,8 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.kickoff.DriveToDestination3;
-import rlbotexample.input.boost.BoostManager;
-import rlbotexample.input.boost.BoostPad;
+import rlbotexample.input.dynamic_data.boost.BoostManager;
+import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
@@ -47,19 +47,19 @@ public class KickoffSpecializedOnBall extends SkillController {
         Vector3 playerPosition = input.car.position;
         Vector3 playerNoseVector = input.car.orientation.noseVector;
         Vector3 ballPosition = input.ball.position;
-        List<BoostPad> boostPads = BoostManager.getOrderedBoosts();
+        List<BoostPad> boostPads = BoostManager.boostPads;
         BoostPad closestAlignedBoostPad = boostPads.get(0);
         double bestCloseness = Double.MAX_VALUE;
         for (BoostPad boostPad : boostPads) {
-            double closeness = boostPad.getLocation().minus(playerPosition).magnitude()
-                    * playerNoseVector.dotProduct(ballPosition.minus(boostPad.getLocation()).normalized());
+            double closeness = boostPad.location.minus(playerPosition).magnitude()
+                    * playerNoseVector.dotProduct(ballPosition.minus(boostPad.location).normalized());
             if (closeness < bestCloseness) {
                 bestCloseness = closeness;
                 closestAlignedBoostPad = boostPad;
             }
         }
 
-        return closestAlignedBoostPad.getLocation();
+        return closestAlignedBoostPad.location;
     }
 
     @Override

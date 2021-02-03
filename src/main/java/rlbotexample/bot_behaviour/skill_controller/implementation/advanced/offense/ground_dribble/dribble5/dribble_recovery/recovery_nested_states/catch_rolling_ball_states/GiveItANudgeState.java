@@ -78,7 +78,7 @@ public class GiveItANudgeState implements State {
 
                     return speedToReach > distanceFromBall*2.4;
                 })
-                .firstValid(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
+                .first(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
         // no destination found
         if(destination == null) {
             return;

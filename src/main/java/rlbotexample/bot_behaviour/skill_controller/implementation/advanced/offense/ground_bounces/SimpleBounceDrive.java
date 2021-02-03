@@ -1,8 +1,9 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_bounces;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.GroundTrajectoryFollower;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;
@@ -32,7 +33,9 @@ public class SimpleBounceDrive extends SkillController {
                     return movingPoint.currentState.offset.plus(offset);
                 });
         groundTrajectoryFollower.pathToFollow = groundTrajectoryFollower.pathToFollow
+                // hit-able balls
                 .keep(movingPoint -> movingPoint.currentState.offset.z < 160
+                        && movingPoint.currentState.offset.z > 100
                         && movingPoint.currentState.direction.z > RlConstants.BALL_RADIUS);
         groundTrajectoryFollower.updateOutput(input);
     }
@@ -43,7 +46,7 @@ public class SimpleBounceDrive extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
-        MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.firstValid(5, 1.0/60);
+        MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
             shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
         }

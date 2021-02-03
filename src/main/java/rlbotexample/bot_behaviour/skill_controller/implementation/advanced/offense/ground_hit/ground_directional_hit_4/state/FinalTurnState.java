@@ -1,4 +1,4 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.ground_driving.state;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.ground_directional_hit_4.state;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
@@ -13,14 +13,14 @@ import util.state_machine.State;
 
 import java.awt.*;
 
-public class InitialTurnState implements State {
+public class FinalTurnState implements State {
 
     private final BotBehaviour bot;
     private final InitializationState initializationState;
 
     private final DrivingSpeedController drivingSpeedController;
 
-    public InitialTurnState(BotBehaviour bot, InitializationState initializationState) {
+    public FinalTurnState(BotBehaviour bot, InitializationState initializationState) {
         this.bot = bot;
         this.initializationState = initializationState;
 
@@ -29,7 +29,7 @@ public class InitialTurnState implements State {
 
     @Override
     public void exec(DataPacket input) {
-        CircleArc initialTurn = initializationState.groundTrajectoryInfo.initialTurn;
+        CircleArc initialTurn = initializationState.groundTrajectoryInfo.finalTurn;
         Vector2 rotationCenter = initialTurn.circle.center;
         Vector3 rotationCenter3d = new Vector3(rotationCenter, 0);
         boolean isRightTurn = rotationCenter3d.minus(input.car.position).dotProduct(input.car.orientation.rightVector) > 0;
@@ -53,9 +53,9 @@ public class InitialTurnState implements State {
         // finding the position we're expected to be at
         Vector2 expectedPositionOnTrajectory = groundTrajectoryInfo.findPointFromElapsedTimeAndSpeed(timeElapsedFromTrajectoryGeneration, input.car.velocity.magnitude());
 
-        // if we reached the point where we need to stay in a straight line, just change the state to that one
-        if(groundTrajectoryInfo.hasPassedInitialTurn(timeElapsedFromTrajectoryGeneration, input.car.velocity.magnitude())) {
-            return new StraightLineState(bot, initializationState);
+        // if we reached the point where there's no more trajectory, than generate another one
+        if(Double.isNaN(groundTrajectoryInfo.findPointFromElapsedTimeAndSpeed(timeElapsedFromTrajectoryGeneration, input.car.velocity.magnitude()).magnitudeSquared())) {
+            return initializationState;
         }
         // if we "got lost" while turning (aka are we too far away from the expected point?), then re-compute the ground trajectory
         // with the initialization state
@@ -71,6 +71,6 @@ public class InitialTurnState implements State {
     public void debug(DataPacket input, Renderer renderer) {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderGroundTrajectory2D(initializationState.groundTrajectoryInfo, 50, Color.CYAN);
-        renderer.drawString3d("initial turn", Color.YELLOW, input.car.position, 2, 2);
+        renderer.drawString3d("final turn", Color.YELLOW, input.car.position, 2, 2);
     }
 }

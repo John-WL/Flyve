@@ -48,7 +48,7 @@ public class SwipeState implements State {
                         .plus(RawBallTrajectory.ballAtTime(time).position))
                 .remove(movingPoint -> movingPoint.currentState.offset.minus(input.car.position).magnitude() < 100)
                 .remove(movingPoint -> movingPoint.time < 0.1)
-        .firstValid(5, RlConstants.BOT_REFRESH_TIME_PERIOD);
+        .first(5, RlConstants.BOT_REFRESH_TIME_PERIOD);
 
         double distanceFromBall = destination.currentState.offset
                 .distance(input.car.position);

@@ -1,25 +1,37 @@
 package util.timer;
 
+import util.game_constants.RlConstants;
+
 public class FrameTimer {
 
     public int numberOfFramesToCount;
-    private int frameCounter;
+    private int frameCount;
 
     public FrameTimer(int numberOfFramesToCount) {
         this.numberOfFramesToCount = numberOfFramesToCount;
-        this.frameCounter = 0;
+        this.frameCount = 0;
     }
 
     public void start() {
-        frameCounter = 0;
+        frameCount = 0;
     }
 
     public boolean isTimeElapsed() {
-        return frameCounter >= numberOfFramesToCount;
+        return frameCount >= numberOfFramesToCount;
+    }
+
+    public void end() {
+        frameCount = numberOfFramesToCount;
     }
 
     public void countFrame() {
-        frameCounter++;
+        if(frameCount < numberOfFramesToCount) {
+            frameCount++;
+        }
     }
 
+    public double remainingTime() {
+        return (numberOfFramesToCount - frameCount)
+                * RlConstants.BOT_REFRESH_TIME_PERIOD;
+    }
 }

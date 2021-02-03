@@ -84,8 +84,13 @@ public class ExtendedCarData extends CarData {
     }
 
     private double averageBoostConsumption() {
-        RlUtils.setPreviousAmountOfBoost(playerIndex, boost);
+        try {
+            RlUtils.setPreviousAmountOfBoost(playerIndex, boost);
 
-        return RlUtils.getAverageBoostUsage(playerIndex);
+            return RlUtils.getAverageBoostUsage(playerIndex);
+        }
+        catch (Exception ignored) {}
+
+        return 0;
     }
 }

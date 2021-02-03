@@ -1,9 +1,9 @@
-package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.ground_driving;
+package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.ground_directional_hit_4;
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.ground_driving.state.InitializationState;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.ground_directional_hit_4.state.InitializationState;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.state_machine.StateMachine;

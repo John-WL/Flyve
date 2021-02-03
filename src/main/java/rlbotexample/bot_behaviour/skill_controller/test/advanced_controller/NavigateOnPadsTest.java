@@ -3,16 +3,16 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_bounces.CushionBouncyBall;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boost_management.NavigateOnPads;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
-public class CushionBouncyBallTest extends FlyveBot {
+public class NavigateOnPadsTest extends FlyveBot {
 
-    public CushionBouncyBall cushionBouncyBall;
+    public NavigateOnPads cushionBouncyBall;
 
-    public CushionBouncyBallTest() {
-        this.cushionBouncyBall = new CushionBouncyBall(this);
+    public NavigateOnPadsTest() {
+        this.cushionBouncyBall = new NavigateOnPads(this);
     }
 
     // called every frame
