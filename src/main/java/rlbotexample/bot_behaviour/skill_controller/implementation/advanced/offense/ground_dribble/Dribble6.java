@@ -121,6 +121,6 @@ public class Dribble6 extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         dribbleController.debug(renderer, input);
-        renderer.drawLine3d(Color.GREEN, convergingDestination, input.ball.position);
+        renderer.drawLine3d(Color.GREEN, convergingDestination.toFlatVector(), input.ball.position.toFlatVector());
     }
 }

@@ -107,7 +107,7 @@ public class GoToBackPostState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("go to back post", Color.YELLOW, input.car.position, 2, 2);
-        renderer.drawLine3d(Color.blue, unsignedBackPostPosition, unsignedBackPostPosition.plus(new Vector3(0, 0, 300)));
+        renderer.drawString3d("go to back post", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
+        renderer.drawLine3d(Color.blue, unsignedBackPostPosition.toFlatVector(), unsignedBackPostPosition.plus(new Vector3(0, 0, 300)).toFlatVector());
     }
 }

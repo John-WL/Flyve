@@ -26,7 +26,7 @@ public class BezierDebugger {
         while(bezierIterator.hasNext()) {
             testLastPosition = testCurrentPosition;
             testCurrentPosition = bezierIterator.next();
-            renderer.drawLine3d(color, testLastPosition, testCurrentPosition);
+            renderer.drawLine3d(color, testLastPosition.toFlatVector(), testCurrentPosition.toFlatVector());
         }
     }
 
@@ -41,7 +41,7 @@ public class BezierDebugger {
             distanceIncrement = new Vector3(0, 0, -10);
         }
         currentCursorPosition = currentCursorPosition.plus(distanceIncrement);
-        renderer.drawLine3d(color, input.allCars.get(input.allCars.size()-1-input.playerIndex).position, currentCursorPosition);
+        renderer.drawLine3d(color, input.allCars.get(input.allCars.size()-1-input.playerIndex).position.toFlatVector(), currentCursorPosition.toFlatVector());
         System.out.println("cursor: " + currentCursorPosition);
     }
 }

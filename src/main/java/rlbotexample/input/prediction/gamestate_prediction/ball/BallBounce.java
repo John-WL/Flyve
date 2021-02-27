@@ -36,13 +36,13 @@ public class BallBounce {
     }
 
     public BallData compute(final double deltaTime) {
-        return computeRoll(deltaTime);
-        /*if(parallelVelocityComponent.magnitude() > 200) {
+        //return computeRoll(deltaTime);
+        if(parallelVelocityComponent.magnitude() > 200) {
             return computeBounces();
         }
         else {
             return computeRoll(deltaTime);
-        }*/
+        }
     }
 
     public BallData computeRoll(final double deltaTime) {

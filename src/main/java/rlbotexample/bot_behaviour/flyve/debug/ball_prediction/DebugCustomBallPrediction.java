@@ -39,16 +39,18 @@ public class DebugCustomBallPrediction extends FlyveBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
+        /*
         if(System.currentTimeMillis()/1000.0 % 4 < 0.1) {
             timePrediction = input.car.elapsedSeconds + 4;
-        }
+        }*/
         // native one is red
-        renderer.drawLine3d(Color.cyan, RawBallTrajectory.trajectory.compute(timePrediction - input.car.elapsedSeconds), input.allCars.get(1-input.playerIndex).position);
+        //renderer.drawLine3d(Color.cyan, RawBallTrajectory.trajectory.compute(timePrediction - input.car.elapsedSeconds), input.allCars.get(1-input.playerIndex).position);
 
         // my ball prediction
-        predictedPosition = input.statePrediction.ballAtTime(timePrediction - input.car.elapsedSeconds).position;
+        //predictedPosition = input.statePrediction.ballAtTime(timePrediction - input.car.elapsedSeconds).position;
 
         // custom ball prediction is purple
+
         BallData previousBall = input.ball;
         int divisor = 0;
         for(BallData nextBall: input.statePrediction.balls) {
@@ -56,12 +58,12 @@ public class DebugCustomBallPrediction extends FlyveBot {
             divisor %= 8;
 
             if(divisor == 0) {
-                renderer.drawLine3d(new Color(229, 0, 229), previousBall.position, nextBall.position);
+                renderer.drawLine3d(new Color(229, 0, 229), previousBall.position.toFlatVector(), nextBall.position.toFlatVector());
                 previousBall = nextBall;
             }
         }
 
-        renderer.drawLine3d(Color.blue, predictedPosition,input.allCars.get(1-input.playerIndex).position);
+        //renderer.drawLine3d(Color.blue, predictedPosition, input.allCars.get(1-input.playerIndex).position);
 
         /*GameStatePrediction advancedBallPrediction = new GameStatePrediction(input.ball, input.allCars.stream().map(car -> (CarData)car).collect(Collectors.toList()), 0.01,120);
 

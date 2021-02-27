@@ -84,12 +84,12 @@ public class AlignCarForShwoooPakState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("align car for \"shwooo pak\"", Color.YELLOW, input.car.position, 2, 2);
+        renderer.drawString3d("align car for \"shwooo pak\"", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderTrajectory(rightTurn, 4, Color.CYAN);
         shapeRenderer.renderTrajectory(leftTurn, 4, Color.CYAN);
         shapeRenderer.renderTrajectory(ballTrajectory, 4, Color.magenta);
 
-        renderer.drawLine3d(Color.GREEN, closestPositionOfCar, closestPositionOfBall);
+        renderer.drawLine3d(Color.GREEN, closestPositionOfCar.toFlatVector(), closestPositionOfBall.toFlatVector());
     }
 }

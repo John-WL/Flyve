@@ -47,6 +47,6 @@ public class WaitingState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("wait", Color.YELLOW, input.car.position, 2, 2);
+        renderer.drawString3d("wait", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
     }
 }

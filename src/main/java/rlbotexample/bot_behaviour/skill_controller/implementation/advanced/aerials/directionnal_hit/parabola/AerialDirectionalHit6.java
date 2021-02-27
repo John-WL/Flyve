@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aeri
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
@@ -11,9 +11,10 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
 import util.controllers.BoostController;
 import util.game_constants.RlConstants;
@@ -25,7 +26,7 @@ import java.awt.*;
 public class AerialDirectionalHit6 extends SkillController {
 
     private BotBehaviour bot;
-    private AerialOrientationController2 aerialOrientationHandler;
+    private AerialOrientationController5 aerialOrientationHandler;
     private JumpController jumpController;
     private BoostController boostController;
 
@@ -45,7 +46,7 @@ public class AerialDirectionalHit6 extends SkillController {
 
     public AerialDirectionalHit6(BotBehaviour bot) {
         this.bot = bot;
-        this.aerialOrientationHandler = new AerialOrientationController2(bot);
+        this.aerialOrientationHandler = new AerialOrientationController5(bot);
         this.jumpController = new JumpController(bot);
         this.boostController = new BoostController();
 
@@ -76,9 +77,9 @@ public class AerialDirectionalHit6 extends SkillController {
         Vector3 orientation = aerialInfo.acceleration;
 
         // orientation handling
-        aerialOrientationHandler.setOrientationDestination(orientation.plus(input.car.position));
+        aerialOrientationHandler.setNoseOrientation(orientation);
         //aerialOrientationHandler.setRollOrientation(ballTrajectoryWithCarHitBox.compute(aerialInfo.timeOfFlight));
-        aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000).minus(input.car.position));
+        aerialOrientationHandler.setRollOrientation(new Vector3(0, 0, 10000));
         aerialOrientationHandler.updateOutput(input);
 
         // boost
@@ -115,25 +116,22 @@ public class AerialDirectionalHit6 extends SkillController {
         Vector3 hitPointOnCar = futureHitBox.closestPointOnSurface(input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position);
         Vector3 carOffset = hitPointOnCar.minus(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
 
-        ballTrajectoryWithCarHitBox = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
-                //Vector3 futureBallPosition = new Vector3(0, 0, 1000);
-                ballOffset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
-                if(directionOfTopOfHitableHalfSphereSurfaceOnBall.dotProduct(ballOffset.normalized()) < 0) {
-                    ballOffset = ballOffset.minus(ballOffset.projectOnto(directionOfTopOfHitableHalfSphereSurfaceOnBall)).scaledToMagnitude(RlConstants.BALL_RADIUS);
-                }
-
-                return futureBallPosition.plus(ballOffset).minus(carOffset);
+        ballTrajectoryWithCarHitBox = time -> {
+            Vector3 futureBallPosition = RawBallTrajectory.ballAtTime(time).position;
+            //Vector3 futureBallPosition = new Vector3(0, 0, 1000);
+            ballOffset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
+            if(directionOfTopOfHitableHalfSphereSurfaceOnBall.dotProduct(ballOffset.normalized()) < 0) {
+                ballOffset = ballOffset.minus(ballOffset.projectOnto(directionOfTopOfHitableHalfSphereSurfaceOnBall)).scaledToMagnitude(RlConstants.BALL_RADIUS);
             }
+
+            return futureBallPosition.plus(ballOffset).minus(carOffset);
         };
     }
 
     private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
         updateNaiveBallTrajectory(input);
         aerialAccelerationFinder = new AerialAccelerationFinder(naiveBallTrajectory);
-        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input);
+        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);
 
         carPredictedTrajectory = new Parabola3D(
                 input.car.position,
@@ -145,7 +143,7 @@ public class AerialDirectionalHit6 extends SkillController {
         for(int i = 0; i < 1; i++) {
             updateBallTrajectoryWithCarHitBox(input);
             aerialAccelerationFinder = new AerialAccelerationFinder(ballTrajectoryWithCarHitBox);
-            aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input);
+            aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);
 
             carPredictedTrajectory = new Parabola3D(
                     input.car.position,
@@ -167,7 +165,7 @@ public class AerialDirectionalHit6 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.green, input.car.position, input.car.position.plus(aerialInfo.acceleration.scaledToMagnitude(300)));
+        renderer.drawLine3d(Color.green, input.car.position.toFlatVector(), input.car.position.plus(aerialInfo.acceleration.scaledToMagnitude(300)).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.MAGENTA);
         shapeRenderer.renderCross(futureCarPosition, Color.red);
@@ -180,7 +178,7 @@ public class AerialDirectionalHit6 extends SkillController {
         shapeRenderer.renderTrajectory(carPredictedTrajectory, 0, 4, Color.CYAN);
         shapeRenderer.renderHitBox(futureHitBox, Color.YELLOW);
 
-        renderer.drawLine3d(Color.CYAN, directionOfTopOfHitableHalfSphereSurfaceOnBall.scaledToMagnitude(300).plus(input.ball.position), input.ball.position);
-        renderer.drawLine3d(Color.green, ballOffset.scaledToMagnitude(300).plus(input.ball.position), input.ball.position);
+        renderer.drawLine3d(Color.CYAN, directionOfTopOfHitableHalfSphereSurfaceOnBall.scaledToMagnitude(300).plus(input.ball.position).toFlatVector(), input.ball.position.toFlatVector());
+        renderer.drawLine3d(Color.green, ballOffset.scaledToMagnitude(300).plus(input.ball.position).toFlatVector(), input.ball.position.toFlatVector());
     }
 }

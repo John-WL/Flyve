@@ -9,7 +9,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.SimpleJump;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.RlUtils;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
@@ -152,7 +152,7 @@ public class AerialDirectionalHit4 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.green, input.car.position, input.car.position.plus(orientation.scaled(300)));
+        renderer.drawLine3d(Color.green, input.car.position.toFlatVector(), input.car.position.plus(orientation.scaled(300)).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.MAGENTA);
         shapeRenderer.renderCross(futureCarPosition, Color.red);

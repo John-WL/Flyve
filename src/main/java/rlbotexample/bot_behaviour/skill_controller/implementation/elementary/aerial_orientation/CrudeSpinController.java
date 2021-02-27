@@ -50,7 +50,7 @@ public class CrudeSpinController extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.GREEN, input.car.position, input.car.position.plus(desiredSpin.scaled(100)));
-        renderer.drawLine3d(Color.blue, input.car.position, input.car.position.plus(input.car.spin.scaled(100)));
+        renderer.drawLine3d(Color.GREEN, input.car.position.toFlatVector(), input.car.position.plus(desiredSpin.scaled(100)).toFlatVector());
+        renderer.drawLine3d(Color.blue, input.car.position.toFlatVector(), input.car.position.plus(input.car.spin.scaled(100)).toFlatVector());
     }
 }

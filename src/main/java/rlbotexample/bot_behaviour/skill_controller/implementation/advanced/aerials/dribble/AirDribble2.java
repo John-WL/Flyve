@@ -27,6 +27,10 @@ public class AirDribble2 extends SkillController {
 
     private Vector3 deltaPositionOnCar;
 
+    // -0.35
+    // -0.105
+    // -0.86
+    // -0.275
     private double distanceFrontBackCoef = -0.35;
     private double velocityFrontBackCoef = -0.105;
     private double distanceLeftRightCoef = -0.86;

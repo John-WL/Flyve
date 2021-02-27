@@ -32,7 +32,7 @@ public class DebugPlayerPredictedTrajectory extends FlyveBot {
         Vector3 previousPosition = input.allCars.get(input.playerIndex).position;
         for(int i = 0; i < resolution; i++) {
             Vector3 nextPosition = input.statePrediction.carsAtTime(i/5.0).get(input.playerIndex).position;
-            renderer.drawLine3d(Color.YELLOW, previousPosition, nextPosition);
+            renderer.drawLine3d(Color.YELLOW, previousPosition.toFlatVector(), nextPosition.toFlatVector());
             previousPosition = nextPosition;
         }
     }

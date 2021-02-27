@@ -1,10 +1,7 @@
 package rlbotexample.input.dynamic_data.ground;
 
-import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.prediction.Trajectory3D;
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
-import util.math.vector.Vector3;
 
 public class MaxTurnRadiusFinder {
 

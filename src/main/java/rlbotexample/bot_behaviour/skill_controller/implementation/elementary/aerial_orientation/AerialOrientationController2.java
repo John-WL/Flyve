@@ -84,7 +84,7 @@ public class AerialOrientationController2 extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         //renderer.drawLine3d(Color.GREEN, desiredSpin.minus(input.car.spin.toFrameOfReference(input.car.orientation)).scaled(10).plus(new Vector3(0, 0, 700)), new Vector3(0, 0, 700));
-        renderer.drawLine3d(Color.GREEN, orientationDestination, input.car.position);
-        renderer.drawLine3d(Color.blue, rollOrientation, input.car.position);
+        renderer.drawLine3d(Color.GREEN, orientationDestination.toFlatVector(), input.car.position.toFlatVector());
+        renderer.drawLine3d(Color.blue, rollOrientation.toFlatVector(), input.car.position.toFlatVector());
     }
 }

@@ -1,8 +1,9 @@
 package util.renderers;
 
 import rlbot.render.Renderer;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.dynamic_data.car.hit_box.wheels.WheelBox;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
@@ -23,16 +24,16 @@ public class ShapeRenderer {
     }
 
     public void renderCross(Vector3 position, Color color) {
-        renderer.drawLine3d(color, position.plus(new Vector3(20, 20, 20)), position.plus(new Vector3(-20, -20, -20)));
-        renderer.drawLine3d(color, position.plus(new Vector3(-20, 20, 20)), position.plus(new Vector3(20, -20, -20)));
-        renderer.drawLine3d(color, position.plus(new Vector3(20, -20, 20)), position.plus(new Vector3(-20, 20, -20)));
-        renderer.drawLine3d(color, position.plus(new Vector3(20, 20, -20)), position.plus(new Vector3(-20, -20, 20)));
+        renderer.drawLine3d(color, position.plus(new Vector3(20, 20, 20)).toFlatVector(), position.plus(new Vector3(-20, -20, -20)).toFlatVector());
+        renderer.drawLine3d(color, position.plus(new Vector3(-20, 20, 20)).toFlatVector(), position.plus(new Vector3(20, -20, -20)).toFlatVector());
+        renderer.drawLine3d(color, position.plus(new Vector3(20, -20, 20)).toFlatVector(), position.plus(new Vector3(-20, 20, -20)).toFlatVector());
+        renderer.drawLine3d(color, position.plus(new Vector3(20, 20, -20)).toFlatVector(), position.plus(new Vector3(-20, -20, 20)).toFlatVector());
     }
 
     public void renderTriangle(Triangle3D triangle, Color color) {
-        renderer.drawLine3d(color, triangle.point0, triangle.point1);
-        renderer.drawLine3d(color, triangle.point1, triangle.point2);
-        renderer.drawLine3d(color, triangle.point2, triangle.point0);
+        renderer.drawLine3d(color, triangle.point0.toFlatVector(), triangle.point1.toFlatVector());
+        renderer.drawLine3d(color, triangle.point1.toFlatVector(), triangle.point2.toFlatVector());
+        renderer.drawLine3d(color, triangle.point2.toFlatVector(), triangle.point0.toFlatVector());
     }
 
     public void renderCircle(Circle circle, double zOffset, Color color) {
@@ -44,7 +45,7 @@ public class ShapeRenderer {
         for(int i = 1; i < amountOfPoints; i++) {
             previousPoint = point;
             point = circle.findPointOnCircle(i*precision);
-            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
+            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset).toFlatVector(), new Vector3(point, zOffset).toFlatVector());
         }
     }
 
@@ -58,7 +59,7 @@ public class ShapeRenderer {
         for(int i = 1; i < amountOfPoints; i++) {
             previousPoint = point;
             point = groundTrajectory.findPointFromElapsedTimeAndSpeed(i*precision, speed);
-            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset), new Vector3(point, zOffset));
+            renderer.drawLine3d(color, new Vector3(previousPoint, zOffset).toFlatVector(), new Vector3(point, zOffset).toFlatVector());
         }
     }
 
@@ -68,10 +69,10 @@ public class ShapeRenderer {
         Vector3 point = circle.findPointOnCircle(0);
         Vector3 previousPoint;
 
-        for(int i = 1; i < amountOfPoints; i++) {
+        for(int i = 1; i <= amountOfPoints; i++) {
             previousPoint = point;
             point = circle.findPointOnCircle(i*precision);
-            renderer.drawLine3d(color, previousPoint, point);
+            renderer.drawLine3d(color, previousPoint.toFlatVector(), point.toFlatVector());
         }
     }
 
@@ -80,7 +81,7 @@ public class ShapeRenderer {
         for(int i = 1; i < 600; i++) {
             Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/600);
             if(nextPosition != null && previousPosition != null) {
-                renderer.drawLine3d(color, nextPosition, previousPosition);
+                renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             }
             previousPosition = nextPosition;
         }
@@ -95,7 +96,7 @@ public class ShapeRenderer {
 
             Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/200);
             if(nextPosition != null && previousPosition != null) {
-                renderer.drawLine3d(color, nextPosition, previousPosition);
+                renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             }
             previousPosition = nextPosition;
         }
@@ -106,7 +107,7 @@ public class ShapeRenderer {
         for(int i = 1; i < 40; i++) {
             double timeToCompute = fromTime + ((i/40.0)*(toTime-fromTime));
             Vector3 nextPosition = parabola.compute(timeToCompute);
-            renderer.drawLine3d(color, nextPosition, previousPosition);
+            renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             previousPosition = nextPosition;
         }
     }
@@ -115,7 +116,7 @@ public class ShapeRenderer {
         Vector3 previousPosition = ballPrediction.ballAtTime(0).position;
         for(int i = 1; i < amountOfTimeToRender*RlUtils.BALL_PREDICTION_REFRESH_RATE; i++) {
             Vector3 nextPosition = ballPrediction.ballAtTime(i/RlUtils.BALL_PREDICTION_REFRESH_RATE).position;
-            renderer.drawLine3d(color, nextPosition, previousPosition);
+            renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             previousPosition = nextPosition;
         }
     }
@@ -134,20 +135,24 @@ public class ShapeRenderer {
         Vector3 hitBoxCorner001 = hitBox.closestPointOnSurface(opponentNoseOrientation.scaled(-1).plus(opponentRoofOrientation.scaled(-1)).plus(opponentRightOrientation).scaled(300).plus(hitBox.centerPositionOfHitBox));
         Vector3 hitBoxCorner000 = hitBox.closestPointOnSurface(opponentNoseOrientation.scaled(-1).plus(opponentRoofOrientation.scaled(-1)).plus(opponentRightOrientation.scaled(-1)).scaled(300).plus(hitBox.centerPositionOfHitBox));
 
-        renderer.drawLine3d(color, hitBoxCorner111, hitBoxCorner110);
-        renderer.drawLine3d(color, hitBoxCorner111, hitBoxCorner101);
-        renderer.drawLine3d(color, hitBoxCorner111, hitBoxCorner011);
+        renderer.drawLine3d(color, hitBoxCorner111.toFlatVector(), hitBoxCorner110.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner111.toFlatVector(), hitBoxCorner101.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner111.toFlatVector(), hitBoxCorner011.toFlatVector());
 
-        renderer.drawLine3d(color, hitBoxCorner010, hitBoxCorner011);
-        renderer.drawLine3d(color, hitBoxCorner010, hitBoxCorner000);
-        renderer.drawLine3d(color, hitBoxCorner010, hitBoxCorner110);
+        renderer.drawLine3d(color, hitBoxCorner010.toFlatVector(), hitBoxCorner011.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner010.toFlatVector(), hitBoxCorner000.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner010.toFlatVector(), hitBoxCorner110.toFlatVector());
 
-        renderer.drawLine3d(color, hitBoxCorner001, hitBoxCorner000);
-        renderer.drawLine3d(color, hitBoxCorner001, hitBoxCorner011);
-        renderer.drawLine3d(color, hitBoxCorner001, hitBoxCorner101);
+        renderer.drawLine3d(color, hitBoxCorner001.toFlatVector(), hitBoxCorner000.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner001.toFlatVector(), hitBoxCorner011.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner001.toFlatVector(), hitBoxCorner101.toFlatVector());
 
-        renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner101);
-        renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner110);
-        renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner000);
+        renderer.drawLine3d(color, hitBoxCorner100.toFlatVector(), hitBoxCorner101.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner100.toFlatVector(), hitBoxCorner110.toFlatVector());
+        renderer.drawLine3d(color, hitBoxCorner100.toFlatVector(), hitBoxCorner000.toFlatVector());
+    }
+
+    public void renderWheelBox(WheelBox wheelBox, Color color) {
+        wheelBox.render(renderer, color);
     }
 }

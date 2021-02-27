@@ -80,7 +80,7 @@ public class TeamPossession2v2Test extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.green, offensivePlayer.position, input.ball.position);
-        renderer.drawLine3d(Color.blue, lastManPlayer.position, offensivePlayer.position);
+        renderer.drawLine3d(Color.green, offensivePlayer.position.toFlatVector(), input.ball.position.toFlatVector());
+        renderer.drawLine3d(Color.blue, lastManPlayer.position.toFlatVector(), offensivePlayer.position.toFlatVector());
     }
 }

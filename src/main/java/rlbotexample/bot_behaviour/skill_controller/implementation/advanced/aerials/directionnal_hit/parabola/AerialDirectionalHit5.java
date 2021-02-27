@@ -3,7 +3,6 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aeri
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.JumpController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.ShortJump;
@@ -12,9 +11,10 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
 import util.controllers.BoostController;
 import util.game_constants.RlConstants;
@@ -92,21 +92,23 @@ public class AerialDirectionalHit5 extends SkillController {
     }
 
     private void updateTargetTrajectory(DataPacket input) {
-        targetTrajectory = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
-                return futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
-                //return new Vector3(0, 0, 1000);
-            }
+        targetTrajectory = time -> {
+            Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
+            return futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
+            //return new Vector3(0, 0, 1000);
         };
+
+        targetTrajectory = RawBallTrajectory.trajectory.modify(movingPoint -> {
+            Vector3 offset = movingPoint.currentState.offset.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
+            return movingPoint.currentState.offset.plus(offset);
+        });
     }
 
     private AerialTrajectoryInfo findAerialTrajectoryInfo(DataPacket input) {
         updateTargetTrajectory(input);
 
         aerialAccelerationFinder = new AerialAccelerationFinder(targetTrajectory);
-        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input);
+        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);
         //aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(targetTrajectory.compute(aerialInfo.timeOfFlight).minus(input.car.position).magnitude()/500, input);
 
         carPredictedTrajectory = new Parabola3D(
@@ -126,7 +128,7 @@ public class AerialDirectionalHit5 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.green, input.car.position, input.car.position.plus(aerialInfo.acceleration.scaledToMagnitude(300)));
+        renderer.drawLine3d(Color.green, input.car.position.toFlatVector(), input.car.position.plus(aerialInfo.acceleration.scaledToMagnitude(300)).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(ballDestination, Color.MAGENTA);
         shapeRenderer.renderCross(futureCarPosition, Color.red);

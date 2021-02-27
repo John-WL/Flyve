@@ -1,4 +1,4 @@
-package rlbotexample.input.dynamic_data.car;
+package rlbotexample.input.dynamic_data.car.kinematic;
 
 import util.math.vector.Vector3;
 

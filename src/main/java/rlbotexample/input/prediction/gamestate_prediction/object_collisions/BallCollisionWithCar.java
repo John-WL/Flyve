@@ -2,9 +2,8 @@ package rlbotexample.input.prediction.gamestate_prediction.object_collisions;
 
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import util.game_constants.RlConstants;
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 
@@ -15,10 +14,10 @@ public class BallCollisionWithCar {
     final Vector3 contactPoint;
     final LinearApproximator s;
 
-    public BallCollisionWithCar(final BallData ballData, final CarData carData, Vector3 contactPoint) {
+    public BallCollisionWithCar(final BallData ballData, final CarData carData) {
         this.initialBallData = ballData;
         this.initialCarData = carData;
-        this.contactPoint = contactPoint;
+        this.contactPoint = carData.hitBox.closestPointOnSurface(ballData.position);
         this.s = new LinearApproximator();
         s.sample(new Vector2(0, 0.65));
         s.sample(new Vector2(600, 0.65));
@@ -26,7 +25,13 @@ public class BallCollisionWithCar {
         s.sample(new Vector2(4600, 0.3));
     }
 
-    public BallData compute(final double deltaTime) {
+    public BallData compute() {
+        // no collision? no calculations
+        if(initialBallData.position.minus(contactPoint).magnitudeSquared()
+                > RlConstants.BALL_RADIUS * RlConstants.BALL_RADIUS) {
+            return initialBallData;
+        }
+
         // delta V computation
         Vector3 vc = initialCarData.velocity;
         Vector3 wc = initialCarData.spin;
@@ -36,12 +41,12 @@ public class BallCollisionWithCar {
         Vector3 wb = initialBallData.spin;
         Vector3 Lb = contactPoint.minus(initialBallData.position);
 
-        final Vector3 deltaV = vc.minus(wc.crossProduct(Lc))
-                .minus(vb.minus(wb.crossProduct(Lb)));
+        final Vector3 deltaV = vc.minus(Lc.crossProduct(wc))
+                .minus(vb.minus(Lb.crossProduct(wb)));
 
         // mass thingy computation
         Vector3 mc = new Vector3(180, 180, 180);
-        Vector3 mb = new Vector3(30, 30, 30);
+        Vector3 mb = new Vector3(RlConstants.BALL_MASS, RlConstants.BALL_MASS, RlConstants.BALL_MASS);
 
         double IbNoVec = 0.4 * mb.x * RlConstants.BALL_RADIUS * RlConstants.BALL_RADIUS;
         //double IbNoVec = 1/12.0;
@@ -50,8 +55,8 @@ public class BallCollisionWithCar {
         Vector3 Ib = new Vector3(IbNoVec, IbNoVec, IbNoVec);
 
         final Vector3 M = mb.inverse().plus(mc.inverse())
-                .minus(Lc.crossProduct(Ic.inverse())).crossProduct(Lc)
-                .minus(Lb.crossProduct(Ib.inverse())).crossProduct(Lb)
+                .minus(Lc.crossProduct(Lc.scaled(Ic.inverse())))
+                .minus(Lb.crossProduct(Lb.scaled(Ib.inverse())))
                 .inverse();
 
         // theoretical impulse J computation
@@ -71,15 +76,15 @@ public class BallCollisionWithCar {
         Vector3 f = initialCarData.hitBox.frontOrientation;
         Vector3 xc = initialCarData.position;
         Vector3 xb = initialBallData.position;
-        Vector3 n = xb.minus(xc);
-        n = n.scaled(1, 1, 0.35);
-        n = n.minus(f.scaled(n.dotProduct(f)*0.35)).normalized();
+        Vector3 nWeird = xb.minus(xc);
+        nWeird = nWeird.scaled(1, 1, 0.35);
+        nWeird = (nWeird.minus(f.scaled(nWeird.dotProduct(f)*0.35))).normalized();
         double dv = vb.minus(vc).magnitude();
-        final Vector3 J_mod = n.scaled(RlConstants.BALL_MASS * dv * s.compute(dv));
+        final Vector3 J_mod = nWeird.scaled(RlConstants.BALL_MASS * dv * s.compute(dv));
 
         // new velocity and spin
-        final Vector3 newVelocity = vb.plus(mb.inverse().crossProduct(J)).plus(mb.inverse().scaled(J_mod));
-        final Vector3 newSpin = initialBallData.spin.plus(Ib.inverse().crossProduct(Lb.crossProduct(J)));
+        final Vector3 newVelocity = vb.plus(J.scaled(1/mb.x)).plus(J_mod.scaled(1/mb.x));
+        final Vector3 newSpin = initialBallData.spin.plus(Lb.crossProduct(J).scaled(Ib.inverse().x));
 
         return new BallData(initialBallData.position, newVelocity, newSpin, 0);
     }

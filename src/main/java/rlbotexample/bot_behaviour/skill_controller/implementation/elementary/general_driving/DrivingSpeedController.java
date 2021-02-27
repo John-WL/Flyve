@@ -43,13 +43,13 @@ public class DrivingSpeedController extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         if(throttleAmount < 0) {
-            renderer.drawLine3d(Color.green, input.car.position.plus(new Vector3(0, 0, 100)), input.car.position.plus(input.car.orientation.noseVector.scaled(throttleAmount * -100)).plus(new Vector3(0, 0, 100)));
+            renderer.drawLine3d(Color.green, input.car.position.plus(new Vector3(0, 0, 100)).toFlatVector(), input.car.position.plus(input.car.orientation.noseVector.scaled(throttleAmount * -100)).plus(new Vector3(0, 0, 100)).toFlatVector());
         }
         else {
-            renderer.drawLine3d(Color.red, input.car.position.plus(new Vector3(0, 0, 100)), input.car.position.plus(input.car.orientation.noseVector.scaled(throttleAmount * -100)).plus(new Vector3(0, 0, 100)));
+            renderer.drawLine3d(Color.red, input.car.position.plus(new Vector3(0, 0, 100)).toFlatVector(), input.car.position.plus(input.car.orientation.noseVector.scaled(throttleAmount * -100)).plus(new Vector3(0, 0, 100)).toFlatVector());
         }
         if(throttleAmount > 1) {
-            renderer.drawCenteredRectangle3d(Color.blue, input.car.position.plus(new Vector3(0, 0, 100)), 10, 10, true);
+            renderer.drawCenteredRectangle3d(Color.blue, input.car.position.plus(new Vector3(0, 0, 100)).toFlatVector(), 10, 10, true);
         }
     }
 }

@@ -1,6 +1,6 @@
 package performance_tesing.beziers;
 
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
 
 public class LinearApproximationClassPerformanceTesting {

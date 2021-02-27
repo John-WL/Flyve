@@ -4,7 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
 
 public class AccelerationFunctionApproximator extends SkillController {

@@ -70,6 +70,6 @@ public class InitializationState implements State {
     public void debug(DataPacket input, Renderer renderer) {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderGroundTrajectory2D(groundTrajectoryInfo, 50, Color.CYAN);
-        renderer.drawString3d("init", Color.YELLOW, input.car.position, 2, 2);
+        renderer.drawString3d("init", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
     }
 }

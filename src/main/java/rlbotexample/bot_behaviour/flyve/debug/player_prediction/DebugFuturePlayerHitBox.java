@@ -4,7 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
@@ -44,20 +44,20 @@ public class DebugFuturePlayerHitBox extends FlyveBot {
         Vector3 hitBoxCorner001 = hitBox.closestPointOnSurface(opponentNoseOrientation.scaled(-1).plus(opponentRoofOrientation.scaled(-1)).plus(opponentRightOrientation).scaled(300).plus(hitBox.centerPositionOfHitBox));
         Vector3 hitBoxCorner000 = hitBox.closestPointOnSurface(opponentNoseOrientation.scaled(-1).plus(opponentRoofOrientation.scaled(-1)).plus(opponentRightOrientation.scaled(-1)).scaled(300).plus(hitBox.centerPositionOfHitBox));
 
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111, hitBoxCorner110);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111, hitBoxCorner101);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111, hitBoxCorner011);
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111.toFlatVector(), hitBoxCorner110.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111.toFlatVector(), hitBoxCorner101.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner111.toFlatVector(), hitBoxCorner011.toFlatVector());
 
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010, hitBoxCorner011);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010, hitBoxCorner000);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010, hitBoxCorner110);
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010.toFlatVector(), hitBoxCorner011.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010.toFlatVector(), hitBoxCorner000.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner010.toFlatVector(), hitBoxCorner110.toFlatVector());
 
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001, hitBoxCorner000);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001, hitBoxCorner011);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001, hitBoxCorner101);
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001.toFlatVector(), hitBoxCorner000.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001.toFlatVector(), hitBoxCorner011.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner001.toFlatVector(), hitBoxCorner101.toFlatVector());
 
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100, hitBoxCorner101);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100, hitBoxCorner110);
-        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100, hitBoxCorner000);
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100.toFlatVector(), hitBoxCorner101.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100.toFlatVector(), hitBoxCorner110.toFlatVector());
+        renderer.drawLine3d(Color.LIGHT_GRAY, hitBoxCorner100.toFlatVector(), hitBoxCorner000.toFlatVector());
     }
 }

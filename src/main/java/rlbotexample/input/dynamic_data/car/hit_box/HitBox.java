@@ -1,6 +1,7 @@
-package rlbotexample.input.dynamic_data.car;
+package rlbotexample.input.dynamic_data.car.hit_box;
 
 import rlbot.flat.BoxShape;
+import rlbotexample.input.dynamic_data.car.orientation.Orientation;
 import util.math.vector.Vector3;
 
 public class HitBox {
@@ -118,7 +119,7 @@ public class HitBox {
                 .minus(this.localHitBoxOffset));
     }
 
-    private double makeNonZero(float value) {
+    private double makeNonZero(double value) {
         if(Math.abs(value) < 0.00001) {
             return 0.00001;
         }

@@ -51,7 +51,7 @@ public class AerialDirectionalHit5Test extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        aerialDirectionalHitController.debug(renderer, input);
-        new DebugCustomBallPrediction().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        //aerialDirectionalHitController.debug(renderer, input);
+        //new DebugCustomBallPrediction().updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
     }
 }

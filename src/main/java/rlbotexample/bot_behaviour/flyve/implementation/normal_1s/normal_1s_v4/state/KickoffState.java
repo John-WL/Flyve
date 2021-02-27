@@ -67,6 +67,6 @@ public class KickoffState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("kickoff", Color.YELLOW, input.car.position, 2, 2);
+        renderer.drawString3d("kickoff", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
     }
 }

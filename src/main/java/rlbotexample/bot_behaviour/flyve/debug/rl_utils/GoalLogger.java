@@ -31,7 +31,7 @@ public class GoalLogger extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
-        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position, StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.allCars.get(1-input.playerIndex).position));
+        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position.toFlatVector(), StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.allCars.get(1-input.playerIndex).position).toFlatVector());
         shapeRenderer.renderCross(StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.allCars.get(1-input.playerIndex).position), Color.MAGENTA);
     }
 }

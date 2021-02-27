@@ -26,7 +26,7 @@ public class ShapeDrawer {
         for(int i = 0; i < CIRCLE_RESOLUTION; i++) {
             firstRadius = secondRadius;
             secondRadius = secondRadius.plusAngle(rotationResolution);
-            renderer.drawLine3d(color, new Vector3(circle.getCenter().plus(firstRadius), 0), new Vector3(circle.getCenter().plus(secondRadius), 0));
+            renderer.drawLine3d(color, new Vector3(circle.getCenter().plus(firstRadius), 0).toFlatVector(), new Vector3(circle.getCenter().plus(secondRadius), 0).toFlatVector());
         }
     }
 }

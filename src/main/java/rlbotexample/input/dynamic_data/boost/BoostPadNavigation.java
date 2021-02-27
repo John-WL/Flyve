@@ -36,7 +36,6 @@ public class BoostPadNavigation {
                 }
             });
             BoostPad visitingPad = BoostManager.boostPads.get(currentNodeIndex.get());
-            //priorityQueue.remove(visitingPad.boostId);
 
             BoostManager.boostPads.get(currentNodeIndex.get()).neighbours
                     .forEach(visitedPad -> {

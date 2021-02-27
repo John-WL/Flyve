@@ -1,12 +1,14 @@
 package util.math.vector;
 
+import java.io.Serializable;
+
 /**
  * A vector that only knows about x and y components.
  *
  * This class is here for your convenience, it is NOT part of the framework. You can add to it as much
  * as you want, or delete it.
  */
-public class Vector2 {
+public class Vector2 implements Serializable {
 
     public final double x;
     public final double y;
@@ -31,6 +33,10 @@ public class Vector2 {
 
     public Vector2 scaled(double scale) {
         return new Vector2(x * scale, y * scale);
+    }
+
+    public Vector2 scaled(Vector2 scale) {
+        return new Vector2(x * scale.x, y * scale.y);
     }
 
     /**
@@ -141,8 +147,20 @@ public class Vector2 {
         return Math.abs(a.correctionAngle(b));
     }
 
+    public Vector2Int toVector2Int() {
+        return new Vector2Int((int)x, (int)y);
+    }
+
+    public Double[] asArray() {
+        return new Double[]{x, y};
+    }
+
     @Override
     public String toString() {
         return "[ x:" + this.x + ", y:" + this.y + " ]";
+    }
+
+    public Vector2 inverse() {
+        return new Vector2(1/x, 1/y);
     }
 }

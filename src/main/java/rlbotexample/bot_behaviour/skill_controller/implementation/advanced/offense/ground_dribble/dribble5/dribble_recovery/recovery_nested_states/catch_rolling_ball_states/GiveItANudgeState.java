@@ -110,7 +110,8 @@ public class GiveItANudgeState implements State {
         double positionOfBallInZ = input.ball.position.z;
         if(ballSpeedFromCarSpeedTowardCar < -50
                 && Math.abs(speedOfBallInZ) < 40
-                && positionOfBallInZ-RlConstants.BALL_RADIUS < 40) {
+                && positionOfBallInZ-RlConstants.BALL_RADIUS < 40
+        ) {
             bot.output().boost(false);
             return new SwipeState(bot, masterDribbleController);
         }
@@ -120,7 +121,7 @@ public class GiveItANudgeState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("give it a nudge", Color.YELLOW, input.car.position, 1, 1);
+        renderer.drawString3d("give it a nudge", Color.YELLOW, input.car.position.toFlatVector(), 1, 1);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
         if(destination != null) {

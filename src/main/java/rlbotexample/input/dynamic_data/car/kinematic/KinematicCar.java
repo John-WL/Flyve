@@ -1,5 +1,6 @@
-package rlbotexample.input.dynamic_data.car;
+package rlbotexample.input.dynamic_data.car.kinematic;
 
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import util.math.vector.Vector3;
 
 public class KinematicCar extends KinematicPoint {

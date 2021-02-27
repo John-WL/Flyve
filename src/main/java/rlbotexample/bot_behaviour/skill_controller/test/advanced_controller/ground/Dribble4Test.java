@@ -26,7 +26,7 @@ public class Dribble4Test extends FlyveBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        if(gameSituationHandler.canLoad(input)) {
+        if(gameSituationHandler.updatingWontBreakBot(input)) {
             //gameSituationHandler.update();
         }
 

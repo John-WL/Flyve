@@ -1,6 +1,6 @@
 package rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.orientation6_functions;
 
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
 
 public class YawVelocityOffsetFinder {

@@ -42,7 +42,7 @@ public class DebugPredictedAerialHitOnBall extends FlyveBot {
         for(int i = 0; i < resolutionForCar; i++) {
             double secondsInTheFuture = (RlUtils.BALL_PREDICTION_TIME*i)/resolutionForCar;
             Vector3 futureCarPosition = input.statePrediction.carsAtTime(secondsInTheFuture).get(input.playerIndex).position;
-            renderer.drawLine3d(Color.YELLOW, previousCarPosition, futureCarPosition);
+            renderer.drawLine3d(Color.YELLOW, previousCarPosition.toFlatVector(), futureCarPosition.toFlatVector());
             previousCarPosition = futureCarPosition;
         }
         // shapeRenderer.renderHitBox(input.allCars.get(1-input.playerIndex).hitBox, Color.yellow);
@@ -67,7 +67,7 @@ public class DebugPredictedAerialHitOnBall extends FlyveBot {
         for(int i = 0; i < resolution; i++) {
             double secondsInTheFuture = (RlUtils.BALL_PREDICTION_TIME*i)/resolution;
             Vector3 futureBallPosition = input.statePrediction.ballAtTime(secondsInTheFuture).position;
-            renderer.drawLine3d(Color.red, previousBallPosition, futureBallPosition);
+            renderer.drawLine3d(Color.red, previousBallPosition.toFlatVector(), futureBallPosition.toFlatVector());
             previousBallPosition = futureBallPosition;
         }
     }

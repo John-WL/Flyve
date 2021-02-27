@@ -113,12 +113,12 @@ public class Dribble4 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.red, neutralBallDestination, desiredBallPositionOnPlayerCar);
-        renderer.drawRectangle3d(Color.red, desiredBallPositionOnPlayerCar, 10, 10, true);
-        renderer.drawRectangle3d(Color.magenta, smoothedOutDesiredBallPositionOnPlayerCar.plus(input.car.position), 10, 10, true);
+        renderer.drawLine3d(Color.red, neutralBallDestination.toFlatVector(), desiredBallPositionOnPlayerCar.toFlatVector());
+        renderer.drawRectangle3d(Color.red, desiredBallPositionOnPlayerCar.toFlatVector(), 10, 10, true);
+        renderer.drawRectangle3d(Color.magenta, smoothedOutDesiredBallPositionOnPlayerCar.plus(input.car.position).toFlatVector(), 10, 10, true);
 
-        renderer.drawLine3d(Color.yellow, neutralBallDestination, input.car.position);
-        renderer.drawRectangle3d(Color.yellow, neutralBallDestination, 10, 10, true);
+        renderer.drawLine3d(Color.yellow, neutralBallDestination.toFlatVector(), input.car.position.toFlatVector());
+        renderer.drawRectangle3d(Color.yellow, neutralBallDestination.toFlatVector(), 10, 10, true);
 
         //renderer.drawLine3d(Color.red, steeringDestination, input.car.position);
     }

@@ -7,6 +7,7 @@ import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugCustomBallPre
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit6;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
+import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
@@ -38,9 +39,9 @@ public class AerialDirectionalHit6Test extends FlyveBot {
 
         // do the thing
         if (input.team == 1) {
-            aerialDirectionalHitController.setBallDestination(new Vector3(0, -5200, 100));
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, -5200, 300));
         } else {
-            aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 100));
+            aerialDirectionalHitController.setBallDestination(new Vector3(0, 5200, 300));
         }
         aerialDirectionalHitController.updateOutput(input);
 

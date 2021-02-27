@@ -48,7 +48,7 @@ public class BoostPadNodeTest extends FlyveBot {
         closest.ifPresent(boostPad -> {
             for(BoostPad neighbour: boostPad.neighbours) {
                 if(randomBooleanWithProbability(2)) {
-                    renderer.drawLine3d(Color.CYAN, neighbour.location.plus(new Vector3(0, 0, 200)), boostPad.location);
+                    renderer.drawLine3d(Color.CYAN, neighbour.location.plus(new Vector3(0, 0, 200)).toFlatVector(), boostPad.location.toFlatVector());
                 }
             }
         });

@@ -131,12 +131,12 @@ public class AerialSetupController3 extends SkillController {
         Vector3 previousPosition = playerAerialTrajectory(0, input);
         for(int i = 1; i < 40; i++) {
             Vector3 nextPosition = playerAerialTrajectory(i*3/40.0, input);
-            renderer.drawLine3d(Color.red, nextPosition, previousPosition);
+            renderer.drawLine3d(Color.red, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             previousPosition = nextPosition;
         }
         Vector3 bestApproachPointOfPlayer = playerAerialTrajectory(closestApproachTimeBetweenParabolaAndBallPrediction, input);
         Vector3 bestApproachPointOfBall = input.statePrediction.ballAtTime(closestApproachTimeBetweenParabolaAndBallPrediction).position;
-        renderer.drawLine3d(Color.cyan, bestApproachPointOfPlayer, bestApproachPointOfBall);
+        renderer.drawLine3d(Color.cyan, bestApproachPointOfPlayer.toFlatVector(), bestApproachPointOfBall.toFlatVector());
         sr.renderBallPrediction(input.statePrediction, 2,  Color.magenta);
     }
 }

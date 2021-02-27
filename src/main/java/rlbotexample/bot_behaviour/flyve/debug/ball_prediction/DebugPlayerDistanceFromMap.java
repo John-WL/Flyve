@@ -30,7 +30,7 @@ public class DebugPlayerDistanceFromMap extends FlyveBot {
         Ray3 collision = StandardMapSplitMesh.STANDARD_MAP_MESH.collideWith(new Sphere(input.allCars.get(1-input.playerIndex).position, 1100));
         renderer.drawLine3d(
                 Color.CYAN,
-                collision.direction.plus(collision.offset),
-                input.allCars.get(1-input.playerIndex).position);
+                collision.direction.plus(collision.offset).toFlatVector(),
+                input.allCars.get(1-input.playerIndex).position.toFlatVector());
     }
 }

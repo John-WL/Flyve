@@ -1,6 +1,7 @@
 package util.shapes;
 
 import util.math.vector.Ray3;
+import util.math.vector.Vector;
 import util.math.vector.Vector3;
 
 public class Circle3D {
@@ -41,6 +42,14 @@ public class Circle3D {
 
 
         return localResult.plus(centerOffset);
+    }
+
+    // this function does not check for intersections.
+    // if you try to pass an intersecting plane as a parameter, it will still compute
+    // the point on the circle that is most oriented towards the plane
+    public Vector3 findClosestPointFromNonIntersecting(Plane3D plane) {
+        Vector3 projection = center.offset.projectOnto(plane);
+        return findClosestPointFrom(projection);
     }
 
     public double findRadsFromClosestPoint(Vector3 v) {

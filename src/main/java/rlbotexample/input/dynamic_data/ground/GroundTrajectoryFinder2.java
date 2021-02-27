@@ -147,6 +147,9 @@ public class GroundTrajectoryFinder2 {
 
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
+            if(targetTrajectory.compute(currentTestTime) == null) {
+                continue;
+            }
             Ray2 position = new Ray2(
                     car.position.flatten(),
                     car.orientation.noseVector.flatten());

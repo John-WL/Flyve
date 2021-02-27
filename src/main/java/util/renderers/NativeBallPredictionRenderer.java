@@ -22,7 +22,7 @@ public class NativeBallPredictionRenderer {
             }
             Vector3 location = new Vector3(slice.physics().location());
             if (previousLocation != null) {
-                renderer.drawLine3d(color, previousLocation, location);
+                renderer.drawLine3d(color, previousLocation.toFlatVector(), location.toFlatVector());
             }
             previousLocation = location;
         }

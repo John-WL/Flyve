@@ -94,10 +94,10 @@ public class CatchBouncyBallState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("catch bouncy ball", Color.YELLOW, input.car.position, 1, 1);
+        renderer.drawString3d("catch bouncy ball", Color.YELLOW, input.car.position.toFlatVector(), 1, 1);
         if(firstValidBall != null) {
-            renderer.drawLine3d(Color.blue, actualDestination, firstValidBall.currentState.offset);
-            renderer.drawRectangle3d(Color.blue, actualDestination, 10, 10, true);
+            renderer.drawLine3d(Color.blue, actualDestination.toFlatVector(), firstValidBall.currentState.offset.toFlatVector());
+            renderer.drawRectangle3d(Color.blue, actualDestination.toFlatVector(), 10, 10, true);
         }
     }
 }

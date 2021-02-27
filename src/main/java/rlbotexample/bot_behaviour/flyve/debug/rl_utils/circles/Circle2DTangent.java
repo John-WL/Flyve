@@ -38,7 +38,7 @@ public class Circle2DTangent extends FlyveBot {
         shapeRenderer.renderCross(new Vector3(tangentPoints[0].offset, 50), Color.GREEN);
         shapeRenderer.renderCross(new Vector3(tangentPoints[1].offset, 50), Color.GREEN);
         shapeRenderer.renderCross(new Vector3(pointOnTangent, 50), Color.red);
-        renderer.drawLine3d(Color.magenta, new Vector3(pointOnTangent, 50), new Vector3(tangentPoints[0].offset, 50));
-        renderer.drawLine3d(Color.magenta, new Vector3(pointOnTangent, 50), new Vector3(tangentPoints[1].offset, 50));
+        renderer.drawLine3d(Color.magenta, new Vector3(pointOnTangent, 50).toFlatVector(), new Vector3(tangentPoints[0].offset, 50).toFlatVector());
+        renderer.drawLine3d(Color.magenta, new Vector3(pointOnTangent, 50).toFlatVector(), new Vector3(tangentPoints[1].offset, 50).toFlatVector());
     }
 }

@@ -103,10 +103,10 @@ public class AerialDirectionalHit extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         //renderer.drawLine3d(Color.green, input.car.position, orientation.plus(input.car.position));
-        renderer.drawLine3d(Color.green, hitPositionOnBall, playerFuturePosition);
+        renderer.drawLine3d(Color.green, hitPositionOnBall.toFlatVector(), playerFuturePosition.toFlatVector());
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(hitPositionOnBall, Color.red);
-        renderer.drawLine3d(Color.CYAN, ballFuturePosition, hitPositionOnBall);
+        renderer.drawLine3d(Color.CYAN, ballFuturePosition.toFlatVector(), hitPositionOnBall.toFlatVector());
     }
 }

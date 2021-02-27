@@ -1,6 +1,6 @@
 package rlbotexample.input.geometry;
 
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import util.parameter_configuration.ObjFileReader;
 import util.shapes.Sphere;
 import util.shapes.meshes.MeshSplitter3D;

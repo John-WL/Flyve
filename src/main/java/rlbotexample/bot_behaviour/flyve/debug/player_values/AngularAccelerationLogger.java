@@ -50,6 +50,6 @@ public class AngularAccelerationLogger extends FlyveBot {
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
-        renderer.drawLine3d(Color.GREEN, localAngularAcceleration.scaled(100).plus(new Vector3(0, 0, 100)), new Vector3(0, 0, 100));
+        renderer.drawLine3d(Color.GREEN, localAngularAcceleration.scaled(100).plus(new Vector3(0, 0, 100)).toFlatVector(), new Vector3(0, 0, 100).toFlatVector());
     }
 }

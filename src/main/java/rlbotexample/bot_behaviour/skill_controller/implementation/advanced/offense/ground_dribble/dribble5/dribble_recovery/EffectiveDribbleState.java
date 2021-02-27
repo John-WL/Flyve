@@ -43,7 +43,7 @@ public class EffectiveDribbleState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("effective dribby", Color.YELLOW, input.car.position, 1, 1);
+        renderer.drawString3d("effective dribby", Color.YELLOW, input.car.position.toFlatVector(), 1, 1);
         dribbleController.debug(renderer, input);
     }
 }

@@ -4,7 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.Orientation;
+import rlbotexample.input.dynamic_data.car.orientation.Orientation;
 import rlbotexample.output.BotOutput;
 import util.controllers.PidController;
 import util.math.vector.Vector3;
@@ -56,6 +56,6 @@ public class AerialOrientationController3 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.GREEN, desiredSpin.minus(input.car.spin.toFrameOfReference(input.car.orientation)).scaled(10).plus(new Vector3(0, 0, 700)), new Vector3(0, 0, 700));
+        renderer.drawLine3d(Color.GREEN, desiredSpin.minus(input.car.spin.toFrameOfReference(input.car.orientation)).scaled(10).plus(new Vector3(0, 0, 700)).toFlatVector(), new Vector3(0, 0, 700).toFlatVector());
     }
 }

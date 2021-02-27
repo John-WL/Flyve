@@ -31,11 +31,11 @@ public class RenderingCircle3DToTestIt extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.cyan, center.offset, center.offset.plus(center.direction));
+        renderer.drawLine3d(Color.cyan, center.offset.toFlatVector(), center.offset.plus(center.direction).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCircle3D(circle, Color.green);
         shapeRenderer.renderCross(center.offset, Color.magenta);
         shapeRenderer.renderCross(circle.findClosestPointFrom(input.allCars.get(1-input.playerIndex).position), Color.red);
-        renderer.drawLine3d(Color.ORANGE, circle.findPointOnCircle(circle.findRadsFromClosestPoint(input.allCars.get(1-input.playerIndex).position)), input.allCars.get(1-input.playerIndex).position);
+        renderer.drawLine3d(Color.ORANGE, circle.findPointOnCircle(circle.findRadsFromClosestPoint(input.allCars.get(1-input.playerIndex).position)).toFlatVector(), input.allCars.get(1-input.playerIndex).position.toFlatVector());
     }
 }

@@ -3,9 +3,8 @@ package rlbotexample.bot_behaviour.flyve.debug.rl_utils;
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController3;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.Orientation;
+import rlbotexample.input.dynamic_data.car.orientation.Orientation;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
@@ -42,9 +41,9 @@ public class AlgorithmOfRotatorForOrientations extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.GREEN, rotator.scaled(300).plus(new Vector3(0, 0, 300)), new Vector3(0, 0, 300));
+        renderer.drawLine3d(Color.GREEN, rotator.scaled(300).plus(new Vector3(0, 0, 300)).toFlatVector(), new Vector3(0, 0, 300).toFlatVector());
 
-        renderer.drawLine3d(Color.red, input.allCars.get(1-input.playerIndex).orientation.roofVector.rotate(rotator).scaled(300).plus(new Vector3(0, 0, 300)), new Vector3(0, 0, 300));
+        renderer.drawLine3d(Color.red, input.allCars.get(1-input.playerIndex).orientation.roofVector.rotate(rotator).scaled(300).plus(new Vector3(0, 0, 300)).toFlatVector(), new Vector3(0, 0, 300).toFlatVector());
 
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(new Vector3(300, 0, 0), Color.red);

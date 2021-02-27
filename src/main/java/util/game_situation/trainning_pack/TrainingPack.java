@@ -33,8 +33,8 @@ public abstract class TrainingPack {
         }
     }
 
-    public boolean canLoad(DataPacket input) {
-        return currentGameSituation.canLoad(input);
+    public boolean updatingWontBreakBot(DataPacket input) {
+        return currentGameSituation.updatingWontBreakBot(input);
     }
 
     public void reset() {

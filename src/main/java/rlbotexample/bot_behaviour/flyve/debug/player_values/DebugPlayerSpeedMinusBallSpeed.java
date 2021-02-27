@@ -25,8 +25,8 @@ public class DebugPlayerSpeedMinusBallSpeed extends FlyveBot {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
-        renderer.drawString3d("" + deltaSpeed.magnitude(), Color.YELLOW, input.ball.position, 2, 2);
-        renderer.drawLine3d(Color.CYAN, input.allCars.get(1-input.playerIndex).position, input.ball.position);
+        renderer.drawString3d("" + deltaSpeed.magnitude(), Color.YELLOW, input.ball.position.toFlatVector(), 2, 2);
+        renderer.drawLine3d(Color.CYAN, input.allCars.get(1-input.playerIndex).position.toFlatVector(), input.ball.position.toFlatVector());
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
     }
 }

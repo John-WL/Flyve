@@ -6,7 +6,7 @@ import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.dynamic_data.ground.DrivingTrajectoryInfo;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
@@ -99,12 +99,12 @@ public class GroundDirectionalHit3 extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         //renderer.drawLine3d(Color.CYAN, playerDestination, input.car.position);
-        renderer.drawLine3d(Color.red, input.ball.position, ballDestination);
+        renderer.drawLine3d(Color.red, input.ball.position.toFlatVector(), ballDestination.toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
         shapeRenderer.renderCircle3D(turnRadiusOnBall, Color.green);
         shapeRenderer.renderCircle3D(turnRadiusOnCar, Color.CYAN);
-        renderer.drawString3d(info.timeOfDriving + "", Color.YELLOW, input.car.position, 2, 2);
-        renderer.drawLine3d(Color.magenta, straightLineToTravel.offset, straightLineToTravel.direction);
+        renderer.drawString3d(info.timeOfDriving + "", Color.YELLOW, input.car.position.toFlatVector(), 2, 2);
+        renderer.drawLine3d(Color.magenta, straightLineToTravel.offset.toFlatVector(), straightLineToTravel.direction.toFlatVector());
     }
 }

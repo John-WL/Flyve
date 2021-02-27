@@ -90,6 +90,6 @@ public class AvoidDemolish extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.red, input.car.position, carDestination);
+        renderer.drawLine3d(Color.red, input.car.position.toFlatVector(), carDestination.toFlatVector());
     }
 }

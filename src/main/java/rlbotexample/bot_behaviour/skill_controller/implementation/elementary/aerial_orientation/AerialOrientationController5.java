@@ -53,7 +53,6 @@ public class AerialOrientationController5 extends SkillController {
         orientationController.setOrientationDestination(input.car.position.plus(correctedNoseDestination));
         orientationController.setRollOrientation(input.car.position.plus(correctedRollDestination));
         orientationController.updateOutput(input);
-
     }
 
     @Override
@@ -63,10 +62,10 @@ public class AerialOrientationController5 extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.magenta, correctedNoseDestination.scaled(400).plus(input.car.position), input.car.position);
+        renderer.drawLine3d(Color.magenta, correctedNoseDestination.scaled(400).plus(input.car.position).toFlatVector(), input.car.position.toFlatVector());
 
-        renderer.drawLine3d(Color.GREEN, noseOrientation.scaled(300).plus(input.car.position), input.car.position);
-        renderer.drawLine3d(Color.blue, rollOrientation.scaled(300).plus(input.car.position), input.car.position);
+        renderer.drawLine3d(Color.GREEN, noseOrientation.scaled(300).plus(input.car.position).toFlatVector(), input.car.position.toFlatVector());
+        renderer.drawLine3d(Color.blue, rollOrientation.scaled(300).plus(input.car.position).toFlatVector(), input.car.position.toFlatVector());
 
 
     }

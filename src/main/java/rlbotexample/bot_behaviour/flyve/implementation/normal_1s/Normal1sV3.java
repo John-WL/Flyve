@@ -235,7 +235,7 @@ public class Normal1sV3 extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         skillController.debug(renderer, input);
-        renderer.drawString3d(controllerLabel, Color.YELLOW, input.car.position, 10, 10);
+        renderer.drawString3d(controllerLabel, Color.YELLOW, input.car.position.toFlatVector(), 10, 10);
 
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
     }

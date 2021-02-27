@@ -98,7 +98,7 @@ public class AerialIntersectDestination extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.green, input.car.position, orientation.plus(input.car.position));
+        renderer.drawLine3d(Color.green, input.car.position.toFlatVector(), orientation.plus(input.car.position).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderCross(destination, Color.red);
     }

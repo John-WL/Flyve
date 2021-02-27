@@ -10,7 +10,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.MiddleJump;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.Wait;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.car.HitBox;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
@@ -135,8 +135,8 @@ public class GroundDirectionalHit extends SkillController {
 
     @Override
     public void debug(Renderer renderer, DataPacket input) {
-        renderer.drawLine3d(Color.CYAN, playerDestinationOnBall, input.car.position);
-        renderer.drawLine3d(Color.red, input.ball.position, ballDestination);
+        renderer.drawLine3d(Color.CYAN, playerDestinationOnBall.toFlatVector(), input.car.position.toFlatVector());
+        renderer.drawLine3d(Color.red, input.ball.position.toFlatVector(), ballDestination.toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderHitBox(futureHitBox, Color.YELLOW);
     }

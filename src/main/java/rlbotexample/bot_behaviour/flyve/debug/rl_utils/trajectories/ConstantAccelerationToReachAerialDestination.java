@@ -8,6 +8,7 @@ import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
+import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
@@ -20,27 +21,27 @@ public class ConstantAccelerationToReachAerialDestination extends FlyveBot {
     private Trajectory3D targetTrajectory;
     private AerialAccelerationFinder aerialAccelerationFinder;
     private AerialTrajectoryInfo aerialInfo;
-    private Vector3 destination;
+    private Trajectory3D destination;
     private Parabola3D trajectory;
 
     public ConstantAccelerationToReachAerialDestination() {
         this.targetTrajectory = null;
         this.aerialAccelerationFinder = null;
         this.aerialInfo = new AerialTrajectoryInfo();
-        this.destination = new Vector3(0, 0, 1000);
+        this.destination = RawBallTrajectory.trajectory;
         this.trajectory = null;
     }
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        targetTrajectory = time -> destination;
+        targetTrajectory = time -> destination.compute(time);
 
         aerialAccelerationFinder = new AerialAccelerationFinder(targetTrajectory);
-        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input);
+        aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);
 
         trajectory = new Parabola3D(input.allCars.get(1-input.playerIndex).position,
                 input.allCars.get(1-input.playerIndex).velocity,
-                aerialInfo.acceleration.minus(new Vector3(0, 0, RlConstants.NORMAL_GRAVITY_STRENGTH)),
+                aerialInfo.acceleration,
                 0);
 
         return new BotOutput();
@@ -49,9 +50,9 @@ public class ConstantAccelerationToReachAerialDestination extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position, input.allCars.get(1-input.playerIndex).position.plus(aerialInfo.acceleration));
+        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position.toFlatVector(), input.allCars.get(1-input.playerIndex).position.plus(aerialInfo.acceleration).toFlatVector());
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderTrajectory(trajectory, 10, Color.CYAN);
-        shapeRenderer.renderCross(destination, Color.red);
+        //shapeRenderer.renderCross(destination.compute(0), Color.red);
     }
 }

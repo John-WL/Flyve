@@ -45,7 +45,7 @@ public class DataPacket {
         synchronized (indexOfBotThatReloadsPredictions) {
             // indent to disable features
             if(indexOfBotThatLoadsData.get() == -1) {
-                //indexOfBotThatReloadsPredictions.set(playerIndex);
+                indexOfBotThatReloadsPredictions.set(playerIndex);
             }
             if(indexOfBotThatLoadsData.get() == -1) {
                 indexOfBotThatLoadsData.set(playerIndex);

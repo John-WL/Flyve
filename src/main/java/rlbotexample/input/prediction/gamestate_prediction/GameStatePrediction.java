@@ -1,14 +1,15 @@
 package rlbotexample.input.prediction.gamestate_prediction;
 
+import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallBounce;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallStopper;
-import rlbotexample.input.prediction.gamestate_prediction.object_collisions.BallCollisionWithCar;
-import rlbotexample.input.prediction.gamestate_prediction.object_collisions.CarCollisionWithBall;
+import rlbotexample.input.prediction.gamestate_prediction.object_collisions.*;
 import rlbotexample.input.prediction.gamestate_prediction.player.CarBounce;
 import rlbotexample.input.prediction.gamestate_prediction.player.PlayerPredictedAerialTrajectory;
 import util.game_constants.RlConstants;
@@ -18,6 +19,7 @@ import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameStatePrediction {
 
@@ -89,6 +91,25 @@ public class GameStatePrediction {
         return timeList;
     }
 
+    public double carBounceTimes(ExtendedCarData car) {
+        List<CarData> carTrajectoryList = cars.stream()
+                .map(l -> l.get(car.playerIndex))
+                .collect(Collectors.toList());
+
+        CarData previous;
+        CarData now = carTrajectoryList.get(0);
+        for(int i = 1; i < carTrajectoryList.size(); i++) {
+            previous = now;
+            now = carTrajectoryList.get(i);
+            if(now.velocity.minus(previous.velocity).scaled(RlUtils.BALL_PREDICTION_REFRESH_RATE).magnitude()
+                    > RlConstants.NORMAL_GRAVITY_STRENGTH*2) {
+                return i/RlUtils.BALL_PREDICTION_REFRESH_RATE;
+            }
+        }
+
+        return Double.MAX_VALUE;
+    }
+
     public double timeOfCollisionBetweenCarAndBall(final int playerIndex) {
         if(carsHitOnBallTimeIndexes[playerIndex] == null) {
             return Double.MAX_VALUE;
@@ -138,7 +159,7 @@ public class GameStatePrediction {
 
             // bounce the ball off of cars
             for(CarData predictedCar: predictedCars) {
-                predictedBall = updateBallFromCollision(predictedBall, predictedCar, 1/refreshRate);
+                predictedBall = updateBallFromCollision(predictedBall, predictedCar);
             }
 
             // bounce the cars off of the saved ball
@@ -216,16 +237,8 @@ public class GameStatePrediction {
     }
     */
 
-    private BallData updateBallFromCollision(final BallData ballData, final CarData carData, final double deltaTime) {
-        final Vector3 carCenterHitBoxPosition = carData.hitBox.centerPositionOfHitBox;
-        final Vector3 pointOnCarSurfaceTowardBall = carData.hitBox.closestPointOnSurface(ballData.position);
-        final double specificCarRadiusWithRespectToBall = pointOnCarSurfaceTowardBall.minus(carCenterHitBoxPosition).magnitude();
-
-        if(carCenterHitBoxPosition.minus(ballData.position).magnitude() < specificCarRadiusWithRespectToBall + RlConstants.BALL_RADIUS) {
-            return new BallCollisionWithCar(ballData, carData, pointOnCarSurfaceTowardBall).compute(deltaTime);
-        }
-
-        return ballData;
+    private BallData updateBallFromCollision(final BallData ballData, final CarData carData) {
+        return new BallCollisionWithCar4(ballData, carData).compute();
     }
 
     private CarData updateCarFromCollision(final CarData carData, final BallData ballData, final int playerIndex, final int predictedFrameCount, final double deltaTime) {

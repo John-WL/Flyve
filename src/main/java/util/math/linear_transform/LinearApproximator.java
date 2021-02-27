@@ -1,10 +1,11 @@
-package util.math;
+package util.math.linear_transform;
 
 import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class LinearApproximator {
 
@@ -12,6 +13,15 @@ public class LinearApproximator {
 
     public LinearApproximator() {
         functionSamples = new ArrayList<>();
+    }
+
+    public LinearApproximator(Function<Double, Double> function, double min, double max, int amountOfSamples) {
+        functionSamples = new ArrayList<>();
+        double rangeSize = java.lang.Math.abs(max-min);
+        for(int i = 0; i < amountOfSamples; i++) {
+            double x = min + (rangeSize*i/amountOfSamples);
+            sample(new Vector2(x, function.apply(x)));
+        }
     }
 
     public void sample(Vector2 sampledPoint) {

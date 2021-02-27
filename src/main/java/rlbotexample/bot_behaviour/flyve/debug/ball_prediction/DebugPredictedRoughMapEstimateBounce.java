@@ -30,7 +30,7 @@ public class DebugPredictedRoughMapEstimateBounce extends FlyveBot {
         int resolution = 100;
         for(int i = 0; i < resolution; i++) {
             Vector3 predictedPosition = predictions.ballPredictionRoughMapEstimateBounce(input.ball.position, input.ball.velocity, input.ball.spin, 6.0*i/resolution).getPosition();
-            renderer.drawLine3d(Color.red, predictedPosition, previousPosition);
+            renderer.drawLine3d(Color.red, predictedPosition.toFlatVector(), previousPosition.toFlatVector());
             previousPosition = predictedPosition;
         }
     }

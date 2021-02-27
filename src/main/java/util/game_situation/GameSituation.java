@@ -27,7 +27,7 @@ public abstract class GameSituation {
         this.loadGameState();
     }
 
-    public boolean canLoad(DataPacket input) {
+    public boolean updatingWontBreakBot(DataPacket input) {
         return input.car.elapsedSeconds > 1;
     }
 

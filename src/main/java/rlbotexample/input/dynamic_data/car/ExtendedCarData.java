@@ -2,6 +2,7 @@ package rlbotexample.input.dynamic_data.car;
 
 
 import rlbotexample.input.dynamic_data.RlUtils;
+import rlbotexample.input.dynamic_data.car.orientation.CarOrientation;
 import util.game_constants.RlConstants;
 
 /**

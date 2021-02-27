@@ -37,7 +37,7 @@ public class Circle2DTangentsToOtherCircle extends FlyveBot {
         shapeRenderer.renderCircle(circle1, 50, Color.blue);
         shapeRenderer.renderCircle(circle2, 50, Color.blue);
         Ray2[] tangents = circle1.findTangentsFrom(circle2);
-        renderer.drawLine3d(Color.magenta, new Vector3(tangents[0].offset, 50), new Vector3(tangents[0].offset.plus(tangents[0].direction), 50));
+        renderer.drawLine3d(Color.magenta, new Vector3(tangents[0].offset, 50).toFlatVector(), new Vector3(tangents[0].offset.plus(tangents[0].direction), 50).toFlatVector());
         //renderer.drawLine3d(Color.magenta, new Vector3(tangents[1].offset, 50), new Vector3(tangents[1].offset.plus(tangents[1].direction), 50));
         //renderer.drawLine3d(Color.magenta, new Vector3(tangents[2].offset, 50), new Vector3(tangents[2].offset.plus(tangents[2].direction), 50));
         //renderer.drawLine3d(Color.magenta, new Vector3(tangents[3].offset, 50), new Vector3(tangents[3].offset.plus(tangents[3].direction), 50));

@@ -39,15 +39,16 @@ public class SwipeState implements State {
 
     @Override
     public void exec(DataPacket input) {
-        destination = ((Trajectory3D) time ->
-                input.car.position.minus(input.ball.position).scaledToMagnitude(RlConstants.BALL_RADIUS*2)
-                        .rotate(Vector3.UP_VECTOR.scaled(
-                                Math.PI*time
-                                * input.car.position.minus(input.ball.position)
-                                        .crossProduct(input.ball.velocity).z < 0 ? -1:1))
-                        .plus(RawBallTrajectory.ballAtTime(time).position))
-                .remove(movingPoint -> movingPoint.currentState.offset.minus(input.car.position).magnitude() < 100)
-                .remove(movingPoint -> movingPoint.time < 0.1)
+        destination = ((Trajectory3D) time -> {
+            double leftOrRight = input.car.position.minus(RawBallTrajectory.ballAtTime(time).position)
+                    .crossProduct(input.ball.velocity).z < 0 ? -1 : 1;
+            return input.car.position.minus(RawBallTrajectory.ballAtTime(time).position)
+                    .scaledToMagnitude(RlConstants.BALL_RADIUS * 1.8)
+                    .rotate(Vector3.UP_VECTOR.scaled(Math.PI*time * leftOrRight))
+                    .plus(RawBallTrajectory.ballAtTime(time).position);
+        })
+        .remove(movingPoint -> movingPoint.currentState.offset.minus(input.car.position).magnitude() < 100)
+        .remove(movingPoint -> movingPoint.time < 0.1)
         .first(5, RlConstants.BOT_REFRESH_TIME_PERIOD);
 
         double distanceFromBall = destination.currentState.offset
@@ -68,6 +69,7 @@ public class SwipeState implements State {
 
     @Override
     public State next(DataPacket input) {
+        double ballSpeed = input.ball.velocity.magnitude();
         double ballSpeedFromCarSpeedTowardCar = input.ball.velocity
                 .dotProduct(input.car.position
                         .minus(input.ball.position)
@@ -82,7 +84,7 @@ public class SwipeState implements State {
 
     @Override
     public void debug(DataPacket input, Renderer renderer) {
-        renderer.drawString3d("swipe not wipe", Color.YELLOW, input.car.position, 1, 1);
+        renderer.drawString3d("swipe not wipe", Color.YELLOW, input.car.position.toFlatVector(), 1, 1);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
         if(destination != null) {

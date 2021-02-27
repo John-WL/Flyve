@@ -2,11 +2,14 @@ package util.math.vector;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import rlbot.flat.Rotator;
-import rlbotexample.input.dynamic_data.car.CarOrientation;
-import rlbotexample.input.dynamic_data.car.Orientation;
+import rlbot.gamestate.DesiredVector3;
+import rlbotexample.input.dynamic_data.car.orientation.CarOrientation;
+import rlbotexample.input.dynamic_data.car.orientation.Orientation;
+import util.math.matrix.Matrix3By3;
 import util.shapes.Plane3D;
 import util.shapes.Triangle3D;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -15,17 +18,24 @@ import java.util.Objects;
  * This class is here for your convenience, it is NOT part of the framework. You can add to it as much
  * as you want, or delete it.
  */
-public class Vector3 extends rlbot.vector.Vector3 {
+public class Vector3 implements Serializable{
 
     public static final Vector3 UP_VECTOR = new Vector3(0, 0, 1);
     public static final Vector3 DOWN_VECTOR = new Vector3(0, 0, -1);
     public static final Vector3 X_VECTOR = new Vector3(1, 0, 0);
+    public static final Vector3 Y_VECTOR = new Vector3(0, 1, 0);
+
+    public double x;
+    public double y;
+    public double z;
 
     public Vector3(double x, double y, double z) {
-        super((float) x, (float) y, (float) z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public Vector3(Vector2 xy, double z) { super((float) xy.x, (float) xy.y, (float) z); }
+    public Vector3(Vector2 xy, double z) { this(xy.x, xy.y, z); }
 
     public Vector3() {
         this(0, 0, 0);
@@ -44,9 +54,13 @@ public class Vector3 extends rlbot.vector.Vector3 {
         this(-vec.x(), vec.y(), vec.z());
     }
 
+    public Vector3(DesiredVector3 location) {
+        this(location.getX(), location.getY(), location.getZ());
+    }
+
     public int toFlatbuffer(FlatBufferBuilder builder) {
         // Invert the X value again so that rlbot sees the format it expects.
-        return rlbot.flat.Vector3.createVector3(builder, -x, y, z);
+        return rlbot.flat.Vector3.createVector3(builder, (float)-x, (float)y, (float)z);
     }
 
     public Vector3 plus(Vector3 other) {
@@ -67,6 +81,12 @@ public class Vector3 extends rlbot.vector.Vector3 {
 
     public Vector3 scaled(double scaleX, double scaleY, double scaleZ) {
         return new Vector3(x * scaleX, y * scaleY, z * scaleZ);
+    }
+    public Vector3 scaled(Matrix3By3 scale) {
+        return new Vector3(
+                x*scale.a1.x + y*scale.a2.x + z*scale.a3.x,
+                x*scale.a1.y + y*scale.a2.y + z*scale.a3.y,
+                x*scale.a1.z + y*scale.a2.z + z*scale.a3.z);
     }
 
     /**
@@ -362,6 +382,25 @@ public class Vector3 extends rlbot.vector.Vector3 {
 
     public Quaternion toQuaternion() {
         return new Quaternion(0, this);
+    }
+
+    public DesiredVector3 toDesiredVector3() {
+        return new DesiredVector3((float)x, (float)y, (float)z);
+    }
+
+    public Vector3Int toVector3Int() {
+        return new Vector3Int((int)x, (int)y, (int)z);
+    }
+
+    public rlbot.vector.Vector3 toFlatVector() {
+        return new rlbot.vector.Vector3((float)-x, (float)y, (float)z);
+    }
+
+    public Matrix3By3 asUnitMatrix() {
+        return new Matrix3By3(
+                new Vector3(x, 0, 0),
+                new Vector3(0, y, 0),
+                new Vector3(0, 0, z));
     }
 
     public Vector3 findRotator(Vector3 v) {

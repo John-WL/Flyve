@@ -5,11 +5,9 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
-import rlbotexample.input.dynamic_data.car.Orientation;
 import rlbotexample.input.prediction.ExperimentalCurlingTrajectory3D;
 import rlbotexample.output.BotOutput;
 import util.game_constants.RlConstants;
-import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
 
 import java.awt.*;

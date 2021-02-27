@@ -25,7 +25,7 @@ public class BoostPadTimerTest extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
 
         for(BoostPad pad: BoostManager.boostPads) {
-            renderer.drawString3d(Double.toString(pad.timeBeforeReloaded), Color.YELLOW, pad.location, 1, 1);
+            renderer.drawString3d(Double.toString(pad.timeBeforeReloaded), Color.YELLOW, pad.location.toFlatVector(), 1, 1);
         }
     }
 }

@@ -1,6 +1,6 @@
 package rlbotexample.input.dynamic_data.ground;
 
-import util.math.LinearApproximator;
+import util.math.linear_transform.LinearApproximator;
 import util.math.vector.Vector2;
 
 public class DecelerationDueToTurningFinder {

@@ -12,7 +12,6 @@ import util.math.vector.Vector3;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Comparator;
 import java.util.Optional;
 
 public class BoostPadDijkstraPathFinderTest extends FlyveBot {
@@ -32,9 +31,8 @@ public class BoostPadDijkstraPathFinderTest extends FlyveBot {
         Optional<BoostPad> closestFromBallOpt = BoostManager.closestActivePadFrom(input.ball.position);
         closestFromPlayerOpt.ifPresent(closestPadFromPlayer -> closestFromBallOpt.ifPresent(closestPadFromBall -> {
             List<BoostPad> path = BoostPadNavigation.dijkstraPathFinding(closestPadFromPlayer, closestPadFromBall, input);
-
             for(int i = 1; i < path.size(); i++) {
-                renderer.drawLine3d(Color.cyan, path.get(i-1).location.plus(new Vector3(0, 0, 50)), path.get(i).location.plus(new Vector3(0, 0, 50)));
+                renderer.drawLine3d(Color.cyan, path.get(i-1).location.plus(new Vector3(0, 0, 50)).toFlatVector(), path.get(i).location.plus(new Vector3(0, 0, 50)).toFlatVector());
             }
         }));
     }

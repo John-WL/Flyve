@@ -61,6 +61,6 @@ public class DribbleAvoidingOpponent extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         //dribbleController.debug(renderer, input);
-        renderer.drawLine3d(Color.CYAN, input.ball.position, intermediateBallDestination);
+        renderer.drawLine3d(Color.CYAN, input.ball.position.toFlatVector(), intermediateBallDestination.toFlatVector());
     }
 }
