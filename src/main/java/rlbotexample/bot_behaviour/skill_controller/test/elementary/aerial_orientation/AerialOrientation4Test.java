@@ -23,15 +23,17 @@ public class AerialOrientation4Test extends FlyveBot {
     private int frameCounter = 8*(int)RlConstants.BOT_REFRESH_RATE;
 
     public AerialOrientation4Test() {
-        //gameSituationHandler = new CircularTrainingPack();
-        //gameSituationHandler.add(new AerialOrientationTesterSetup());
+        gameSituationHandler = new CircularTrainingPack();
+        gameSituationHandler.add(new AerialOrientationTesterSetup());
         aerialOrientationController4 = new AerialOrientationController4(this);
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        //gameSituationHandler.update();
+        if(gameSituationHandler.updatingWontBreakBot(input)) {
+            gameSituationHandler.update();
+        }
 
         frameCounter++;
         if(frameCounter*RlConstants.BOT_REFRESH_TIME_PERIOD > 8) {
@@ -39,10 +41,10 @@ public class AerialOrientation4Test extends FlyveBot {
             noseOrientation = new Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1);
             roofOrientation = new Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1);
         }
-        aerialOrientationController4.setNoseOrientation(noseOrientation);
-        aerialOrientationController4.setRollOrientation(roofOrientation);
-        //aerialOrientationController2.setNoseOrientation(input.allCars.get(1-input.playerIndex).position);
-        //aerialOrientationController2.setRollOrientation(input.allCars.get(1-input.playerIndex).position);
+        //aerialOrientationController4.setNoseOrientation(noseOrientation);
+        //aerialOrientationController4.setRollOrientation(roofOrientation);
+        aerialOrientationController4.setNoseOrientation(input.allCars.get(1-input.playerIndex).orientation.noseVector);
+        aerialOrientationController4.setRollOrientation(input.allCars.get(1-input.playerIndex).orientation.roofVector);
         aerialOrientationController4.updateOutput(input);
 
         return super.output();

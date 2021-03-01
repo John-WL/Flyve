@@ -1,7 +1,7 @@
 package util.math.vector;
 
 public class MovingPoint {
-    public Ray3 currentState;
+    public Ray3 physicsState;
     public double time;
 
     public MovingPoint() {
@@ -9,7 +9,7 @@ public class MovingPoint {
     }
 
     public MovingPoint(Ray3 currentState, double time) {
-        this.currentState = currentState;
+        this.physicsState = currentState;
         this.time = time;
     }
 }

@@ -16,7 +16,7 @@ public class BallAerialTrajectory {
     }
 
     public BallData compute(double deltaTime) {
-        final Vector3 newPosition = ballTrajectory.compute(deltaTime);
+        final Vector3 newPosition = ballTrajectory.apply(deltaTime);
         final Vector3 newVelocity = ballTrajectory.derivative(deltaTime);
 
         return new BallData(newPosition, newVelocity, spin, 0);

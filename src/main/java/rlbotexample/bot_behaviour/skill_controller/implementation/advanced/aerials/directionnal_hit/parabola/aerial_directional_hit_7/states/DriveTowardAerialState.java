@@ -54,7 +54,7 @@ public class DriveTowardAerialState implements State {
                 0);
 
         approximatePlayerPositionAtImpact = approximatePlayerTrajectory
-                .compute(aerialInfo.timeOfFlight);
+                .apply(aerialInfo.timeOfFlight);
         approximatePlayerVelocityAtImpact = approximatePlayerTrajectory
                 .derivative(aerialInfo.timeOfFlight);
 

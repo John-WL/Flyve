@@ -31,12 +31,12 @@ public class Trajectory3DTrimmingTesting extends FlyveBot {
 
         double maxBallHeight = RlConstants.BALL_RADIUS + (RlConstants.OCTANE_ROOF_ELEVATION_WHEN_DRIVING);
         Trajectory3D ballsReachableFromGround = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.offset.z > maxBallHeight);
+                .remove(movingPoint -> movingPoint.physicsState.offset.z > maxBallHeight);
         MovingPoint firstValidBall = ballsReachableFromGround
                 .first(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
 
         if(firstValidBall != null) {
-            shapeRenderer.renderCross(firstValidBall.currentState.offset, Color.MAGENTA);
+            shapeRenderer.renderCross(firstValidBall.physicsState.offset, Color.MAGENTA);
         }
         shapeRenderer.renderTrajectory(ballsReachableFromGround, 4, Color.CYAN);
     }

@@ -33,19 +33,11 @@ public class GroundTrajectory2DPrinting extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         ExtendedCarData car = input.car;
         Vector3 ballDestination = new Vector3(0, 5200, 100);
-        groundTrajectory = new GroundTrajectoryFinder2(new Trajectory3D() {
-                    @Override
-                    public Vector3 compute(double time) {
-                        return input.statePrediction.ballAtTime(time).position;
-                    }
-                },
-                new Trajectory3D() {
-                    @Override
-                    public Vector3 compute(double time) {
-                        Vector3 ballPosition = input.statePrediction.ballAtTime(time).position;
-                        Vector3 offset = ballDestination.minus(ballPosition).normalized();
-                        return offset;
-                    }
+        groundTrajectory = new GroundTrajectoryFinder2(time -> input.statePrediction.ballAtTime(time).position,
+                time -> {
+                    Vector3 ballPosition = input.statePrediction.ballAtTime(time).position;
+                    Vector3 offset = ballDestination.minus(ballPosition).normalized();
+                    return offset;
                 }).findGroundTrajectory2DInfo(car);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         shapeRenderer.renderGroundTrajectory2D(groundTrajectory,

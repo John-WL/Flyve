@@ -16,7 +16,7 @@ public class PlayerPredictedAerialTrajectory {
     }
 
     public CarData compute(double deltaTime) {
-        final Vector3 newPosition = ballTrajectory.compute(deltaTime);
+        final Vector3 newPosition = ballTrajectory.apply(deltaTime);
         final Vector3 newVelocityUncapped = ballTrajectory.derivative(deltaTime);
 
         // make sure to take into consideration that the car can't exceed 2300 uu/s

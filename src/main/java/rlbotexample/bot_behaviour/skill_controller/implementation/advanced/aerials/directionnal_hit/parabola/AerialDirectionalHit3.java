@@ -61,7 +61,7 @@ public class AerialDirectionalHit3 extends SkillController {
                                             / (2 * a);
 
             futureBallPosition = input.statePrediction.ballAtTime(timeToReachAerial).position;
-            futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, Vector3.UP_VECTOR.scaled(-RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeToReachAerial);
+            futurePlayerPosition = new Parabola3D(input.car.position, input.car.velocity, Vector3.UP_VECTOR.scaled(-RlConstants.NORMAL_GRAVITY_STRENGTH), 0).apply(timeToReachAerial);
 
             Vector3 offset = futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
             playerDestination = futureBallPosition.plus(offset);

@@ -39,12 +39,7 @@ public class AerialInfo {
     }
 
     private static double approximateTimeToReachBall(DataPacket input) {
-        AerialAccelerationFinder aerialAccelerationFinder = new AerialAccelerationFinder(new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return input.statePrediction.ballAtTime(time).position;
-            }
-        });
+        AerialAccelerationFinder aerialAccelerationFinder = new AerialAccelerationFinder(time -> input.statePrediction.ballAtTime(time).position);
         AerialTrajectoryInfo aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);
 
         return aerialInfo.timeOfFlight;

@@ -22,25 +22,8 @@ public class GroundDirectionalHit4Test extends FlyveBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        groundDirectionalHit.setDestinationTrajectory(
-                new Trajectory3D() {
-                      @Override
-                      public Vector3 compute(double time) {
-                          Vector3 ballPosition = input.statePrediction.ballAtTime(time).position;
-                          //if(ballPosition.z < 200) {
-                              return ballPosition;
-                          //}
-                          //return new Vector3(Double.NaN, Double.NaN, Double.NaN);
-                      }
-                }
-        );
-        groundDirectionalHit.setOrientationTrajectory(new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return ballDestination.minus(input.statePrediction.ballAtTime(time).position).normalized();
-            }
-        });
-
+        groundDirectionalHit.setDestinationTrajectory(input.statePrediction.ballAsTrajectory());
+        groundDirectionalHit.setOrientationTrajectory(time -> ballDestination.minus(input.statePrediction.ballAtTime(time).position).normalized());
         groundDirectionalHit.updateOutput(input);
 
         return super.output();

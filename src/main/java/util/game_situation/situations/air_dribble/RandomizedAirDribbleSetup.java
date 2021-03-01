@@ -15,7 +15,7 @@ public class RandomizedAirDribbleSetup extends GameSituation {
 
         float basePositionX = randomRange(-2000, 2000);
         float basePositionY = randomRange(-3000, 3000);
-        float basePositionZ = randomRange(800, 1500);
+        float basePositionZ = randomRange(400, 1000);
         float baseSpeedX = randomRange(-800, 800);
         float baseSpeedY = randomRange(-800, 800);
         float baseSpeedZ = randomRange(0, 500);

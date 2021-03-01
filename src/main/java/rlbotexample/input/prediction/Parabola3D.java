@@ -23,7 +23,8 @@ public class Parabola3D implements Trajectory3D {
         this.airDragCoefficient = 0;
     }
 
-    public Vector3 compute(double deltaTime) {
+    @Override
+    public Vector3 apply(Double deltaTime) {
         final Vector3 deltaVelocity = initialVelocity.scaled(deltaTime * (1-airDragCoefficient));
         final double accelerationFactor = deltaTime * deltaTime / 2;
         final Vector3 deltaDeltaAcceleration = acceleration.scaled(accelerationFactor);

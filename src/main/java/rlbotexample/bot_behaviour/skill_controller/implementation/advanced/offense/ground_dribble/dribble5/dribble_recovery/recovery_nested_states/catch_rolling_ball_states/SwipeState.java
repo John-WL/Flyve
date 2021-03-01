@@ -47,11 +47,11 @@ public class SwipeState implements State {
                     .rotate(Vector3.UP_VECTOR.scaled(Math.PI*time * leftOrRight))
                     .plus(RawBallTrajectory.ballAtTime(time).position);
         })
-        .remove(movingPoint -> movingPoint.currentState.offset.minus(input.car.position).magnitude() < 100)
+        .remove(movingPoint -> movingPoint.physicsState.offset.minus(input.car.position).magnitude() < 100)
         .remove(movingPoint -> movingPoint.time < 0.1)
         .first(5, RlConstants.BOT_REFRESH_TIME_PERIOD);
 
-        double distanceFromBall = destination.currentState.offset
+        double distanceFromBall = destination.physicsState.offset
                 .distance(input.car.position);
         double desiredSpeed = distanceFromBall/destination.time;
         //System.out.println(destination.time);
@@ -63,7 +63,7 @@ public class SwipeState implements State {
         drivingSpeedController.setSpeed(desiredSpeed);
         drivingSpeedController.updateOutput(input);
 
-        groundOrientationController.setDestination(destination.currentState.offset);
+        groundOrientationController.setDestination(destination.physicsState.offset);
         groundOrientationController.updateOutput(input);
     }
 
@@ -88,7 +88,7 @@ public class SwipeState implements State {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
         if(destination != null) {
-            shapeRenderer.renderCross(destination.currentState.offset, Color.magenta);
+            shapeRenderer.renderCross(destination.physicsState.offset, Color.magenta);
         }
     }
 }

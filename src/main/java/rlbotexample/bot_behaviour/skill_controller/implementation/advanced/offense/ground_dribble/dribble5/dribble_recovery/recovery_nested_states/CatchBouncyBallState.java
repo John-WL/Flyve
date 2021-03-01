@@ -44,9 +44,9 @@ public class CatchBouncyBallState implements State {
     public void exec(DataPacket input) {
         final double maxBallHeight = RlConstants.BALL_RADIUS + (RlConstants.OCTANE_ROOF_ELEVATION_WHEN_DRIVING);
         firstValidBall = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.offset.z > maxBallHeight)
+                .remove(movingPoint -> movingPoint.physicsState.offset.z > maxBallHeight)
                 .remove(movingPoint -> input.car.position
-                        .distance(movingPoint.currentState.offset) / movingPoint.time
+                        .distance(movingPoint.physicsState.offset) / movingPoint.time
                         > RlConstants.CAR_MAX_SPEED/2)
                 .first(5, 1.0/RawBallTrajectory.PREDICTION_REFRESH_RATE);
         // if there's no valid ball, then we can't do anything, so we return
@@ -57,10 +57,10 @@ public class CatchBouncyBallState implements State {
         }
         double timeOfHit = Trajectory3D.findTimeOfClosestApproachBetween(
                 RawBallTrajectory.trajectory,
-                t -> firstValidBall.currentState.offset,
+                t -> firstValidBall.physicsState.offset,
                 5,
                 RawBallTrajectory.PREDICTION_REFRESH_RATE);
-        actualDestination = firstValidBall.currentState.offset
+        actualDestination = firstValidBall.physicsState.offset
                 .plus(new Vector3(masterDribbleController.throttleAmount, masterDribbleController.steerAmount, 0)
                         .rotate(Vector3.UP_VECTOR
                                 .scaled(input.car.orientation.noseVector
@@ -96,7 +96,7 @@ public class CatchBouncyBallState implements State {
     public void debug(DataPacket input, Renderer renderer) {
         renderer.drawString3d("catch bouncy ball", Color.YELLOW, input.car.position.toFlatVector(), 1, 1);
         if(firstValidBall != null) {
-            renderer.drawLine3d(Color.blue, actualDestination.toFlatVector(), firstValidBall.currentState.offset.toFlatVector());
+            renderer.drawLine3d(Color.blue, actualDestination.toFlatVector(), firstValidBall.physicsState.offset.toFlatVector());
             renderer.drawRectangle3d(Color.blue, actualDestination.toFlatVector(), 10, 10, true);
         }
     }

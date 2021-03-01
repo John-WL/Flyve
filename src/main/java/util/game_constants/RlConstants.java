@@ -24,6 +24,7 @@ public class RlConstants {
     public static final double CAR_MAX_BOOST_AMOUNT = 100;
     public static final double CAR_MASS = 180;
     public static final double OCTANE_ROOF_ELEVATION_WHEN_DRIVING = 55.934654;
+    public static final double OCTANE_POSITION_ELEVATION_WHEN_DRIVING = 17.01;
 
     public static final double ACCELERATION_DUE_TO_BOOST = 991.666;
     public static final double ACCELERATION_DUE_TO_JUMP = 291.667;

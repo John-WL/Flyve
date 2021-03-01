@@ -99,8 +99,8 @@ public class AerialDirectionalHit5 extends SkillController {
         };
 
         targetTrajectory = RawBallTrajectory.trajectory.modify(movingPoint -> {
-            Vector3 offset = movingPoint.currentState.offset.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
-            return movingPoint.currentState.offset.plus(offset);
+            Vector3 offset = movingPoint.physicsState.offset.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS);
+            return movingPoint.physicsState.offset.plus(offset);
         });
     }
 

@@ -28,13 +28,13 @@ public class CushionBouncyBall extends SkillController {
     public void updateOutput(DataPacket input) {
         groundTrajectoryFollower.pathToFollow = RawBallTrajectory.trajectory
                 .modify(movingPoint -> {
-                    Vector3 offset = new Vector3(input.car.position.minus(movingPoint.currentState.offset).flatten(), 0)
+                    Vector3 offset = new Vector3(input.car.position.minus(movingPoint.physicsState.offset).flatten(), 0)
                             .scaledToMagnitude(RlConstants.BALL_RADIUS*1.4);
-                    return movingPoint.currentState.offset.plus(offset);
+                    return movingPoint.physicsState.offset.plus(offset);
                 });
         groundTrajectoryFollower.pathToFollow = groundTrajectoryFollower.pathToFollow
-                .keep(movingPoint -> movingPoint.currentState.offset.z < 150
-                        && movingPoint.currentState.direction.z < -300);
+                .keep(movingPoint -> movingPoint.physicsState.offset.z < 150
+                        && movingPoint.physicsState.direction.z < -300);
         groundTrajectoryFollower.boostEnabled(false);
         groundTrajectoryFollower.updateOutput(input);
     }
@@ -47,7 +47,7 @@ public class CushionBouncyBall extends SkillController {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
-            shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
+            shapeRenderer.renderCross(movingPoint.physicsState.offset, Color.CYAN);
         }
         shapeRenderer.renderTrajectory(groundTrajectoryFollower.pathToFollow, 5, Color.YELLOW);
     }

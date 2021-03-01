@@ -22,7 +22,7 @@ public class SpeedFlip extends JumpType {
         updateCurrentJumpCallCounter();
 
         if(this.getCurrentJumpCallCounter() == JUMP_TIME_FRAMES[0]) {
-            savedDesiredFrontOrientation = desiredFrontOrientation;
+            savedDesiredFrontOrientation = desiredFrontOrientation.normalized();
             output.pitch(-1);
             output.yaw(savedDesiredFrontOrientation.y > 0 ? 1:-1);
             output.roll(0);

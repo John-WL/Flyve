@@ -5,7 +5,7 @@ import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
 public abstract class JumpType {
-    private final int jumpDuration;
+    private int jumpDuration;
     private int currentJumpCallCounter;
 
     public JumpType(int jumpDuration) {
@@ -14,6 +14,10 @@ public abstract class JumpType {
     }
 
     public abstract void jump(DataPacket input, BotOutput output, Vector3 jumpDestination);
+
+    public void setJumpDuration(int duration) {
+        this.jumpDuration = duration;
+    }
 
     public void updateCurrentJumpCallCounter() {
         currentJumpCallCounter++;

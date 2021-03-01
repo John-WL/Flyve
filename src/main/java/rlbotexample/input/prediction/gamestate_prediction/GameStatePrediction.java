@@ -4,6 +4,7 @@ import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.dynamic_data.ball.BallData;
 import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
+import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.geometry.StandardMapSplitMesh;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.BallAerialTrajectory;
@@ -55,12 +56,7 @@ public class GameStatePrediction {
     }
 
     public Trajectory3D ballAsTrajectory() {
-        return new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return ballAtTime(time).position;
-            }
-        };
+        return time -> ballAtTime(time).position;
     }
 
     public BallData ballAtInterpolatedTime(final double deltaTime) {
@@ -108,6 +104,19 @@ public class GameStatePrediction {
         }
 
         return Double.MAX_VALUE;
+    }
+
+    public Ray3 findLandingNormal(ExtendedCarData car) {
+        double landingTime = carBounceTimes(car);
+        CarData landingCar = carsAtTime(landingTime).get(car.playerIndex);
+        Vector3 landingPosition = landingCar.position;
+        HitBox collisionHitBox = car.hitBox.generateHypotheticalHitBox(landingPosition);
+        return StandardMapSplitMesh.STANDARD_MAP_MESH
+                .collideWith(collisionHitBox);
+    }
+
+    public BallData nextBallBounceOnMap() {
+        return ballAtTime(ballBounceTimes().get(0));
     }
 
     public double timeOfCollisionBetweenCarAndBall(final int playerIndex) {

@@ -26,10 +26,10 @@ public class GroundTrajectoryFollowerTest extends FlyveBot {
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         trajectoryFollower.setTrajectory(RawBallTrajectory.trajectory
-                .modify(movingPoint -> movingPoint.currentState.offset
+                .modify(movingPoint -> movingPoint.physicsState.offset
                         .plus(Vector3.DOWN_VECTOR.scaled(RlConstants.BALL_RADIUS))
                         .plus(new Vector3(70, 0, 0)))
-        .keep(movingPoint -> movingPoint.currentState.offset.z < 10));
+        .keep(movingPoint -> movingPoint.physicsState.offset.z < 10));
         trajectoryFollower.updateOutput(input);
 
         return super.output();
@@ -42,7 +42,7 @@ public class GroundTrajectoryFollowerTest extends FlyveBot {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         MovingPoint movingPoint = trajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
-            shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
+            shapeRenderer.renderCross(movingPoint.physicsState.offset, Color.CYAN);
         }
     }
 }

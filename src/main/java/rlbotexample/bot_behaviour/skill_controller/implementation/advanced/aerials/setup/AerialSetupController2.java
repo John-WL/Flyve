@@ -4,7 +4,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit3;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.*;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
@@ -85,7 +85,7 @@ public class AerialSetupController2 extends SkillController {
         }
 
         if(isAerialing) {
-            aerialDirectionalHit2.setBallDestination(ballDestination);
+            //aerialDirectionalHit2.setBallDestination(ballDestination);
             aerialDirectionalHit2.updateOutput(input);
         }
     }
@@ -109,14 +109,14 @@ public class AerialSetupController2 extends SkillController {
     private Vector3 playerAerialTrajectory(double timeInTheFuture, DataPacket input) {
         double timeToReachDesiredOrientation = input.car.orientation.noseVector.flatten().magnitude()*0.45;
         if(timeInTheFuture < timeToReachDesiredOrientation) {
-            return jumpPhaseTrajectory.compute(timeInTheFuture);
+            return jumpPhaseTrajectory.apply(timeInTheFuture);
         }
         else {
-            Parabola3D continuation = new Parabola3D(jumpPhaseTrajectory.compute(timeToReachDesiredOrientation),
+            Parabola3D continuation = new Parabola3D(jumpPhaseTrajectory.apply(timeToReachDesiredOrientation),
                     jumpPhaseTrajectory.derivative(timeToReachDesiredOrientation),
                     new Vector3(0, 0, RlConstants.ACCELERATION_DUE_TO_BOOST - RlConstants.NORMAL_GRAVITY_STRENGTH),
                     0);
-            return continuation.compute(timeInTheFuture - timeToReachDesiredOrientation);
+            return continuation.apply(timeInTheFuture - timeToReachDesiredOrientation);
         }
     }
 

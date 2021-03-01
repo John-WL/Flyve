@@ -8,6 +8,8 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jum
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.jump.types.*;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
+import util.game_constants.RlConstants;
+import util.math.vector.Vector;
 import util.math.vector.Vector3;
 
 public class JumpTest extends FlyveBot {
@@ -23,10 +25,15 @@ public class JumpTest extends FlyveBot {
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         // do the thing
 
-        //if(System.currentTimeMillis() % 1600 < 800) {
+        //Vector3 destination = input.ball.position;
+        Vector3 destination = new Vector3();
+
+        //if(System.currentTimeMillis() % 3000 < 1500) {
             jumpController.setFirstJumpType(new SimpleJump(), input);
-            jumpController.setSecondJumpType(new Stall(), input);
-            jumpController.setJumpDestination(new Vector3());
+            DoubleWaveDash doubleWaveDash = new DoubleWaveDash(this, input);
+            //waveDash.setDesiredFrontOrientation(destination);
+            jumpController.setSecondJumpType(doubleWaveDash, input);
+            jumpController.setJumpDestination(destination);
             jumpController.updateOutput(input);
             output().drift(true);
         //}

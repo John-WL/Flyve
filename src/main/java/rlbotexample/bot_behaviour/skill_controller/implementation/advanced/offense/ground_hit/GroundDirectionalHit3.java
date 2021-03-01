@@ -49,19 +49,9 @@ public class GroundDirectionalHit3 extends SkillController {
 
         GroundTrajectoryFinder drivingTrajectoryFinder = new GroundTrajectoryFinder(
         // for the bot final destination at any point in time
-        new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return input.statePrediction.ballAtTime(time).position;
-            }
-        },
+                time -> input.statePrediction.ballAtTime(time).position,
         // the bot orientation at any destination point in time
-        new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return ballDestination;
-            }
-        });
+                time -> ballDestination);
 
         info = drivingTrajectoryFinder.findDrivingTrajectoryInfo(input);
 

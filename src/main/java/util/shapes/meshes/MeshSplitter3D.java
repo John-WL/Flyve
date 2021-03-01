@@ -62,7 +62,8 @@ public class MeshSplitter3D {
 
         // remove duplicate triangles from the calculations because hey, this is expensive, you know?
         Set<Triangle3D> removedTriangleDuplicates = new HashSet<>();
-        for(Mesh3D mesh: meshRegions) {
+        final List<Mesh3D> meshCopy = new ArrayList<>(meshRegions);
+        for(Mesh3D mesh: meshCopy) {
             if(mesh != null) {
                 removedTriangleDuplicates.addAll(mesh.triangleList);
             }
@@ -125,8 +126,9 @@ public class MeshSplitter3D {
         }
 
         // remove duplicate triangles from the calculations because hey, this is expensive, you know?
-        Set<Triangle3D> removedTriangleDuplicates = new HashSet<>();
-        for(Mesh3D mesh: meshRegions) {
+        final Set<Triangle3D> removedTriangleDuplicates = new HashSet<>();
+        final List<Mesh3D> meshCopy = new ArrayList<>(meshRegions);
+        for(Mesh3D mesh: meshCopy) {
             if(mesh != null) {
                 removedTriangleDuplicates.addAll(mesh.triangleList);
             }

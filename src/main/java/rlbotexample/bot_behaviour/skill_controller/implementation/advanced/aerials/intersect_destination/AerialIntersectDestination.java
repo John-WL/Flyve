@@ -60,7 +60,7 @@ public class AerialIntersectDestination extends SkillController {
 
         // get the future player position
         //Vector3 playerFuturePosition = predictions.aerialKinematicBody(playerPosition, playerSpeed, timeBeforeReachingDestination).getPosition();
-        Vector3 playerFuturePosition = new Parabola3D(playerPosition, playerSpeed, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).compute(timeBeforeReachingDestination);
+        Vector3 playerFuturePosition = new Parabola3D(playerPosition, playerSpeed, new Vector3(0, 0, -RlConstants.NORMAL_GRAVITY_STRENGTH), 0).apply(timeBeforeReachingDestination);
 
         // get the orientation we should have to hit the getNativeBallPrediction
         Vector3 orientation = destination.minus(playerFuturePosition);

@@ -77,9 +77,9 @@ public class ShapeRenderer {
     }
 
     public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color color) {
-        Vector3 previousPosition = parabola.compute(0);
+        Vector3 previousPosition = parabola.apply(0.0);
         for(int i = 1; i < 600; i++) {
-            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/600);
+            Vector3 nextPosition = parabola.apply(i*amountOfTimeToRender/600);
             if(nextPosition != null && previousPosition != null) {
                 renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             }
@@ -88,13 +88,13 @@ public class ShapeRenderer {
     }
 
     public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color fromColor, Color toColor) {
-        Vector3 previousPosition = parabola.compute(0);
+        Vector3 previousPosition = parabola.apply(0.0);
         for(int i = 1; i < 200; i++) {
             Color color = new Color((int)(fromColor.getRed()*(1-(i/200.0)) + toColor.getRed()*(i/200.0)),
                     (int)(fromColor.getGreen()*(1-(i/200.0)) + toColor.getGreen()*(i/200.0)),
                     (int)(fromColor.getBlue()*(1-(i/200.0)) + toColor.getBlue()*(i/200.0)));
 
-            Vector3 nextPosition = parabola.compute(i*amountOfTimeToRender/200);
+            Vector3 nextPosition = parabola.apply(i*amountOfTimeToRender/200);
             if(nextPosition != null && previousPosition != null) {
                 renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             }
@@ -103,10 +103,10 @@ public class ShapeRenderer {
     }
 
     public void renderTrajectory(Trajectory3D parabola, double fromTime, double toTime, Color color) {
-        Vector3 previousPosition = parabola.compute(fromTime);
+        Vector3 previousPosition = parabola.apply(fromTime);
         for(int i = 1; i < 40; i++) {
             double timeToCompute = fromTime + ((i/40.0)*(toTime-fromTime));
-            Vector3 nextPosition = parabola.compute(timeToCompute);
+            Vector3 nextPosition = parabola.apply(timeToCompute);
             renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
             previousPosition = nextPosition;
         }

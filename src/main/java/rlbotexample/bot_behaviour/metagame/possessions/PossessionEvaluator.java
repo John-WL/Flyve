@@ -3,10 +3,12 @@ package rlbotexample.bot_behaviour.metagame.possessions;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
 import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
+import rlbotexample.input.dynamic_data.car.CarData;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder2;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
+import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
 public class PossessionEvaluator {
@@ -31,10 +33,19 @@ public class PossessionEvaluator {
     */
 
     public static double possessionRatio(int indexOfPlayer, int indexOfOpponent, DataPacket input) {
-        return - singlePlayerPossessionValue2(indexOfPlayer, input) + singlePlayerPossessionValue2(indexOfOpponent, input);
+        return singlePlayerPossessionValue(indexOfPlayer, input) - singlePlayerPossessionValue(indexOfOpponent, input);
     }
 
-    private static double singlePlayerPossessionValue(int indexOfPlayer, DataPacket input) {
+    public static double singlePlayerPossessionValue(int indexOfPlayer, DataPacket input) {
+        CarData carData = input.allCars.get(indexOfPlayer);
+        double projectedPosition = input.ball.position.minus(carData.position)
+                .magnitude();
+        double projectedVelocity = input.ball.velocity.minus(carData.velocity)
+                .dotProduct(input.ball.position.minus(carData.position).normalized());
+        return -projectedPosition - projectedVelocity*4;
+    }
+
+    /*private static double singlePlayerPossessionValue(int indexOfPlayer, DataPacket input) {
         Vector3 futurePositionOfBall = input.statePrediction.ballAtTime(1).position;
         //Vector3 futurePositionOfPlayer = input.statePrediction.carsAtTime(1).get(indexOfPlayer).position;
 
@@ -48,9 +59,9 @@ public class PossessionEvaluator {
                 .dotProduct(input.allCars.get(indexOfPlayer).position.minus(goalPosition).normalized())*10
                 + playerNoseOrientation.dotProduct(futurePositionOfBall.minus(input.allCars.get(indexOfPlayer).position))*400      // handle orientation of players towards ball
                 + playerNoseOrientation.dotProduct(input.car.position.minus(goalPosition).normalized())*200;    // handle orientation of players on the field
-    }
+    }*/
 
-    private static double singlePlayerPossessionValue2(int indexOfPlayer, DataPacket input) {
+    /*private static double singlePlayerPossessionValue2(int indexOfPlayer, DataPacket input) {
         AerialTrajectoryInfo at = new AerialAccelerationFinder(RawBallTrajectory.trajectory).findAerialTrajectoryInfo(0, input.allCars.get(indexOfPlayer));
         double distanceWithBall = (input.allCars.get(indexOfPlayer).position.minus(input.ball.position).magnitude())/2000;
 
@@ -58,7 +69,7 @@ public class PossessionEvaluator {
 
         return at.timeOfFlight
                 + distanceWithBall;
-    }
+    }*/
 
     /*public static double possessionRatio(int indexOfPlayer, int indexOfOpponent, DataPacket input) {
         Vector3 aerialKinematicBody = input.allCars.get(indexOfPlayer).position;

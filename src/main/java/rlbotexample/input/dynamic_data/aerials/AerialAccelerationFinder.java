@@ -1,8 +1,6 @@
 package rlbotexample.input.dynamic_data.aerials;
 
-import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
@@ -19,6 +17,10 @@ public class AerialAccelerationFinder {
     }
 
     private Vector3 findConstantAccelerationNeededToReachAerialDestination(CarData carData, Vector3 xf, double t) {
+        // if we are considering a time when the ball is considered invalid
+        if(xf == null) {
+            return new Vector3();
+        }
         Vector3 xi = carData.position;
         // a bit of ugliness... Basically, handle jump initial velocity if we can jump.
         // the problem with this is that even if we have the second jump, we don't necessarily want to use it straight away.
@@ -50,7 +52,7 @@ public class AerialAccelerationFinder {
 
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
-            Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.compute(currentTestTime), currentTestTime);
+            Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.apply(currentTestTime), currentTestTime);
             Vector3 testAccelerationWithGravity = testAcceleration.plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
             if(testAccelerationWithGravity.magnitude() < desiredAcceleration) {
                 return new AerialTrajectoryInfo(testAccelerationWithGravity, currentTestTime);
@@ -63,7 +65,7 @@ public class AerialAccelerationFinder {
     public AerialTrajectoryInfo findAerialTrajectoryInfo(double timeToTryFirst, CarData carData) {
         double maxAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST*BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
 
-        Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.compute(timeToTryFirst), timeToTryFirst)
+        Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.apply(timeToTryFirst), timeToTryFirst)
                 .plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
 
         if(testAcceleration.magnitude() < maxAcceleration) {
@@ -75,17 +77,17 @@ public class AerialAccelerationFinder {
 
     private AerialTrajectoryInfo findAerialTrajectoryInfo2(CarData carData) {
         Trajectory3D accelerationCurve = time ->
-                findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.compute(time), time)
+                findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.apply(time), time)
                         .plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
 
         accelerationCurve
                 .keep(movingPoint ->
-                        movingPoint.currentState.offset.magnitudeSquared()
+                        movingPoint.physicsState.offset.magnitudeSquared()
                                 < RlConstants.ACCELERATION_DUE_TO_BOOST * RlConstants.ACCELERATION_DUE_TO_BOOST);
         MovingPoint accelerationInfo = accelerationCurve.first(5, 120);
 
         if(accelerationInfo != null) {
-            return new AerialTrajectoryInfo(accelerationInfo.currentState.offset, accelerationInfo.time);
+            return new AerialTrajectoryInfo(accelerationInfo.physicsState.offset, accelerationInfo.time);
         }
         return new AerialTrajectoryInfo();
     }

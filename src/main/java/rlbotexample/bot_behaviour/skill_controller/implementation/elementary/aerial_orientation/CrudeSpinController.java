@@ -17,6 +17,7 @@ public class CrudeSpinController extends SkillController {
     private BotBehaviour bot;
     private Vector3 desiredSpin;
 
+    // holy fuck this shit is precise
     public CrudeSpinController(BotBehaviour bot) {
         this.bot = bot;
         this.desiredSpin = new Vector3();
@@ -31,7 +32,7 @@ public class CrudeSpinController extends SkillController {
         BotOutput output = bot.output();
         Vector3 localDesiredSpin = desiredSpin.toFrameOfReference(input.car.orientation);
         Vector3 localSpin = input.car.spin.toFrameOfReference(input.car.orientation);
-        Vector3 localDeltaSpinAmount = localDesiredSpin.minus(localSpin).scaled(0.05);
+        Vector3 localDeltaSpinAmount = localDesiredSpin.minus(localSpin).scaled(-2);
         //Vector3 localDeltaSpinAmount = new Vector3();
 
         double rollAmount = RollVelocityOffsetFinder.compute(localDesiredSpin.x);
@@ -51,6 +52,6 @@ public class CrudeSpinController extends SkillController {
     @Override
     public void debug(Renderer renderer, DataPacket input) {
         renderer.drawLine3d(Color.GREEN, input.car.position.toFlatVector(), input.car.position.plus(desiredSpin.scaled(100)).toFlatVector());
-        renderer.drawLine3d(Color.blue, input.car.position.toFlatVector(), input.car.position.plus(input.car.spin.scaled(100)).toFlatVector());
+        renderer.drawLine3d(Color.blue, input.car.position.toFlatVector(), input.car.position.plus(input.car.spin.scaled(-100)).toFlatVector());
     }
 }

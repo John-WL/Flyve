@@ -10,8 +10,6 @@ import rlbotexample.input.prediction.Parabola3D;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
-import util.game_constants.RlConstants;
-import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
 
 import java.awt.*;
@@ -34,7 +32,7 @@ public class ConstantAccelerationToReachAerialDestination extends FlyveBot {
 
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        targetTrajectory = time -> destination.compute(time);
+        targetTrajectory = time -> destination.apply(time);
 
         aerialAccelerationFinder = new AerialAccelerationFinder(targetTrajectory);
         aerialInfo = aerialAccelerationFinder.findAerialTrajectoryInfo(0, input.car);

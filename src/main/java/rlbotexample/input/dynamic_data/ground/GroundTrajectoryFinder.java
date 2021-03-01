@@ -20,13 +20,15 @@ public class GroundTrajectoryFinder {
     public static Circle3D getRightTurnCircleOnDestination(Ray3 ray, Vector3 carRoof, double velocity) {
         double radii = MaxTurnRadiusFinder.compute(velocity);
         Vector3 offset = ray.direction.crossProduct(carRoof).scaled(radii);
-        return new Circle3D(new Ray3(ray.offset.minus(ray.direction.scaled(-velocity/28.75)).plus(offset), carRoof), radii);
+        //return new Circle3D(new Ray3(ray.offset.minus(ray.direction.scaled(-velocity/28.75)).plus(offset), carRoof), radii);
+        return new Circle3D(new Ray3(ray.offset.plus(offset), carRoof), radii);
     }
 
     public static Circle3D getLeftTurnCircleOnDestination(Ray3 ray, Vector3 carRoof, double velocity) {
         double radii = MaxTurnRadiusFinder.compute(velocity);
         Vector3 offset = ray.direction.crossProduct(carRoof).scaled(radii);
-        return new Circle3D(new Ray3(ray.offset.minus(ray.direction.scaled(-velocity/28.75)).minus(offset), carRoof), radii);
+        //return new Circle3D(new Ray3(ray.offset.minus(ray.direction.scaled(-velocity/28.75)).minus(offset), carRoof), radii);
+        return new Circle3D(new Ray3(ray.offset.minus(offset), carRoof), radii);
     }
 
     public static Trajectory3D getRightTurningTrajectory(ExtendedCarData carData) {
@@ -35,12 +37,9 @@ public class GroundTrajectoryFinder {
 
         double angularMomentum = carData.velocity.dotProduct(carData.orientation.noseVector)/radii;
 
-        return new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                double rads = rightTurn.findRadsFromClosestPoint(carData.position);
-                return rightTurn.findPointOnCircle(rads - (angularMomentum*time));
-            }
+        return time -> {
+            double rads = rightTurn.findRadsFromClosestPoint(carData.position);
+            return rightTurn.findPointOnCircle(rads - (angularMomentum*time));
         };
     }
 
@@ -50,12 +49,9 @@ public class GroundTrajectoryFinder {
 
         double angularMomentum = carData.velocity.dotProduct(carData.orientation.noseVector)/radii;
 
-        return new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                double rads = rightTurn.findRadsFromClosestPoint(carData.position);
-               return rightTurn.findPointOnCircle(rads + (angularMomentum*time));
-            }
+        return time -> {
+            double rads = rightTurn.findRadsFromClosestPoint(carData.position);
+           return rightTurn.findPointOnCircle(rads + (angularMomentum*time));
         };
     }
 
@@ -91,7 +87,7 @@ public class GroundTrajectoryFinder {
 
         for (int i = 1; i < precision * amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
-            DrivingTrajectoryInfo info = findConstantSpeedNeededToReachGroundDestination(input.car, targetTrajectory.compute(currentTestTime), orientationTrajectory.compute(currentTestTime), currentTestTime);
+            DrivingTrajectoryInfo info = findConstantSpeedNeededToReachGroundDestination(input.car, targetTrajectory.apply(currentTestTime), orientationTrajectory.apply(currentTestTime), currentTestTime);
             if(info.averageSpeed < desiredAverageSpeed) {
                 return info;
             }

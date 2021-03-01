@@ -38,9 +38,9 @@ public class GiveItANudgeState implements State {
     @Override
     public void exec(DataPacket input) {
         destination = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.direction.z <= -50)
+                .remove(movingPoint -> movingPoint.physicsState.direction.z <= -50)
                 .remove(movingPoint -> {
-                    double distanceFromBall = movingPoint.currentState.offset
+                    double distanceFromBall = movingPoint.physicsState.offset
                             .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
@@ -48,7 +48,7 @@ public class GiveItANudgeState implements State {
                     return speedToReach > RlConstants.CAR_MAX_SPEED;
                 })
                 .remove(movingPoint -> {
-                    double distanceFromBall = movingPoint.currentState.offset
+                    double distanceFromBall = movingPoint.physicsState.offset
                             .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
@@ -60,7 +60,7 @@ public class GiveItANudgeState implements State {
                                     + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
                 })
                 .remove(movingPoint -> {
-                    double distanceFromBall = movingPoint.currentState.offset
+                    double distanceFromBall = movingPoint.physicsState.offset
                             .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
@@ -71,7 +71,7 @@ public class GiveItANudgeState implements State {
                             + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
                 })
                 .remove(movingPoint -> {
-                    double distanceFromBall = movingPoint.currentState.offset
+                    double distanceFromBall = movingPoint.physicsState.offset
                             .distance(input.car.position);
                     double timeToReach = movingPoint.time;
                     double speedToReach = distanceFromBall/timeToReach;
@@ -84,7 +84,7 @@ public class GiveItANudgeState implements State {
             return;
         }
 
-        double distanceFromBall = destination.currentState.offset
+        double distanceFromBall = destination.physicsState.offset
                 .distance(input.car.position);
         double desiredSpeed = distanceFromBall/destination.time;
         //System.out.println(desiredSpeed);
@@ -96,7 +96,7 @@ public class GiveItANudgeState implements State {
         drivingSpeedController.setSpeed(desiredSpeed);
         drivingSpeedController.updateOutput(input);
 
-        groundOrientationController.setDestination(destination.currentState.offset);
+        groundOrientationController.setDestination(destination.physicsState.offset);
         groundOrientationController.updateOutput(input);
     }
 
@@ -125,7 +125,7 @@ public class GiveItANudgeState implements State {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
         if(destination != null) {
-            shapeRenderer.renderCross(destination.currentState.offset, Color.CYAN);
+            shapeRenderer.renderCross(destination.physicsState.offset, Color.CYAN);
         }
     }
 }

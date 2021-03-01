@@ -39,8 +39,8 @@ public class DribbleUtils {
     public static boolean ballBouncingTooMuchForSwipe(DataPacket input) {
         // remove all the balls that are considered "bouncy"
         Trajectory3D trimmedBallTrajectory = RawBallTrajectory.trajectory
-                .remove(movingPoint -> movingPoint.currentState.offset.z > BALL_POSITION_Z_LIMIT_FOR_SWIPE
-                        || Math.abs(movingPoint.currentState.direction.z) > BALL_VELOCITY_Z_LIMIT_FOR_SWIPE);
+                .remove(movingPoint -> movingPoint.physicsState.offset.z > BALL_POSITION_Z_LIMIT_FOR_SWIPE
+                        || Math.abs(movingPoint.physicsState.direction.z) > BALL_VELOCITY_Z_LIMIT_FOR_SWIPE);
         MovingPoint firstValidMovingPoint = trimmedBallTrajectory
                 .first(
                         input.car.position.minus(input.ball.position).magnitude()/RlConstants.CAR_MAX_SPEED,

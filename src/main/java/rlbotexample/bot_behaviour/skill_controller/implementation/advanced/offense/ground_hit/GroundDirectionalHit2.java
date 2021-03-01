@@ -44,21 +44,18 @@ public class GroundDirectionalHit2 extends SkillController {
     public void updateOutput(DataPacket input) {
         rightTurnTrajectory = GroundTrajectoryFinder.getRightTurningTrajectory(input.car);
         leftTurnTrajectory = GroundTrajectoryFinder.getLeftTurningTrajectory(input.car);
-        Trajectory3D ballTrajectory = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                Vector3 ballPosition = input.statePrediction.ballAtTime(time).position;
-                Vector3 offset = ballDestination.minus(ballPosition).scaledToMagnitude(RlConstants.BALL_RADIUS*0.5);
-                return ballPosition.minus(offset);
-            }
+        Trajectory3D ballTrajectory = time -> {
+            Vector3 ballPosition = input.statePrediction.ballAtTime(time).position;
+            Vector3 offset = ballDestination.minus(ballPosition).scaledToMagnitude(RlConstants.BALL_RADIUS*0.5);
+            return ballPosition.minus(offset);
         };
         double closestApproachTimeForRightTurn = Trajectory3D.findTimeOfClosestApproachBetween(rightTurnTrajectory, ballTrajectory, 5, 0.33333);
         //double closestApproachTimeForRightTurn = 1;
-        Vector3 playerDestinationRight = ballTrajectory.compute(closestApproachTimeForRightTurn).minus(rightTurnTrajectory.compute(closestApproachTimeForRightTurn))
+        Vector3 playerDestinationRight = ballTrajectory.apply(closestApproachTimeForRightTurn).minus(rightTurnTrajectory.apply(closestApproachTimeForRightTurn))
                 .plus(input.car.position);
         double closestApproachTimeForLeftTurn = Trajectory3D.findTimeOfClosestApproachBetween(leftTurnTrajectory, ballTrajectory, 5, 0.33333);
         //double closestApproachTimeForLeftTurn = 1;
-        Vector3 playerDestinationLeft = ballTrajectory.compute(closestApproachTimeForLeftTurn).minus(leftTurnTrajectory.compute(closestApproachTimeForLeftTurn))
+        Vector3 playerDestinationLeft = ballTrajectory.apply(closestApproachTimeForLeftTurn).minus(leftTurnTrajectory.apply(closestApproachTimeForLeftTurn))
                 .plus(input.car.position);
 
         if(playerDestinationRight.magnitude() < playerDestinationLeft.magnitude()) {

@@ -9,6 +9,13 @@ public class LinearApproximationClassPerformanceTesting {
 
         LinearApproximator approximation = new LinearApproximator();
 
+        approximation.sample(new Vector2(-1000, 0));
+        approximation.sample(new Vector2(-1, 10));
+        approximation.sample(new Vector2(0, -10));
+        approximation.sample(new Vector2(1000, 0));
+
+        System.out.println(approximation.compute(2000));
+        /*
         // sampling the function
         int amountOfPoints = 20000;
         double precision = 0.001;
@@ -20,6 +27,6 @@ public class LinearApproximationClassPerformanceTesting {
 
         // testing the function
         double y = approximation.inverse(100);
-        System.out.println(y);
+        System.out.println(y);*/
     }
 }

@@ -58,7 +58,7 @@ public class InitializationState implements State {
 
         //bot.output().steer(isRightTurn ? 1:-1);
 
-        bot.output().boost(true);
+        //bot.output().boost(true);
     }
 
     @Override

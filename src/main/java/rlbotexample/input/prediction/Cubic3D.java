@@ -16,7 +16,8 @@ public class Cubic3D implements Trajectory3D {
         this.accelerationChange = accelerationChange;
     }
 
-    public Vector3 compute(double deltaTime) {
+    @Override
+    public Vector3 apply(Double deltaTime) {
         final Vector3 deltaVelocity = initialVelocity.scaled(deltaTime);
         final Vector3 deltaDeltaAcceleration = acceleration.scaled(deltaTime * deltaTime / 2);
         final Vector3 deltaDeltaDeltaAccelerationChange = accelerationChange.scaled(deltaTime * deltaTime * deltaTime / 6);

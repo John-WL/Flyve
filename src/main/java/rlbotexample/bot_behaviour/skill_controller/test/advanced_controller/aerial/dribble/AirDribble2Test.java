@@ -9,6 +9,7 @@ import rlbotexample.output.BotOutput;
 import util.game_situation.situations.air_dribble.AirDribbleSetup1;
 import util.game_situation.situations.air_dribble.AirDribbleSetup2;
 import util.game_situation.situations.air_dribble.AirDribbleSetup3;
+import util.game_situation.situations.air_dribble.RandomizedAirDribbleSetup;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
@@ -30,11 +31,14 @@ public class AirDribble2Test extends FlyveBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        gameSituationHandler.update();
+        if(gameSituationHandler.updatingWontBreakBot(input)) {
+            gameSituationHandler.update();
+        }
 
-        airDribbleController.setBallDestination(new Vector3(0, 0, 1000));
+        //airDribbleController.setBallDestination(new Vector3(0, 0, 1000));
         //airDribbleController.setBallDestination(new Vector3(1000, 0, 1000));
-        //airDribbleController.setBallDestination(input.allCars.get(1-input.playerIndex).position.plus(new Vector3(0, 0, 300)));
+        airDribbleController.setBallDestination(input.allCars.get(1-input.playerIndex).position.plus(new Vector3(0, 0, 300)));
+        //airDribbleController.setBallDestination(new Vector3(0, 0, Math.sin(System.currentTimeMillis()/2000.0)*600 + 1000));
         airDribbleController.setupAndUpdateOutput(input);
 
         return super.output();
@@ -43,7 +47,6 @@ public class AirDribble2Test extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
-
 
         airDribbleController.debug(renderer, input);
         /*

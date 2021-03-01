@@ -25,6 +25,12 @@ public class LinearApproximator {
     }
 
     public void sample(Vector2 sampledPoint) {
+        for(int i = 0; i < functionSamples.size(); i++) {
+            if(functionSamples.get(i).x > sampledPoint.x) {
+                functionSamples.add(i, sampledPoint);
+                return;
+            }
+        }
         functionSamples.add(sampledPoint);
     }
 
@@ -34,33 +40,43 @@ public class LinearApproximator {
         double closestDistance = Double.MAX_VALUE;
 
         for(Vector2 element: functionSamples) {
-            if(java.lang.Math.abs(element.x) - x < closestDistance) {
+            if(java.lang.Math.abs(element.x - x) < closestDistance) {
                 closestPoint = element;
                 closestDistance = java.lang.Math.abs(element.x - x);
             }
         }
 
-        List<Vector2> functionSamplesCopy = new ArrayList<>(functionSamples);
-        functionSamplesCopy.remove(closestPoint);
-
-        Vector2 secondClosestPoint = new Vector2();
-        double secondClosestDistance = Double.MAX_VALUE;
-
-        for(Vector2 element: functionSamplesCopy) {
-            if(java.lang.Math.abs(element.x - x) < secondClosestDistance) {
-                secondClosestPoint = element;
-                secondClosestDistance = java.lang.Math.abs(element.x - x);
+        Vector2 secondClosestPoint;
+        int indexOfClosestPoint = functionSamples.indexOf(closestPoint);
+        // if the point found is to the right of x
+        if(closestPoint.x - x > 0) {
+            if(indexOfClosestPoint == 0) {
+                secondClosestPoint = functionSamples.get(indexOfClosestPoint+1);
+            }
+            else {
+                secondClosestPoint = functionSamples.get(indexOfClosestPoint-1);
+            }
+        }
+        // if the point found is to the left of x
+        else {
+            if(indexOfClosestPoint == functionSamples.size()-1) {
+                secondClosestPoint = functionSamples.get(indexOfClosestPoint-1);
+            }
+            else {
+                secondClosestPoint = functionSamples.get(indexOfClosestPoint+1);
             }
         }
 
-        double totalClosestDistance = closestDistance + secondClosestDistance;
+        double t = (x - secondClosestPoint.x) / (closestPoint.x - secondClosestPoint.x);
+        return closestPoint.y*t + secondClosestPoint.y*(1-t);
+        /*double totalClosestDistance = closestDistance + secondClosestDistance;
 
         if(totalClosestDistance == 0) {
             return closestPoint.y;
         }
 
         return (closestPoint.y * (1-(closestDistance/totalClosestDistance)))
-                + (secondClosestPoint.y * (1-(secondClosestDistance/totalClosestDistance)));
+                + (secondClosestPoint.y * (1-(secondClosestDistance/totalClosestDistance)));*/
     }
 
     // inverse approximation

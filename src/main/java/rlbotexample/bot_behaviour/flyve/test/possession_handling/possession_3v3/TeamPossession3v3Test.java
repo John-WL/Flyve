@@ -9,6 +9,8 @@ import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.flips_and_flicks.Flick;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble3;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble4;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
@@ -32,7 +34,7 @@ public class TeamPossession3v3Test extends FlyveBot {
     private DriveToDestination driveToDestination2ControllerForLastMan;
     private AerialSetupController2 aerialSetupController;
     private AerialOrientationHandler aerialRecoveryController;
-    private Dribble2 dribbleController;
+    private Dribble3 dribbleController;
     private Flick flickController;
 
     public TeamPossession3v3Test() {
@@ -42,7 +44,7 @@ public class TeamPossession3v3Test extends FlyveBot {
         driveToDestination2ControllerForLastMan = new DriveToDestination(this);
         aerialSetupController = new AerialSetupController2(this);
         aerialRecoveryController = new AerialOrientationHandler(this);
-
+        dribbleController = new Dribble3(this);
     }
 
     // called every frame
@@ -50,7 +52,7 @@ public class TeamPossession3v3Test extends FlyveBot {
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         // do the thing
         playerRoleHandler3V3 = new PlayerRoleHandler3V3(input, input.team);
-        opponentRoleHandler3V3 = new PlayerRoleHandler3V3(input, 1-input.team);
+        //opponentRoleHandler3V3 = new PlayerRoleHandler3V3(input, 1-input.team);
         offensivePlayer = playerRoleHandler3V3.getPlayerFromRole(PlayerRole.OFFENSIVE);
         backerPlayer = playerRoleHandler3V3.getPlayerFromRole(PlayerRole.BACKER);
         lastManPlayer = playerRoleHandler3V3.getPlayerFromRole(PlayerRole.LAST_MAN);
@@ -71,10 +73,11 @@ public class TeamPossession3v3Test extends FlyveBot {
 
     private void processInputOfOffensivePlayer(DataPacket input, GameTickPacket packet) {
         Vector3 destination = new Vector3(0, -5200 * ((input.team*2)-1), 500);
+        dribbleController.setBallDestination(destination);
         dribbleController.setupAndUpdateOutput(input);
-        if((opponentRoleHandler3V3.getPlayerFromRole(PlayerRole.OFFENSIVE).position.minus(input.car.position)).magnitude() < 500) {
+        /*if((opponentRoleHandler3V3.getPlayerFromRole(PlayerRole.OFFENSIVE).position.minus(input.car.position)).magnitude() < 500) {
             flickController.setupAndUpdateOutput(input);
-        }
+        }*/
         if(input.car.position.minus(input.ball.position).magnitude() > 1000) {
             output().boost(true);
         }
@@ -109,9 +112,9 @@ public class TeamPossession3v3Test extends FlyveBot {
 
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
-        super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        /*super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         renderer.drawLine3d(Color.blue, lastManPlayer.position.toFlatVector(), backerPlayer.position.toFlatVector());
         renderer.drawLine3d(Color.yellow, backerPlayer.position.toFlatVector(), offensivePlayer.position.toFlatVector());
-        renderer.drawLine3d(Color.green, offensivePlayer.position.toFlatVector(), input.ball.position.toFlatVector());
+        renderer.drawLine3d(Color.green, offensivePlayer.position.toFlatVector(), input.ball.position.toFlatVector());*/
     }
 }

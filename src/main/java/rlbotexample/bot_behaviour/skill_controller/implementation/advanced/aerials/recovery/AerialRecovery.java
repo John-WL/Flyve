@@ -32,16 +32,12 @@ public class AerialRecovery extends SkillController {
     public void updateOutput(DataPacket input) {
         double landingTime = input.statePrediction.carBounceTimes(input.car);
         CarData landingCar = input.statePrediction.carsAtTime(landingTime).get(input.playerIndex);
-        Vector3 landingPosition = landingCar.position;
-        HitBox collisionHitBox = input.car.hitBox.generateHypotheticalHitBox(landingPosition);
-        Vector3 landingNormal = StandardMapSplitMesh.STANDARD_MAP_MESH
-                .collideWith(collisionHitBox)
-                .direction;
-        // 10 seconds is long enough.
-        // If "landingTime" is bigger than 10, this means that we
-        // are not detecting any collisions with the map.
+        Vector3 landingNormal = input.statePrediction.findLandingNormal(input.car).direction;
         Vector3 noseDirection = landingCar.velocity
                 .minus(landingCar.velocity.projectOnto(landingNormal));
+        // it sometimes happen that the landing velocity is 0 if
+        // we're already on the ground for example, so we're preventing the NaN
+        // from propagating further away here
         if(!Double.isNaN(noseDirection.magnitude())) {
             aerialController.setNoseOrientation(noseDirection);
             aerialController.setRollOrientation(landingNormal);

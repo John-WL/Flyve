@@ -44,7 +44,7 @@ public class AerialState implements State {
                 0);
 
         Vector3 approximatePlayerPositionAtImpact = approximatePlayerTrajectory
-                .compute(aerialInfo.timeOfFlight);
+                .apply(aerialInfo.timeOfFlight);
         Vector3 approximatePlayerVelocityAtImpact = approximatePlayerTrajectory
                 .derivative(aerialInfo.timeOfFlight);
 

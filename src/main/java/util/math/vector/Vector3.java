@@ -18,7 +18,7 @@ import java.util.Objects;
  * This class is here for your convenience, it is NOT part of the framework. You can add to it as much
  * as you want, or delete it.
  */
-public class Vector3 implements Serializable{
+public class Vector3 implements Serializable {
 
     public static final Vector3 UP_VECTOR = new Vector3(0, 0, 1);
     public static final Vector3 DOWN_VECTOR = new Vector3(0, 0, -1);
@@ -412,5 +412,9 @@ public class Vector3 implements Serializable{
 
     public double distanceSquared(Vector3 that) {
         return this.x*that.x + this.y*that.y + this.z*that.z;
+    }
+
+    public Vector3 abs() {
+        return new Vector3(Math.abs(x), Math.abs(y), Math.abs(z));
     }
 }

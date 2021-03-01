@@ -38,9 +38,14 @@ public class AerialOrientationController4 extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
-        Vector3 noseRotator = input.car.orientation.noseVector.crossProduct(noseOrientation).scaledToMagnitude(input.car.orientation.noseVector.angle(noseOrientation));
-        Vector3 roofRotator = input.car.orientation.roofVector.rotate(noseRotator).crossProduct(rollOrientation).scaledToMagnitude(input.car.orientation.roofVector.rotate(noseRotator).angle(rollOrientation));
-        Vector3 resultingRotator = noseRotator.plus(roofRotator.scaled(Math.max(0, input.car.orientation.noseVector.dotProduct(noseOrientation.normalized())/2)));
+        Vector3 noseRotator = input.car.orientation.noseVector
+                .findRotator(noseOrientation)
+                .scaled(-1);
+        Vector3 roofRotator = input.car.orientation.roofVector
+                .rotate(noseRotator)
+                .findRotator(rollOrientation)
+                .scaled(-1);
+        Vector3 resultingRotator = noseRotator.plus(roofRotator);
         double rotatorAngle = pidControl.process(resultingRotator.magnitude(), 0);
         spinController.setSpin(resultingRotator.scaledToMagnitude(rotatorAngle));
         spinController.updateOutput(input);

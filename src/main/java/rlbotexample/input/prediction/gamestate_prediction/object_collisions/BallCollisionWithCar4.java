@@ -86,7 +86,7 @@ public class BallCollisionWithCar4 {
         final Vector3 J_mod = nWeird.scaled(RlConstants.BALL_MASS * dv * s.compute(dv));
 
         // new velocity and spin
-        Vector3 newVelocity = vb.plus(J.scaled(1/mb)).plus(J_mod.scaled(1/mb));
+        Vector3 newVelocity = vb.plus(J.plus(J_mod).scaled(1/mb));
         Vector3 newSpin = wb.plus(Ib.inverse().multiply(Lb).multiply(J));
 
         // capping values

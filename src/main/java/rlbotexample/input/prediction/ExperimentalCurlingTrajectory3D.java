@@ -25,7 +25,7 @@ public class ExperimentalCurlingTrajectory3D implements Trajectory3D {
         this.angularMomentum = carData.spin;
     }
 
-    public Vector3 compute(double time) {
+    public Vector3 apply(Double time) {
         final Vector3 angularMomentum;
         if(this.angularMomentum.magnitude() < 0.2) {
             angularMomentum = acceleration;
@@ -53,9 +53,9 @@ public class ExperimentalCurlingTrajectory3D implements Trajectory3D {
         Vector3 dlrb0 = acceleration.rotate(angularMomentum.scaledToMagnitude(Math.PI/2)).scaled(velocityScalar);
         Vector3 constantAcceleration = acceleration.projectOnto(angularMomentum);
 
-        Vector3 linearPosition = new Parabola3D(initialPosition.minus(lrb0), initialVelocity.minus(dlrb0), constantAcceleration.plus(RlConstants.GRAVITY_VECTOR)).compute(time);
+        Vector3 linearPosition = new Parabola3D(initialPosition.minus(lrb0), initialVelocity.minus(dlrb0), constantAcceleration.plus(RlConstants.GRAVITY_VECTOR)).apply(time);
 
-        return linearPosition.plus(localRotatingBody.compute(-time));
+        return linearPosition.plus(localRotatingBody.apply(-time));
     }
 
     public Vector3 derivative(double time) {

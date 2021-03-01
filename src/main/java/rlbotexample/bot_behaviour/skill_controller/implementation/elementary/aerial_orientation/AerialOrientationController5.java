@@ -5,6 +5,7 @@ import rlbotexample.SampleBot;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.dynamic_data.car.orientation.CarOrientation;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
 
@@ -40,14 +41,22 @@ public class AerialOrientationController5 extends SkillController {
         this.rollOrientation = rollOrientation.normalized();
     }
 
+    public void setOrientation(CarOrientation orientation) {
+        this.noseOrientation = orientation.noseVector;
+        this.rollOrientation = orientation.roofVector;
+    }
+
     @Override
     public void updateOutput(DataPacket input) {
+
+
         Vector3 noseDestinationAngularVelocity = previousNoseOrientation.findRotator(noseOrientation).scaled(RlConstants.BOT_REFRESH_RATE);
         Vector3 rollDestinationAngularVelocity = previousRollOrientation.findRotator(rollOrientation).scaled(RlConstants.BOT_REFRESH_RATE);
         previousNoseOrientation = noseOrientation;
         previousRollOrientation = rollOrientation;
 
-        correctedNoseDestination = noseOrientation.rotate(noseDestinationAngularVelocity.scaled(0.33));
+
+        correctedNoseDestination = noseOrientation.rotate(noseDestinationAngularVelocity.scaled(0.29));
         correctedRollDestination = rollOrientation.rotate(rollDestinationAngularVelocity.scaled(0));
 
         orientationController.setOrientationDestination(input.car.position.plus(correctedNoseDestination));
@@ -68,5 +77,7 @@ public class AerialOrientationController5 extends SkillController {
         renderer.drawLine3d(Color.blue, rollOrientation.scaled(300).plus(input.car.position).toFlatVector(), input.car.position.toFlatVector());
 
 
+        renderer.drawLine3d(Color.orange, noseOrientation.minus(input.car.orientation.noseVector).scaled(10000).plus(input.car.position).toFlatVector(), input.car.position.toFlatVector());
+        //System.out.println(noseOrientation.normalized().minus(input.car.orientation.noseVector).magnitude());
     }
 }

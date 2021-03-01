@@ -84,7 +84,7 @@ public class AerialDirectionalHit4 extends SkillController {
         updateCarPredictedTrajectory(naiveOrientationGuess, input);
         timeToReachAerial = findTimeOfClosestApproachToBall(input);
         futureBallPosition = computeBallTrajectory(timeToReachAerial, input);
-        futureCarPosition = carPredictedTrajectory.compute(timeToReachAerial);
+        futureCarPosition = carPredictedTrajectory.apply(timeToReachAerial);
         Vector3 aerialDistanceError = futureBallPosition
                 .minus(futureCarPosition);
         Vector3 deltaOrientationToConverge = aerialDistanceError.scaled(1/input.car.position.minus(futureBallPosition).magnitude());
@@ -95,7 +95,7 @@ public class AerialDirectionalHit4 extends SkillController {
             updateCarPredictedTrajectory(naiveOrientationGuess, input);
             timeToReachAerial = findTimeOfClosestApproachToBall(input);
             futureBallPosition = computeBallTrajectory(timeToReachAerial, input);
-            futureCarPosition = carPredictedTrajectory.compute(timeToReachAerial);
+            futureCarPosition = carPredictedTrajectory.apply(timeToReachAerial);
             aerialDistanceError = futureBallPosition.minus(futureCarPosition);
             deltaOrientationToConverge = aerialDistanceError.scaled(1/input.car.position.minus(futureBallPosition).magnitude());
             naiveOrientationGuess = naiveOrientationGuess.plus(deltaOrientationToConverge).normalized();
@@ -134,12 +134,7 @@ public class AerialDirectionalHit4 extends SkillController {
     }
 
     private double findTimeOfClosestApproachToBall(DataPacket input) {
-        Trajectory3D ballTrajectory = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                return computeBallTrajectory(time, input);
-            }
-        };
+        Trajectory3D ballTrajectory = time -> computeBallTrajectory(time, input);
 
         return Trajectory3D.findTimeOfClosestApproachBetween(ballTrajectory, carPredictedTrajectory,
                 RlUtils.BALL_PREDICTION_TIME, RlUtils.BALL_PREDICTION_REFRESH_RATE);

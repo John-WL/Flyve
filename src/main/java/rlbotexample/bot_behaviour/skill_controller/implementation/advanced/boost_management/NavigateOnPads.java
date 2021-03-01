@@ -9,16 +9,12 @@ import rlbotexample.input.dynamic_data.boost.BoostManager;
 import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.boost.BoostPadNavigation;
 import rlbotexample.input.prediction.Trajectory3D;
-import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
-import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
 
 import java.awt.*;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -63,7 +59,7 @@ public class NavigateOnPads extends SkillController {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
-            shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
+            shapeRenderer.renderCross(movingPoint.physicsState.offset, Color.CYAN);
         }
         //shapeRenderer.renderTrajectory(groundTrajectoryFollower.pathToFollow, 5, Color.YELLOW);
     }

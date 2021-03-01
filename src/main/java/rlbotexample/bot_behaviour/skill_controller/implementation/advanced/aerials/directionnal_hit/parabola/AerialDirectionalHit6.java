@@ -98,13 +98,10 @@ public class AerialDirectionalHit6 extends SkillController {
     }
 
     private void updateNaiveBallTrajectory(DataPacket input) {
-        naiveBallTrajectory = new Trajectory3D() {
-            @Override
-            public Vector3 compute(double time) {
-                Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
-                return futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
-                //return new Vector3(0, 0, 1000);
-            }
+        naiveBallTrajectory = time -> {
+            Vector3 futureBallPosition = input.statePrediction.ballAtTime(time).position;
+            return futureBallPosition.plus(futureBallPosition.minus(ballDestination).scaledToMagnitude(RlConstants.BALL_RADIUS));
+            //return new Vector3(0, 0, 1000);
         };
     }
 
@@ -112,9 +109,9 @@ public class AerialDirectionalHit6 extends SkillController {
         directionOfTopOfHitableHalfSphereSurfaceOnBall = input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).velocity
                 .minus(carPredictedTrajectory.derivative(aerialInfo.timeOfFlight)).normalized();
 
-        futureHitBox = input.car.hitBox.generateHypotheticalHitBox(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
+        futureHitBox = input.car.hitBox.generateHypotheticalHitBox(carPredictedTrajectory.apply(aerialInfo.timeOfFlight));
         Vector3 hitPointOnCar = futureHitBox.closestPointOnSurface(input.statePrediction.ballAtTime(aerialInfo.timeOfFlight).position);
-        Vector3 carOffset = hitPointOnCar.minus(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
+        Vector3 carOffset = hitPointOnCar.minus(carPredictedTrajectory.apply(aerialInfo.timeOfFlight));
 
         ballTrajectoryWithCarHitBox = time -> {
             Vector3 futureBallPosition = RawBallTrajectory.ballAtTime(time).position;
@@ -152,7 +149,7 @@ public class AerialDirectionalHit6 extends SkillController {
                     0
             );
 
-            futureHitBox = input.car.hitBox.generateHypotheticalHitBox(carPredictedTrajectory.compute(aerialInfo.timeOfFlight));
+            futureHitBox = input.car.hitBox.generateHypotheticalHitBox(carPredictedTrajectory.apply(aerialInfo.timeOfFlight));
         }
 
         return aerialInfo;

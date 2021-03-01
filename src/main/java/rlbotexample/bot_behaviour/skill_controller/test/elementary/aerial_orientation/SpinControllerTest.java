@@ -6,6 +6,8 @@ import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.CrudeSpinController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
+import util.game_situation.situations.car_orientation.AerialOrientationTesterSetup;
+import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 
 public class SpinControllerTest extends FlyveBot {
@@ -14,17 +16,19 @@ public class SpinControllerTest extends FlyveBot {
     private TrainingPack gameSituationHandler;
 
     public SpinControllerTest() {
-        //gameSituationHandler = new CircularTrainingPack();
-        //gameSituationHandler.add(new AerialOrientationTesterSetup());
+        gameSituationHandler = new CircularTrainingPack();
+        gameSituationHandler.add(new AerialOrientationTesterSetup());
         spinController = new CrudeSpinController(this);
     }
 
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        //gameSituationHandler.update();
-
-        spinController.setSpin(input.allCars.get(1-input.playerIndex).orientation.noseVector.scaled(5.5));
+        if(gameSituationHandler.updatingWontBreakBot(input)) {
+            gameSituationHandler.update();
+        }
+        //spinController.setSpin(input.allCars.get(1-input.playerIndex).orientation.noseVector.scaled(5.5));
+        spinController.setSpin(input.allCars.get(1-input.playerIndex).spin);
         spinController.updateOutput(input);
 
         return super.output();

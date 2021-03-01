@@ -28,15 +28,15 @@ public class SimpleBounceDrive extends SkillController {
     public void updateOutput(DataPacket input) {
         groundTrajectoryFollower.pathToFollow = RawBallTrajectory.trajectory
                 .modify(movingPoint -> {
-                    Vector3 offset = new Vector3(input.car.position.minus(movingPoint.currentState.offset).flatten(), 0)
+                    Vector3 offset = new Vector3(input.car.position.minus(movingPoint.physicsState.offset).flatten(), 0)
                             .scaledToMagnitude(RlConstants.BALL_RADIUS*2.2);
-                    return movingPoint.currentState.offset.plus(offset);
+                    return movingPoint.physicsState.offset.plus(offset);
                 });
         groundTrajectoryFollower.pathToFollow = groundTrajectoryFollower.pathToFollow
                 // hit-able balls
-                .keep(movingPoint -> movingPoint.currentState.offset.z < 160
-                        && movingPoint.currentState.offset.z > 100
-                        && movingPoint.currentState.direction.z > RlConstants.BALL_RADIUS);
+                .keep(movingPoint -> movingPoint.physicsState.offset.z < 160
+                        && movingPoint.physicsState.offset.z > 100
+                        && movingPoint.physicsState.direction.z > RlConstants.BALL_RADIUS);
         groundTrajectoryFollower.updateOutput(input);
     }
 
@@ -48,7 +48,7 @@ public class SimpleBounceDrive extends SkillController {
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
         MovingPoint movingPoint = groundTrajectoryFollower.pathToFollow.first(5, 1.0/60);
         if(movingPoint != null) {
-            shapeRenderer.renderCross(movingPoint.currentState.offset, Color.CYAN);
+            shapeRenderer.renderCross(movingPoint.physicsState.offset, Color.CYAN);
         }
         shapeRenderer.renderTrajectory(groundTrajectoryFollower.pathToFollow, 5, Color.YELLOW);
     }

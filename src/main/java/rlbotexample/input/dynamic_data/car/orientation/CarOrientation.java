@@ -56,4 +56,8 @@ public class CarOrientation {
 
         return thisOrientation.findRotatorToRotateToV2(orientation);
     }
+
+    public CarOrientation rotate(Vector3 orientationRotator) {
+        return new CarOrientation(noseVector.rotate(orientationRotator), roofVector.rotate(orientationRotator));
+    }
 }

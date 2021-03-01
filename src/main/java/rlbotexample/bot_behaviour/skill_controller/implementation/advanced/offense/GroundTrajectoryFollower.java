@@ -48,7 +48,7 @@ public class GroundTrajectoryFollower extends SkillController {
         }
         MovingPoint destination = pathToFollow
                 .remove(movingPoint -> {
-                    double distance = movingPoint.currentState.offset
+                    double distance = movingPoint.physicsState.offset
                             .distance(input.car.position);
                     double time = movingPoint.time;
                     double speedNeeded = distance/time;
@@ -84,7 +84,7 @@ public class GroundTrajectoryFollower extends SkillController {
             return;
         }
 
-        double distance = destination.currentState.offset
+        double distance = destination.physicsState.offset
                 .distance(input.car.position);
         double desiredSpeed = distance/destination.time;
         double accelerationToReach = (desiredSpeed - input.car.velocity.magnitude())/destination.time;
@@ -98,7 +98,7 @@ public class GroundTrajectoryFollower extends SkillController {
         drivingSpeedController.setSpeed(desiredSpeed);
         drivingSpeedController.updateOutput(input);
 
-        groundOrientationController.setDestination(destination.currentState.offset);
+        groundOrientationController.setDestination(destination.physicsState.offset);
         groundOrientationController.updateOutput(input);
     }
 

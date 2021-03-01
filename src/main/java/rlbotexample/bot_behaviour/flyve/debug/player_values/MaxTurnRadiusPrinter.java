@@ -5,6 +5,8 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.input.dynamic_data.DataPacket;
+import rlbotexample.input.dynamic_data.car.CarData;
+import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
@@ -42,7 +44,7 @@ public class MaxTurnRadiusPrinter extends FlyveBot {
         //output().boost(true);
         drivingSpeedController.setSpeed(1400);
         drivingSpeedController.updateOutput(input);
-        output().steer(1);
+        output().steer(-1);
 
         return output();
     }
@@ -58,8 +60,16 @@ public class MaxTurnRadiusPrinter extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         ShapeRenderer sr = new ShapeRenderer(renderer);
 
-        sr.renderTrajectory(rightTurn, 3, Color.cyan);
-        sr.renderTrajectory(leftTurn, 3, Color.cyan);
+        ExtendedCarData carData = input.allCars.get(1-input.playerIndex);
+        //ExtendedCarData carData = input.car;
+
+        sr.renderCircle3D(GroundTrajectoryFinder.getLeftTurnCircleOnDestination(new Ray3(carData.position, carData.orientation.noseVector), carData.orientation.roofVector, carData.velocity.magnitude()), Color.CYAN);
+        sr.renderCircle3D(GroundTrajectoryFinder.getRightTurnCircleOnDestination(new Ray3(carData.position, carData.orientation.noseVector), carData.orientation.roofVector, carData.velocity.magnitude()), Color.CYAN);
+
+        sr.renderTrajectory(input.statePrediction.ballAsTrajectory(), 3, Color.MAGENTA);
+
+        //sr.renderTrajectory(rightTurn, 3, Color.cyan);
+        //sr.renderTrajectory(leftTurn, 3, Color.cyan);
 
         //sr.renderCircle(rightTurnForBall, 9, Color.magenta);
         //sr.renderCircle(leftTurnForBall, 9, Color.magenta);

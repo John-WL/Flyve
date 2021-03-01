@@ -1,18 +1,11 @@
 package rlbotexample.input.dynamic_data.ground;
 
-import rlbot.render.Renderer;
-import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.prediction.Trajectory3D;
-import util.game_constants.RlConstants;
 import util.math.vector.Ray2;
 import util.math.vector.Vector2;
-import util.math.vector.Vector3;
 import util.shapes.Circle;
 import util.shapes.CircleArc;
-
-import java.awt.*;
 
 public class GroundTrajectoryFinder2 {
 
@@ -147,15 +140,15 @@ public class GroundTrajectoryFinder2 {
 
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
-            if(targetTrajectory.compute(currentTestTime) == null) {
+            if(targetTrajectory.apply(currentTestTime) == null) {
                 continue;
             }
             Ray2 position = new Ray2(
                     car.position.flatten(),
                     car.orientation.noseVector.flatten());
             Ray2 destination = new Ray2(
-                    targetTrajectory.compute(currentTestTime).flatten(),
-                    orientationTrajectory.compute(currentTestTime).flatten());
+                    targetTrajectory.apply(currentTestTime).flatten(),
+                    orientationTrajectory.apply(currentTestTime).flatten());
             GroundTrajectory2DInfo groundTrajectory2DInfo = findFastestGroundTrajectory2DInfo(
                     position,
                     destination,

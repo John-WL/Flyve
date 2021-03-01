@@ -5,6 +5,7 @@ import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController5;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController6;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationController7;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.controllers.BoostController;
 import util.game_constants.RlConstants;
@@ -31,10 +32,14 @@ public class AirDribble2 extends SkillController {
     // -0.105
     // -0.86
     // -0.275
-    private double distanceFrontBackCoef = -0.35;
+    //private double distanceFrontBackCoef = -0.35;
+    //private double velocityFrontBackCoef = -0.105;
+    //private double distanceLeftRightCoef = -0.88;
+    //private double velocityLeftRightCoef = -0.2735;
+    private double distanceFrontBackCoef = -0.32;
     private double velocityFrontBackCoef = -0.105;
-    private double distanceLeftRightCoef = -0.86;
-    private double velocityLeftRightCoef = -0.275;
+    private double distanceLeftRightCoef = -0.88;
+    private double velocityLeftRightCoef = -0.2735;
 
     private AerialOrientationController5 aerialOrientationHandler;
     private BoostController boostController;
@@ -84,9 +89,11 @@ public class AirDribble2 extends SkillController {
 
         //boolean isBoosting = findOptimalBoostValue(input);
         boolean isBoosting = boostController.process(
-                smoothedOutBallDestination.minus(input.ball.position).z
-                        + input.ball.position.minus(input.car.position).z / 0.75
-                        - input.ball.velocity.z/1.5);
+                Math.max(
+                        smoothedOutBallDestination.minus(input.ball.position).z
+                                + input.ball.position.minus(input.car.position).z / 0.75
+                                - input.ball.velocity.z/1.5,
+                        50));
         botBehaviour.output().boost(isBoosting);
     }
 
