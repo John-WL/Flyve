@@ -14,7 +14,7 @@ public class PhysicsOfSsr {
 
     public static final double PLAYERS_RADII = 100;
     public static final double FRONT_FLIP_RANGE = 800;
-    public static final double ATTACK_IMPULSE_STRENGTH = 800;
+    public static final double ATTACK_IMPULSE_STRENGTH = 2000;
 
     private static final List<AssignedVector3> assignedImpulses = new ArrayList<>();
     private static final List<AssignedVector3> assignedPenetrations = new ArrayList<>();
@@ -42,19 +42,31 @@ public class PhysicsOfSsr {
                 continue;
             }
 
-            if(car.position.minus(otherCar.position).magnitudeSquared() < PLAYERS_RADII*PLAYERS_RADII*4) {
-                Vector3 carPenetration = new Vector3(otherCar.position.minus(car.position))
-                        .scaledToMagnitude(car.position.minus(otherCar.position).magnitude() - 2*PLAYERS_RADII);
-                Vector3 carImpulse = otherCar.velocity.minus(car.velocity).projectOnto(otherCar.position.minus(car.position))
-                        .scaled(1.5)
-                        .plus(carPenetration);
-                assignedImpulses.add(new AssignedVector3(car, carImpulse));
-                //System.out.println(car.isSupersonic);
-                //System.out.println(carImpulse);
-                assignedPenetrations.add(new AssignedVector3(car, carPenetration));
+            if(isColliding(car, otherCar)) {
+                computeCarCollision(car, otherCar);
             }
         }
 
+        computeCollisionOfCarInBallStateWithMap(car);
+    }
+
+    public static boolean isColliding(ExtendedCarData car1, ExtendedCarData car2) {
+        return car1.position.minus(car2.position).magnitudeSquared() < PLAYERS_RADII*PLAYERS_RADII*4;
+    }
+
+    public static void computeCarCollision(ExtendedCarData car1, ExtendedCarData car2) {
+        Vector3 carPenetration = new Vector3(car2.position.minus(car1.position))
+                .scaledToMagnitude(car1.position.minus(car2.position).magnitude() - 2*PLAYERS_RADII);
+        Vector3 carImpulse = car2.velocity.minus(car1.velocity).projectOnto(car2.position.minus(car1.position))
+                .scaled(1.5)
+                .plus(carPenetration);
+        assignedImpulses.add(new AssignedVector3(car1, carImpulse));
+        //System.out.println(car.isSupersonic);
+        //System.out.println(carImpulse);
+        assignedPenetrations.add(new AssignedVector3(car1, carPenetration));
+    }
+
+    public static void computeCollisionOfCarInBallStateWithMap(ExtendedCarData car) {
         Ray3 mapCollisionRay = StandardMapSplitMesh.getCollisionRayOrElse(new Sphere(car.position, PLAYERS_RADII), null);
         if(mapCollisionRay != null && mapCollisionRay.direction.dotProduct(car.velocity) < 0
                 && car.isInBallForm) {

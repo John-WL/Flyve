@@ -136,12 +136,12 @@ public class ShapeRenderer {
         renderer.drawLine3d(color, hitBoxCorner100, hitBoxCorner000);
     }
 
-    public void renderChaoticSphere(Vector3 position, Color color) {
-        Circle3D circle1 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
-        Circle3D circle2 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
-        Circle3D circle3 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
-        Circle3D circle4 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
-        Circle3D circle5 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), RlConstants.BALL_RADIUS);
+    public void renderChaoticSphere(Vector3 position, double radii, Color color) {
+        Circle3D circle1 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), radii);
+        Circle3D circle2 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), radii);
+        Circle3D circle3 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), radii);
+        Circle3D circle4 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), radii);
+        Circle3D circle5 = new Circle3D(new Ray3(position, Vector3.generateRandomVector()), radii);
         renderCircle3D(circle1, color);
         renderCircle3D(circle2, color);
         renderCircle3D(circle3, color);
