@@ -4,26 +4,13 @@ import util.game_constants.RlConstants;
 
 public class BoostController {
 
-    private double currentDeltaV;
+    private final PulseDriveController pulseController;
 
     public BoostController() {
-        this.currentDeltaV = 0;
+        this.pulseController = new PulseDriveController(RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR);
     }
 
     public boolean process(double desiredAverageAcceleration) {
-        currentDeltaV += desiredAverageAcceleration;
-        if(currentDeltaV < 0) {
-            currentDeltaV = 0;
-        }
-        if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
-            currentDeltaV -= RlConstants.ACCELERATION_DUE_TO_BOOST;
-            // cap deltaV if we were unreasonable with the acceleration request
-            if(currentDeltaV > RlConstants.ACCELERATION_DUE_TO_BOOST) {
-                currentDeltaV = RlConstants.ACCELERATION_DUE_TO_BOOST;
-            }
-            return true;
-        }
-
-        return false;
+        return pulseController.process(desiredAverageAcceleration);
     }
 }

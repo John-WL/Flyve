@@ -3,7 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.ground_to_aerial.GroundToAerialController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.setup.ground_to_aerial.GroundToAerialController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.miscellaneous.RemoveResidualVelocity;

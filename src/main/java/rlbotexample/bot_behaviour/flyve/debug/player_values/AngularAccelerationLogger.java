@@ -35,7 +35,7 @@ public class AngularAccelerationLogger extends FlyveBot {
         lastSpin = spin;
         spin = input.allCars.get(1-input.playerIndex).spin.toFrameOfReference(input.allCars.get(1-input.playerIndex).orientation);
         localAngularAcceleration = spin.minus(lastSpin).scaled(RlConstants.BOT_REFRESH_RATE);
-        //System.out.println(localAngularAcceleration);
+        System.out.println(localAngularAcceleration.z);
 
         spinAmountAvg = localAngularAcceleration.magnitude();
         previousHasUsedSecondJump = hasUsedSecondJump;

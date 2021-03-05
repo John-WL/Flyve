@@ -6,7 +6,7 @@ import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler2V2;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;

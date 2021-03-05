@@ -4,7 +4,7 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugCustomBallPrediction;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit4;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.directionnal_hit.parabola.AerialDirectionalHit4;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.Predictions;
 import rlbotexample.output.BotOutput;

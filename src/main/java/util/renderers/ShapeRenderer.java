@@ -4,9 +4,10 @@ import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.dynamic_data.car.hit_box.wheels.WheelBox;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
+import rlbotexample.input.dynamic_data.ground.trajectories.GroundTrajectory2DInfo;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.GameStatePrediction;
+import util.math.vector.Ray3;
 import util.math.vector.Vector2;
 import util.shapes.Circle;
 import util.shapes.Circle3D;
@@ -14,6 +15,7 @@ import util.shapes.Triangle3D;
 import util.math.vector.Vector3;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class ShapeRenderer {
 
@@ -28,6 +30,10 @@ public class ShapeRenderer {
         renderer.drawLine3d(color, position.plus(new Vector3(-20, 20, 20)).toFlatVector(), position.plus(new Vector3(20, -20, -20)).toFlatVector());
         renderer.drawLine3d(color, position.plus(new Vector3(20, -20, 20)).toFlatVector(), position.plus(new Vector3(-20, 20, -20)).toFlatVector());
         renderer.drawLine3d(color, position.plus(new Vector3(20, 20, -20)).toFlatVector(), position.plus(new Vector3(-20, -20, 20)).toFlatVector());
+    }
+
+    public void renderRay3(Ray3 ray, Color color) {
+        renderer.drawLine3d(color, ray.offset.toFlatVector(), ray.offset.plus(ray.direction).toFlatVector());
     }
 
     public void renderTriangle(Triangle3D triangle, Color color) {
@@ -78,7 +84,18 @@ public class ShapeRenderer {
 
     public void renderTrajectory(Trajectory3D parabola, double amountOfTimeToRender, Color color) {
         Vector3 previousPosition = parabola.apply(0.0);
-        for(int i = 1; i < 600; i++) {
+        for(int i = 1; i < 200; i++) {
+            Vector3 nextPosition = parabola.apply(i*amountOfTimeToRender/600);
+            if(nextPosition != null && previousPosition != null) {
+                renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());
+            }
+            previousPosition = nextPosition;
+        }
+    }
+
+    public void renderTrajectory(Function<Double, Vector3> parabola, double amountOfTimeToRender, Color color) {
+        Vector3 previousPosition = parabola.apply(0.0);
+        for(int i = 1; i < 200; i++) {
             Vector3 nextPosition = parabola.apply(i*amountOfTimeToRender/600);
             if(nextPosition != null && previousPosition != null) {
                 renderer.drawLine3d(color, nextPosition.toFlatVector(), previousPosition.toFlatVector());

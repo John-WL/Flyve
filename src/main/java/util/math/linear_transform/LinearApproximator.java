@@ -69,49 +69,64 @@ public class LinearApproximator {
 
         double t = (x - secondClosestPoint.x) / (closestPoint.x - secondClosestPoint.x);
         return closestPoint.y*t + secondClosestPoint.y*(1-t);
-        /*double totalClosestDistance = closestDistance + secondClosestDistance;
-
-        if(totalClosestDistance == 0) {
-            return closestPoint.y;
-        }
-
-        return (closestPoint.y * (1-(closestDistance/totalClosestDistance)))
-                + (secondClosestPoint.y * (1-(secondClosestDistance/totalClosestDistance)));*/
     }
 
     // inverse approximation
     public double inverse(double y) {
-        Vector2 closestPoint = new Vector2();
+        Vector2 pointThatCrossedTheLine = null;
         double closestDistance = Double.MAX_VALUE;
 
-        for(Vector2 element: functionSamples) {
-            if(java.lang.Math.abs(element.y - y) < closestDistance) {
-                closestPoint = element;
-                closestDistance = java.lang.Math.abs(element.y - y);
+        // if the first point is smaller in y,
+        // we find the first bigger value
+        if(functionSamples.get(0).y <= y) {
+            for(Vector2 element: functionSamples) {
+                if(element.y > y) {
+                    pointThatCrossedTheLine = element;
+                    break;
+                }
+            }
+        }
+        // if the first point is bigger in y
+        // we find the first lower value
+        else {
+            for(Vector2 element: functionSamples) {
+                if(element.y < y) {
+                    pointThatCrossedTheLine = element;
+                    break;
+                }
             }
         }
 
-        List<Vector2> functionSamplesCopy = new ArrayList<>(functionSamples);
-        functionSamplesCopy.remove(closestPoint);
+        // If this is still equal to null,
+        // then the value of x that corresponds
+        // to the queried y is undefined.
+        // In out case, we still want a value,
+        // so we take the closest point and
+        // return its x coordinate
+        if(pointThatCrossedTheLine == null) {
+            Vector2 closestPoint = functionSamples.get(0);
 
-        Vector2 secondClosestPoint = new Vector2();
-        double secondClosestDistance = Double.MAX_VALUE;
-
-        for(Vector2 element: functionSamplesCopy) {
-            if(java.lang.Math.abs(element.y - y) < secondClosestDistance) {
-                secondClosestPoint = element;
-                secondClosestDistance = java.lang.Math.abs(element.y - y);
+            for(Vector2 element: functionSamples) {
+                if(Math.abs(closestPoint.y - y) > Math.abs(element.y - y)) {
+                    closestPoint = element;
+                }
             }
-        }
 
-        double totalClosestDistance = closestDistance + secondClosestDistance;
-
-        if(totalClosestDistance == 0) {
+            // we don't need to find the slope that fits 2 points,
+            // because we know the value we are looking for lands
+            // exactly on the point we found.
             return closestPoint.x;
         }
 
-        return (closestPoint.x * (closestDistance/totalClosestDistance))
-                + (secondClosestPoint.x * (secondClosestDistance/totalClosestDistance));
+        // we don't need to check for out of bound because:
+        // 1) we don't care about the upper bound (functionSamples.indexOf(pointThatCrossedTheLine) << functionSamples.size())
+        // 2) the lower bound is strictly bigger than 0 because we
+        // crossed the y value at least once (functionSamples.indexOf(pointThatCrossedTheLine) >> 0)
+        int indexOfPrecedingPoint = functionSamples.indexOf(pointThatCrossedTheLine)-1;
+        Vector2 pointBeforeCrossingTheLine = functionSamples.get(indexOfPrecedingPoint);
+
+        double t = (y - pointThatCrossedTheLine.y) / (pointBeforeCrossingTheLine.y - pointThatCrossedTheLine.y);
+        return pointBeforeCrossingTheLine.x*t + pointThatCrossedTheLine.x*(1-t);
     }
 
 }

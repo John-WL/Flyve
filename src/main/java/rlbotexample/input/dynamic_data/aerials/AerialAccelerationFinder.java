@@ -48,7 +48,7 @@ public class AerialAccelerationFinder {
     private AerialTrajectoryInfo findAerialTrajectoryInfo(CarData carData) {
         int precision = 120;
         double amountOfTimeToSearch = 10;
-        double desiredAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST*BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
+        double desiredAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR *BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
 
         for(int i = 1; i < precision*amountOfTimeToSearch; i++) {
             double currentTestTime = i/(double)precision;
@@ -63,7 +63,7 @@ public class AerialAccelerationFinder {
     }
 
     public AerialTrajectoryInfo findAerialTrajectoryInfo(double timeToTryFirst, CarData carData) {
-        double maxAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST*BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
+        double maxAcceleration = RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR *BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION;
 
         Vector3 testAcceleration = findConstantAccelerationNeededToReachAerialDestination(carData, targetTrajectory.apply(timeToTryFirst), timeToTryFirst)
                 .plus(Vector3.UP_VECTOR.scaled(RlConstants.NORMAL_GRAVITY_STRENGTH));
@@ -83,7 +83,7 @@ public class AerialAccelerationFinder {
         accelerationCurve
                 .keep(movingPoint ->
                         movingPoint.physicsState.offset.magnitudeSquared()
-                                < RlConstants.ACCELERATION_DUE_TO_BOOST * RlConstants.ACCELERATION_DUE_TO_BOOST);
+                                < RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR * RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR);
         MovingPoint accelerationInfo = accelerationCurve.first(5, 120);
 
         if(accelerationInfo != null) {

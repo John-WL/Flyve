@@ -21,13 +21,22 @@ public class RlConstants {
     public static final double BALL_MINIMUM_RPM_WHEN_ROLLING_BEFORE_COMPLETE_STOP = 10;
 
     public static final double CAR_MAX_SPEED = 2300;
+    public static final double CAR_MAX_ANGULAR_ACCELERATION_YAW = 9.10838909318708;
     public static final double CAR_MAX_BOOST_AMOUNT = 100;
     public static final double CAR_MASS = 180;
     public static final double OCTANE_ROOF_ELEVATION_WHEN_DRIVING = 55.934654;
     public static final double OCTANE_POSITION_ELEVATION_WHEN_DRIVING = 17.01;
 
-    public static final double ACCELERATION_DUE_TO_BOOST = 991.666;
+    public static final double ACCELERATION_DUE_TO_BOOST_IN_AIR = 1057.0;
+    public static final double ACCELERATION_DUE_TO_BOOST_ON_GROUND = 991.0;
     public static final double ACCELERATION_DUE_TO_JUMP = 291.667;
+
+    public static final double BOOST_CONSUMPTION_RATE = 33.3333333333;
+    public static final double DELTA_V_PER_BOOST_IN_AIR = ACCELERATION_DUE_TO_BOOST_IN_AIR/BOOST_CONSUMPTION_RATE;
+    public static final double DELTA_V_PER_BOOST_ON_GROUND = ACCELERATION_DUE_TO_BOOST_ON_GROUND/BOOST_CONSUMPTION_RATE;
+    public static double boostToDeltaV(final double boostAmount, boolean isOnGround) {
+        return isOnGround ? boostAmount*DELTA_V_PER_BOOST_ON_GROUND : boostAmount*DELTA_V_PER_BOOST_IN_AIR;
+    }
 
     public static final double NORMAL_GRAVITY_STRENGTH = 650;
     public static final Vector3 GRAVITY_VECTOR = Vector3.DOWN_VECTOR.scaled(NORMAL_GRAVITY_STRENGTH);

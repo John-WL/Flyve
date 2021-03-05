@@ -6,8 +6,8 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.DribbleUtils;
-import rlbotexample.input.dynamic_data.ground.MaxAccelerationFromThrottleFinder;
+import rlbotexample.input.dynamic_data.ground.drible_utils.DribbleUtils;
+import rlbotexample.input.dynamic_data.ground.slope_samples.MaxAccelerationFromThrottleFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;
@@ -55,7 +55,7 @@ public class CatchBouncyBallState implements State {
         if(firstValidBall == null) {
             return;
         }
-        double timeOfHit = Trajectory3D.findTimeOfClosestApproachBetween(
+        double timeOfHit = Trajectory3D.findTimeOfClosestApproach(
                 RawBallTrajectory.trajectory,
                 t -> firstValidBall.physicsState.offset,
                 5,

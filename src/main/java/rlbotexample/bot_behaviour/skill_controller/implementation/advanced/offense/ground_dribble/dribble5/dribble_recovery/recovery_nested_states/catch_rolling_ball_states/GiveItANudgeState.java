@@ -6,7 +6,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.MaxAccelerationFromThrottleFinder;
+import rlbotexample.input.dynamic_data.ground.slope_samples.MaxAccelerationFromThrottleFinder;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
@@ -56,7 +56,7 @@ public class GiveItANudgeState implements State {
                     double averageSpeedToReach = (speedToReach + input.car.velocity.magnitude())/2;
 
                     return accelerationToReach >
-                            RlConstants.ACCELERATION_DUE_TO_BOOST
+                            RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR
                                     + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
                 })
                 .remove(movingPoint -> {
@@ -67,7 +67,7 @@ public class GiveItANudgeState implements State {
                     double averageSpeedToReach = (speedToReach + input.car.velocity.magnitude())/2;
 
                     return speedToReach - input.car.velocity.magnitude() >
-                            RlConstants.ACCELERATION_DUE_TO_BOOST * (input.car.boost/100)
+                            RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR * (input.car.boost/100)
                             + MaxAccelerationFromThrottleFinder.compute(averageSpeedToReach);
                 })
                 .remove(movingPoint -> {

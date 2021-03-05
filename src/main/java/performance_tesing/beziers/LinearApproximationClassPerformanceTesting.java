@@ -9,12 +9,12 @@ public class LinearApproximationClassPerformanceTesting {
 
         LinearApproximator approximation = new LinearApproximator();
 
-        approximation.sample(new Vector2(-1000, 0));
-        approximation.sample(new Vector2(-1, 10));
-        approximation.sample(new Vector2(0, -10));
-        approximation.sample(new Vector2(1000, 0));
+        approximation.sample(new Vector2(-200, -500));
+        approximation.sample(new Vector2(-50, 1));
+        approximation.sample(new Vector2(40, 2));
+        approximation.sample(new Vector2(800, -800));
 
-        System.out.println(approximation.compute(2000));
+        System.out.println(approximation.inverse(-800));
         /*
         // sampling the function
         int amountOfPoints = 20000;

@@ -2,7 +2,7 @@ package rlbotexample.bot_behaviour.flyve.implementation.normal_1s.normal_1s_v4.s
 
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.directionnal_hit.parabola.AerialDirectionalHit6;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.directionnal_hit.parabola.AerialDirectionalHit6;
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.math.vector.Vector3;
 import util.state_machine.State;

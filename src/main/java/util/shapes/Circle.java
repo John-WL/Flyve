@@ -129,6 +129,10 @@ public class Circle {
     }
 
     public Ray2 findTangentFrom(Vector2 pointOnTangent, int tangentId) {
+        if(tangentId >= 2 || tangentId < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+
         Vector2 centerOfCircleForFindingTangentPoints = this.center.plus(pointOnTangent).scaled(0.5);
         double radiiOfCircleForFindingTangentPoints = this.center.minus(pointOnTangent).magnitude()*0.5;
         Circle circleForFindingTangentPoints = new Circle(centerOfCircleForFindingTangentPoints, radiiOfCircleForFindingTangentPoints);

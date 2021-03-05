@@ -3,8 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.dribble.AirDribble2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.dribble.AirDribble3;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.dribble.AirDribble3;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.situations.air_dribble.AirDribbleSetup1;

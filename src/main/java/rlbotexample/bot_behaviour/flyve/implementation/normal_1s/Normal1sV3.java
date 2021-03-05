@@ -5,7 +5,7 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.metagame.possessions.PossessionEvaluator;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.*;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.boost_management.RefuelProximityBoost;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.defense.ShadowDefense;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble2;

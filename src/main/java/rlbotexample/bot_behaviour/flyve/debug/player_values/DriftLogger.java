@@ -4,10 +4,8 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
+import rlbotexample.input.dynamic_data.ground.trajectories.GroundTrajectoryFinder;
 import rlbotexample.output.BotOutput;
-import util.game_constants.RlConstants;
-import util.math.vector.Vector;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
 

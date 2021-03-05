@@ -5,7 +5,7 @@ import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble4;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.dribble5.Dribble5;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.DribbleUtils;
+import rlbotexample.input.dynamic_data.ground.drible_utils.DribbleUtils;
 import util.state_machine.State;
 
 import java.awt.*;

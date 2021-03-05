@@ -1,15 +1,7 @@
 package rlbotexample.bot_behaviour.metagame.possessions;
 
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.aerials.AerialAccelerationFinder;
-import rlbotexample.input.dynamic_data.aerials.AerialTrajectoryInfo;
 import rlbotexample.input.dynamic_data.car.CarData;
-import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectory2DInfo;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder2;
-import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
-import util.game_constants.RlConstants;
-import util.math.vector.Vector3;
 
 public class PossessionEvaluator {
 

@@ -3,15 +3,9 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.flyve.debug.player_prediction.DebugPlayerPredictedTrajectory;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.intersect_destination.AerialIntersectDestination2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.recovery.AerialRecovery;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.recovery.AerialRecovery;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
-import util.game_situation.miscellaneous.RemoveResidualVelocity;
-import util.game_situation.situations.aerial_hit.AerialHitSetup1;
-import util.game_situation.situations.aerial_hit.AerialHitSetup2;
-import util.game_situation.situations.aerial_hit.AerialHitSetup3;
 import util.game_situation.situations.throwing_player_in_the_air.ThrowingPlayer1;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;

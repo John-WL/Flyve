@@ -7,7 +7,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.gen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
+import rlbotexample.input.dynamic_data.ground.trajectories.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.game_constants.RlConstants;
 import util.math.vector.Vector3;
@@ -49,11 +49,11 @@ public class GroundDirectionalHit2 extends SkillController {
             Vector3 offset = ballDestination.minus(ballPosition).scaledToMagnitude(RlConstants.BALL_RADIUS*0.5);
             return ballPosition.minus(offset);
         };
-        double closestApproachTimeForRightTurn = Trajectory3D.findTimeOfClosestApproachBetween(rightTurnTrajectory, ballTrajectory, 5, 0.33333);
+        double closestApproachTimeForRightTurn = Trajectory3D.findTimeOfClosestApproach(rightTurnTrajectory, ballTrajectory, 5, 0.33333);
         //double closestApproachTimeForRightTurn = 1;
         Vector3 playerDestinationRight = ballTrajectory.apply(closestApproachTimeForRightTurn).minus(rightTurnTrajectory.apply(closestApproachTimeForRightTurn))
                 .plus(input.car.position);
-        double closestApproachTimeForLeftTurn = Trajectory3D.findTimeOfClosestApproachBetween(leftTurnTrajectory, ballTrajectory, 5, 0.33333);
+        double closestApproachTimeForLeftTurn = Trajectory3D.findTimeOfClosestApproach(leftTurnTrajectory, ballTrajectory, 5, 0.33333);
         //double closestApproachTimeForLeftTurn = 1;
         Vector3 playerDestinationLeft = ballTrajectory.apply(closestApproachTimeForLeftTurn).minus(leftTurnTrajectory.apply(closestApproachTimeForLeftTurn))
                 .plus(input.car.position);

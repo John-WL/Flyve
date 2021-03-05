@@ -6,11 +6,9 @@ import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler3V3;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.setup.AerialSetupController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.flips_and_flicks.Flick;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble3;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble4;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
@@ -18,8 +16,6 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
-
-import java.awt.*;
 
 public class TeamPossession3v3Test extends FlyveBot {
 

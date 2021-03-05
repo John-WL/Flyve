@@ -7,9 +7,8 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.gen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
-import rlbotexample.input.dynamic_data.ground.DrivingTrajectoryInfo;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
-import rlbotexample.input.prediction.Trajectory3D;
+import rlbotexample.input.dynamic_data.ground.trajectories.DrivingTrajectoryInfo;
+import rlbotexample.input.dynamic_data.ground.trajectories.GroundTrajectoryFinder;
 import util.math.vector.Ray3;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;

@@ -3,19 +3,13 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aer
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.dribble.AirDribble2;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.dribble.AirDribble2;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import util.game_situation.situations.air_dribble.AirDribbleSetup1;
-import util.game_situation.situations.air_dribble.AirDribbleSetup2;
-import util.game_situation.situations.air_dribble.AirDribbleSetup3;
-import util.game_situation.situations.air_dribble.RandomizedAirDribbleSetup;
 import util.game_situation.trainning_pack.CircularTrainingPack;
 import util.game_situation.trainning_pack.TrainingPack;
 import util.math.vector.Vector3;
-import util.renderers.ShapeRenderer;
-
-import java.awt.*;
 
 public class AirDribble2Test extends FlyveBot {
 

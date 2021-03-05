@@ -6,7 +6,7 @@ import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offen
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.MaxAccelerationFromThrottleFinder;
+import rlbotexample.input.dynamic_data.ground.slope_samples.MaxAccelerationFromThrottleFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.game_constants.RlConstants;

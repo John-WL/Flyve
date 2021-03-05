@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class Vector2 implements Serializable {
 
+    public static final Vector2 X_VECTOR = new Vector2(1, 0);
     public final double x;
     public final double y;
 

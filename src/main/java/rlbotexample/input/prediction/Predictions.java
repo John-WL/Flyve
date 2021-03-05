@@ -210,7 +210,7 @@ public class Predictions {
         // this is the player speed SIGNED (it's the player speed, but it's negative if it's going away from the destination...)
         double signedPlayerSpeedFromBall = playerSpeedFromDestination.dotProduct(playerDistanceFromDestination)
                 / playerDistanceFromDestination.magnitude();
-        double a = -RlConstants.ACCELERATION_DUE_TO_BOOST/2 /*+ (input.car.orientation.noseVector.dotProduct(new Vector3(0, 0, 1))*RlConstants.NORMAL_GRAVITY_STRENGTH/2)*/;
+        double a = -RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR /2 /*+ (input.car.orientation.noseVector.dotProduct(new Vector3(0, 0, 1))*RlConstants.NORMAL_GRAVITY_STRENGTH/2)*/;
         double b = signedPlayerSpeedFromBall;
         double c = playerDistanceFromDestination.magnitude();
         double timeBeforeReachingBall = -b - Math.sqrt(b*b - 4*a*c);

@@ -18,6 +18,10 @@ public class ArbitraryValueSerializer {
     public static final String AIR_DRIBBLE_VELOCITY_FRONT_BACK_COEF = ARBITRARY_CFG_PATH + "air_dribble/velocity_front_back_coef.arb";
     public static final String AIR_DRIBBLE_VELOCITY_LEFT_RIGHT_COEF = ARBITRARY_CFG_PATH + "air_dribble/velocity_left_right_coef.arb";
 
+    public static final String WEAK_DRIBBLE_EXPONENT_COEF = ARBITRARY_CFG_PATH + "weak_dribble/exponent_coefficient.arb";
+    public static final String WEAK_DRIBBLE_A_COEF = ARBITRARY_CFG_PATH + "weak_dribble/a_coefficient.arb";
+    public static final String WEAK_DRIBBLE_DESIRED_SPEED = ARBITRARY_CFG_PATH + "weak_dribble/desired_speed.arb";
+
     public static double deserialize(String fileName) {
         return Double.parseDouble(IOFile.getFileContent(fileName).get(0));
     }

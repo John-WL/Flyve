@@ -3,24 +3,17 @@ package rlbotexample.bot_behaviour.flyve.test.possession_handling.possession_2v2
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.metagame.advanced_gamestate_info.AerialInfo;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRole;
 import rlbotexample.bot_behaviour.metagame.possessions.PlayerRoleHandler2V2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerials.setup.AerialSetupController2;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.GroundTrajectoryFollower;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.path_follower.GroundTrajectoryFollower;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_dribble.Dribble6;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.aerial_orientation.AerialOrientationHandler;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToDestination;
-import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DriveToPredictedBallBounceController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.boost.BoostManager;
 import rlbotexample.input.dynamic_data.boost.BoostPad;
 import rlbotexample.input.dynamic_data.boost.BoostPadNavigation;
 import rlbotexample.input.dynamic_data.car.ExtendedCarData;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
-import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import rlbotexample.output.BotOutput;
-import util.math.vector.Vector3;
 
 import java.awt.*;
 import java.util.List;

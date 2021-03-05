@@ -22,7 +22,7 @@ public class ExperimentalCurlingTrajectory3DDisplay extends FlyveBot {
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
         ExtendedCarData carData = input.allCars.get(1-input.playerIndex);
-        trajectory3D = new ExperimentalCurlingTrajectory3D(carData.position, carData.velocity, carData.orientation.noseVector.scaled(RlConstants.ACCELERATION_DUE_TO_BOOST), carData.spin);
+        trajectory3D = new ExperimentalCurlingTrajectory3D(carData.position, carData.velocity, carData.orientation.noseVector.scaled(RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR), carData.spin);
         trajectory3D = new ExperimentalCurlingTrajectory3D(carData);
 
         return super.output();

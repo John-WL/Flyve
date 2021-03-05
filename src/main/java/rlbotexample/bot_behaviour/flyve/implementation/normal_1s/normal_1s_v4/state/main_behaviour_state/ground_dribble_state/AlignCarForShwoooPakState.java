@@ -5,7 +5,7 @@ import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundOrientationController;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.ground.GroundTrajectoryFinder;
+import rlbotexample.input.dynamic_data.ground.trajectories.GroundTrajectoryFinder;
 import rlbotexample.input.prediction.Trajectory3D;
 import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;

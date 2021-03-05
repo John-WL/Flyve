@@ -3,6 +3,7 @@ package rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offe
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
 import rlbotexample.bot_behaviour.skill_controller.SkillController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.path_follower.GroundTrajectoryFollower;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.prediction.gamestate_prediction.ball.RawBallTrajectory;
 import util.math.vector.Vector3;

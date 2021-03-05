@@ -90,7 +90,7 @@ public class RlUtils {
                 averageBoostUsageForAllPlayers.get(playerIndex)
                         .update(
                                 previousBoostAmountForAllPlayers.get(playerIndex) - boostAmount < -1 ?
-                                RlConstants.ACCELERATION_DUE_TO_BOOST : 0
+                                RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR : 0
                         );
                 previousBoostAmountForAllPlayers.set(playerIndex, boostAmount);
                 return;
@@ -101,7 +101,7 @@ public class RlUtils {
                     averageBoostUsageForAllPlayers.get(playerIndex)
                             .update(
                                     previousBoostAmountForAllPlayers.get(playerIndex) - boostAmount < -1 ?
-                                    RlConstants.ACCELERATION_DUE_TO_BOOST : 0
+                                    RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR : 0
                             );
                     previousBoostAmountForAllPlayers.set(playerIndex, boostAmount);
                 }

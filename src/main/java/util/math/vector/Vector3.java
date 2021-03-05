@@ -407,6 +407,14 @@ public class Vector3 implements Serializable {
         if(minus(v).magnitudeSquared() < 0.000001) {
             return new Vector3();
         }
+        if(crossProduct(v).magnitudeSquared() < 0.000001) {
+            if(v.x != 0 && v.y != 0) {
+                return findRotator(new Vector3(0, 0, 1)).scaledToMagnitude(angle(v));
+            }
+            else {
+                //return findRotator(new Vector3(1, 0, 0)).scaledToMagnitude(angle(v));
+            }
+        }
         return crossProduct(v).scaledToMagnitude(angle(v));
     }
 

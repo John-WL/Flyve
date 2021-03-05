@@ -2,7 +2,6 @@ package rlbotexample.bot_behaviour.metagame.advanced_gamestate_info;
 
 import rlbotexample.input.dynamic_data.DataPacket;
 import util.game_constants.RlConstants;
-import util.math.vector.Vector;
 import util.math.vector.Vector2;
 import util.math.vector.Vector3;
 
@@ -18,7 +17,7 @@ public class OffensiveStateInfo {
                 .flatten()
                 .normalized();
         Vector3 a = new Vector3(
-                noseOrientation.scaled(-RlConstants.ACCELERATION_DUE_TO_BOOST),
+                noseOrientation.scaled(-RlConstants.ACCELERATION_DUE_TO_BOOST_IN_AIR),
                 -RlConstants.NORMAL_GRAVITY_STRENGTH);
         Vector3 timeFromApogee = v.scaled(a.inverse());
         return x

@@ -23,7 +23,7 @@ public interface Trajectory3D extends Function<Double, Vector3> {
         return result;
     }
 
-    static double findTimeOfClosestApproachBetween(Trajectory3D trajectory1, Trajectory3D trajectory2, double duration, double resolution) {
+    static double findTimeOfClosestApproach(Trajectory3D trajectory1, Trajectory3D trajectory2, double duration, double resolution) {
         double bestTime = 0;
         Vector3 initialPosition1 = trajectory1.apply(0.0);
         Vector3 initialPosition2 = trajectory2.apply(0.0);

@@ -1,8 +1,6 @@
 package util.shapes;
 
-import util.math.vector.Ray3;
-import util.math.vector.Vector;
-import util.math.vector.Vector3;
+import util.math.vector.*;
 
 public class Circle3D {
 
@@ -20,6 +18,10 @@ public class Circle3D {
         this.flatCircle = new Circle(center.offset.flatten(), radii);
         this.height = center.offset.z;
         this.orientation = center.direction;
+    }
+
+    public Circle3D scaled(double factor) {
+        return new Circle3D(center, radii*factor);
     }
 
     public Vector3 findPointOnCircle(double rads) {
@@ -40,7 +42,6 @@ public class Circle3D {
 
         final Vector3 localResult = localVProjectedOnLocalCirclePlane.scaledToMagnitude(flatCircle.radii);
 
-
         return localResult.plus(centerOffset);
     }
 
@@ -59,5 +60,33 @@ public class Circle3D {
         final Vector3 rotationVector = Vector3.UP_VECTOR.crossProduct(orientation).scaledToMagnitude(-angleOfRotation);
         final Vector3 flattenedPointOnCircle = closestPoint.rotate(rotationVector);
         return Math.atan2(flattenedPointOnCircle.y, flattenedPointOnCircle.x);
+    }
+
+    public Ray3 findTangentPointFrom(Vector3 point, int tangentId) {
+        /*
+        if(point.y >= center.offset.y) {
+            tangentId = 1-tangentId;
+        }*/
+
+        Vector3 offset = new Vector3(flatCircle.center, height);
+        Vector3 notRotatedLocalPoint = point.minus(offset);
+        Vector3 rotator = orientation.findRotator(Vector3.UP_VECTOR);
+
+        Vector3 rotatedLocalPoint = notRotatedLocalPoint.rotate(rotator);
+        Vector2 flatPoint = rotatedLocalPoint.flatten();
+
+        Circle centeredCircle = new Circle(new Vector2(), flatCircle.radii);
+
+        Ray2 tangent1 = centeredCircle.findTangentFrom(flatPoint, tangentId);
+        Ray2 tangent2 = centeredCircle.findTangentFrom(flatPoint, 1-tangentId);
+        Ray2 tangent = tangent1;
+        if(((tangentId * 2) -1) * tangent1.offset.minus(flatPoint).correctionAngle(tangent2.offset.minus(flatPoint)) < 0) {
+            tangent = tangent2;
+        }
+
+        Vector3 tangentPoint = new Vector3(tangent.offset, 0).rotate(rotator.scaled(-1)).plus(offset);
+        return new Ray3(
+                tangentPoint,
+                point.minus(tangentPoint));
     }
 }
