@@ -14,6 +14,7 @@ import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.grou
 import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.weak_dribble.WeakDribble6Test;
 import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.DrivingAccelerationControllerTest;
 import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.DrivingSpeedController2Test;
+import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.GroundSpinControllerTest;
 
 public class SamplePythonInterface extends SocketServer {
 
@@ -22,6 +23,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new DrivingSpeedController2Test());
+        return new SampleBot(index, new AerialDirectionalHit5Test());
     }
 }

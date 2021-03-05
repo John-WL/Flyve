@@ -6,16 +6,19 @@ import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.BotBehaviour;
+import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.aerial.recovery.AerialRecovery;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 import rlbotexample.output.ControlsOutput;
 
 public class SampleBot implements Bot {
 
+    private final AerialRecovery aerialRecovery;
+
     private final int playerIndex;
-    private BotOutput myBotOutput;
-    private BotBehaviour botBehaviour;
-    private Renderer renderer;
+    private BotOutput botOutput;
+    private final BotBehaviour botBehaviour;
+    private final Renderer renderer;
     public static double averageFps;
     private long currentFpsTime;
     private long previousFpsTime;
@@ -26,16 +29,18 @@ public class SampleBot implements Bot {
 
 
     public SampleBot(int playerIndex, BotBehaviour botBehaviour) {
+        this.aerialRecovery = new AerialRecovery(botBehaviour);
+
         this.playerIndex = playerIndex;
-        myBotOutput = new BotOutput();
+        this.botOutput = new BotOutput();
         this.botBehaviour = botBehaviour;
-        renderer = getRenderer();
+        this.renderer = getRenderer();
         averageFps = 0;
-        currentFpsTime = 0;
-        previousFpsTime = 0;
-        time1 = 0;
-        time2 = 0;
-        deltaTime = 0;
+        this.currentFpsTime = 0;
+        this.previousFpsTime = 0;
+        this.time1 = 0;
+        this.time2 = 0;
+        this.deltaTime = 0;
         currentFps = 0;
 
     }
@@ -46,8 +51,10 @@ public class SampleBot implements Bot {
      */
     private ControlsOutput processInput(DataPacket input, GameTickPacket packet) {
 
+        processDefaultInputs(input);
+
         // Bot behaviour
-        myBotOutput = botBehaviour.processInput(input, packet);
+        botOutput = botBehaviour.processInput(input, packet);
 
         // just some debug calculations all the way down to the return...
         previousFpsTime = currentFpsTime;
@@ -62,7 +69,14 @@ public class SampleBot implements Bot {
         botBehaviour.updateGui(renderer, input, currentFps, averageFps, deltaTime);
 
         // Output the calculated states
-        return myBotOutput.getForwardedOutput();
+        return botOutput.getForwardedOutput();
+    }
+
+    private void processDefaultInputs(DataPacket input) {
+        // basic recovery skill when falling
+        if(!input.car.hasWheelContact) {
+            aerialRecovery.updateOutput(input);
+        }
     }
 
     private Renderer getRenderer() {

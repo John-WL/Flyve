@@ -33,7 +33,6 @@ public class DrivingSpeedController2 extends SkillController {
     public void updateOutput(DataPacket input) {
         carSpeed = input.car.velocity.dotProduct(input.car.orientation.noseVector);
 
-        System.out.println(input.car.velocity.magnitude());
 
         //bot.output().steer(1);
 
@@ -42,7 +41,7 @@ public class DrivingSpeedController2 extends SkillController {
 
         bot.output().boost(false);
         if(input.car.hasWheelContact) {
-            if ((desiredSpeed - carSpeed > 5)) {
+            if (desiredSpeed > 400 && (desiredSpeed - carSpeed > 5)) {
                 bot.output().boost(true);
             }
         }

@@ -5,17 +5,18 @@ import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.flyve.debug.player_prediction.DebugPlayerPredictedTrajectory;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController;
+import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.DrivingSpeedController2;
 import rlbotexample.bot_behaviour.skill_controller.implementation.elementary.general_driving.GroundSpinController;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.output.BotOutput;
 
 public class GroundSpinControllerTest extends FlyveBot {
 
-    private DrivingSpeedController drivingSpeedController;
+    private DrivingSpeedController2 drivingSpeedController;
     private GroundSpinController groundSpinController;
 
     public GroundSpinControllerTest() {
-        drivingSpeedController = new DrivingSpeedController(this);
+        drivingSpeedController = new DrivingSpeedController2(this);
         groundSpinController = new GroundSpinController(this);
     }
 
@@ -25,13 +26,15 @@ public class GroundSpinControllerTest extends FlyveBot {
 
         // do the thing
         //groundSpinController.setSpin(input.allCars.get(1-input.playerIndex).spin.z);
-        groundSpinController.setSpin(-5.4);
+        groundSpinController.setSpin(0);
         groundSpinController.updateOutput(input);
 
-        drivingSpeedController.setSpeed(1200);
+        drivingSpeedController.setSpeed(300);
         drivingSpeedController.updateOutput(input);
 
-        output().boost(true);
+        System.out.println(input.car.velocity.magnitude());
+
+        //output().boost(true);
 
         // return the calculated bot output
         return super.output();

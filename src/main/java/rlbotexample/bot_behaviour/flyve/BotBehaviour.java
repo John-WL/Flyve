@@ -7,25 +7,25 @@ import rlbotexample.output.BotOutput;
 
 public abstract class BotBehaviour {
 
-    private BotOutput myBotOutput;
+    private BotOutput botOutput;
 
     public BotBehaviour() {
-        myBotOutput = new BotOutput();
+        botOutput = new BotOutput();
     }
 
     public BotOutput output() {
-        return myBotOutput;
+        return botOutput;
     }
 
     public void setOutput(BotOutput output) {
-        myBotOutput.throttle(output.throttle());
-        myBotOutput.steer(output.steer());
-        myBotOutput.pitch(output.pitch());
-        myBotOutput.yaw(output.yaw());
-        myBotOutput.roll(output.roll());
-        myBotOutput.jump(output.jump());
-        myBotOutput.boost(output.boost());
-        myBotOutput.drift(output.drift());
+        botOutput.throttle(output.throttle());
+        botOutput.steer(output.steer());
+        botOutput.pitch(output.pitch());
+        botOutput.yaw(output.yaw());
+        botOutput.roll(output.roll());
+        botOutput.jump(output.jump());
+        botOutput.boost(output.boost());
+        botOutput.drift(output.drift());
     }
 
     public abstract BotOutput processInput(DataPacket input, GameTickPacket packet);
