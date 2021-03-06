@@ -6,6 +6,7 @@ import util.game_constants.RlConstants;
 import util.math.vector.MovingPoint;
 import util.math.vector.Vector3;
 
+@Deprecated
 public class AerialAccelerationFinder {
 
     private static final double BOOST_FACTOR_TO_HANDLE_SMALL_RANDOM_ERROR_IN_CALCULATION = 1.032;

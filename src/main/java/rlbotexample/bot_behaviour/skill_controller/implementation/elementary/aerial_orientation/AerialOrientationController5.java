@@ -48,7 +48,13 @@ public class AerialOrientationController5 extends SkillController {
 
     @Override
     public void updateOutput(DataPacket input) {
-
+        /*
+        if(noseOrientation.isZero()) {
+            noseOrientation = input.car.orientation.noseVector;
+        }
+        if(rollOrientation.isZero()) {
+            rollOrientation = input.car.orientation.roofVector;
+        }*/
 
         Vector3 noseDestinationAngularVelocity = previousNoseOrientation.findRotator(noseOrientation).scaled(RlConstants.BOT_REFRESH_RATE);
         Vector3 rollDestinationAngularVelocity = previousRollOrientation.findRotator(rollOrientation).scaled(RlConstants.BOT_REFRESH_RATE);

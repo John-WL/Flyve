@@ -99,6 +99,21 @@ public class Vector3 implements Serializable {
         double scaleRequired = magnitude / magnitude();
         return scaled(scaleRequired);
     }
+    public Vector3 scaledToMagnitude(double magnitudeX, double magnitudeY, double magnitudeZ) {
+        double scaleRequiredX = magnitudeX / Math.abs(x);
+        if (Double.isNaN(scaleRequiredX)) {
+            scaleRequiredX = magnitudeX;
+        }
+        double scaleRequiredY = magnitudeY / Math.abs(y);
+        if (Double.isNaN(scaleRequiredY)) {
+            scaleRequiredY = magnitudeY;
+        }
+        double scaleRequiredZ = magnitudeZ / Math.abs(z);
+        if (Double.isNaN(scaleRequiredZ)) {
+            scaleRequiredZ = magnitudeZ;
+        }
+        return scaled(scaleRequiredX, scaleRequiredY, scaleRequiredZ);
+    }
 
     public double distance(Vector3 other) {
         double xDiff = x - other.x;

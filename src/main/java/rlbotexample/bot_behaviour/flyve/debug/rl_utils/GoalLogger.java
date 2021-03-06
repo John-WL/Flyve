@@ -4,13 +4,9 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.input.dynamic_data.DataPacket;
-import rlbotexample.input.dynamic_data.goal.GoalRegion;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
 import rlbotexample.output.BotOutput;
-import util.math.vector.Vector2;
-import util.math.vector.Vector3;
 import util.renderers.ShapeRenderer;
-import util.shapes.Circle;
 
 import java.awt.*;
 
@@ -31,7 +27,9 @@ public class GoalLogger extends FlyveBot {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
         ShapeRenderer shapeRenderer = new ShapeRenderer(renderer);
 
-        renderer.drawLine3d(Color.GREEN, input.allCars.get(1-input.playerIndex).position.toFlatVector(), StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.allCars.get(1-input.playerIndex).position).toFlatVector());
-        shapeRenderer.renderCross(StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.allCars.get(1-input.playerIndex).position), Color.MAGENTA);
+        StandardMapGoals.getAlly(input.team).closestPointOfBallOnSurface(input.ball.position.scaled(1, 1, 1)).ifPresent(v ->
+                renderer.drawLine3d(Color.GREEN, input.ball.position.toFlatVector(), v.toFlatVector()));
+        StandardMapGoals.getAlly(input.team).closestPointOfBallOnSurface(input.ball.position.scaled(1, 1, 1)).ifPresent(v ->
+                shapeRenderer.renderCross(v, Color.MAGENTA));
     }
 }

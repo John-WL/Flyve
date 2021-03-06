@@ -17,6 +17,7 @@ import util.renderers.ShapeRenderer;
 import util.state_machine.State;
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DriveTowardAerialState implements State {
 
@@ -58,10 +59,11 @@ public class DriveTowardAerialState implements State {
         approximatePlayerVelocityAtImpact = approximatePlayerTrajectory
                 .derivative(aerialInfo.timeOfFlight);
 
-        Vector3 ballDestination = StandardMapGoals.getOpponent(input.team)
-                .closestPointOnSurface(approximatePlayerPositionAtImpact);
+        AtomicReference<Vector3> ballDestinationRef = new AtomicReference<>(new Vector3());
+                StandardMapGoals.getOpponent(input.team)
+                .closestPointOfBallOnSurface(approximatePlayerPositionAtImpact);
 
-        Vector3 minimalDesiredVelocityAtImpact = ballDestination
+        Vector3 minimalDesiredVelocityAtImpact = ballDestinationRef.get()
                 .minus(approximatePlayerPositionAtImpact)
                 .scaledToMagnitude(1500);
 

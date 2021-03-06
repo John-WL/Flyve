@@ -36,7 +36,8 @@ public class Dribble6Test extends FlyveBot {
             //gameSituationHandler.update();
         //}
 
-        validGoalPosition = StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.ball.position);
+        StandardMapGoals.getOpponent(input.team).closestPointOfBallOnSurface(input.ball.position)
+        .ifPresent(v -> validGoalPosition = v);
         validGoalPosition = validGoalPosition.scaled(0.5, 1, 1);
         dribbleController.setBallDestination(validGoalPosition);
         dribbleController.setTargetSpeed(800);

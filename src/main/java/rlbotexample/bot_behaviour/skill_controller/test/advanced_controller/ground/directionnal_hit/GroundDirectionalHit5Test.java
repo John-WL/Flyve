@@ -4,10 +4,8 @@ import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.GroundDirectionalHit5;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.ground_hit.ground_directional_hit_4.GroundDirectionalHit4;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
-import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
 import util.math.vector.Vector3;
 
@@ -24,7 +22,8 @@ public class GroundDirectionalHit5Test extends FlyveBot {
     // called every frame
     @Override
     public BotOutput processInput(DataPacket input, GameTickPacket packet) {
-        ballDestination = StandardMapGoals.getOpponent(input.team).closestPointOnSurface(input.ball.position);
+        StandardMapGoals.getOpponent(input.team).closestPointOfBallOnSurface(input.ball.position)
+        .ifPresent(v -> ballDestination = v);
         groundDirectionalHit.setBallDestination(ballDestination);
         groundDirectionalHit.updateOutput(input);
 

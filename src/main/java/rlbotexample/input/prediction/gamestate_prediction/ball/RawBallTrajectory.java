@@ -31,7 +31,7 @@ public class RawBallTrajectory {
             public Vector3 derivative(double time) {
                 return new Vector3(ballPrediction.slices(correspondingBallIndex(time)).physics().velocity());
             }
-        }.remove(movingPoint -> Math.abs(movingPoint.physicsState.offset.y) > Math.abs(StandardMapGoals.blueGoal.normal.offset.y) + 100);
+        };//.remove(movingPoint -> Math.abs(movingPoint.physicsState.offset.y) > Math.abs(StandardMapGoals.blueGoal.normal.offset.y) + 100);
     }
 
     public static BallData ballAtTime(final double time) {

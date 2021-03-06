@@ -3,14 +3,11 @@ package rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.gro
 import rlbot.flat.GameTickPacket;
 import rlbot.render.Renderer;
 import rlbotexample.bot_behaviour.flyve.FlyveBot;
-import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.weak_dribble.WeakDribble6;
 import rlbotexample.bot_behaviour.skill_controller.implementation.advanced.offense.weak_dribble.WeakDribble7;
 import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
-import rlbotexample.input.prediction.Trajectory3D;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.TrainingPack;
-import util.math.vector.Vector3;
 
 public class WeakDribble7Test extends FlyveBot {
 
@@ -36,7 +33,7 @@ public class WeakDribble7Test extends FlyveBot {
                 //((Trajectory3D) t -> input.allCars.get(1-input.playerIndex).position));
                 input.statePrediction.ballAsTrajectory()
                         .modify(m -> StandardMapGoals.getOpponent(input.team)
-                                .closestPointOnSurface(m.physicsState.offset).scaled(0.5, 1, 1)));
+                                .closestPointOfBallOnSurface(m.physicsState.offset).orElseGet(null).scaled(0.5, 1, 1)));
         double speed = 1200;
 
         output().boost(false);

@@ -11,6 +11,7 @@ import util.math.vector.Vector3;
 import util.state_machine.State;
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AerialState implements State {
 
@@ -33,9 +34,12 @@ public class AerialState implements State {
         BallData desiredBall = input.statePrediction.ballAtTime(timeOfAerial);
         desiredVelocity = desiredBall.position.minus(input.car.position)
                 .scaled(1/timeOfAerial);
-        Vector3 destination = StandardMapGoals.getOpponent(input.team)
-                .closestPointOnSurface(new Vector3(0, 0, 200));
-        aerialDirectionalHit5.setBallDestination(destination);
+
+        AtomicReference<Vector3> destinationRef = new AtomicReference<>(new Vector3());
+        StandardMapGoals.getOpponent(input.team)
+                .closestPointOfBallOnSurface(new Vector3(0, 0, 200))
+        .ifPresent(destinationRef::set);
+        aerialDirectionalHit5.setBallDestination(destinationRef.get());
         aerialDirectionalHit5.updateOutput(input);
     }
 

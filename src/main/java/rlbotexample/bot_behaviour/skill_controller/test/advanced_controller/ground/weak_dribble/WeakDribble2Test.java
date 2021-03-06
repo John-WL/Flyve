@@ -30,8 +30,8 @@ public class WeakDribble2Test extends FlyveBot {
 
         dribbleController.setBallDestination(
                 input.statePrediction.ballAsTrajectory()
-                        .andThen(p -> StandardMapGoals.getOpponent(input.team)
-                                .closestPointOnSurface(p)));
+                        .andThen(ballPosition -> StandardMapGoals.getOpponent(input.team)
+                                .closestPointOfBallOnSurface(ballPosition).orElse(null)));
         dribbleController.updateOutput(input);
 
         return super.output();
