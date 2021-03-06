@@ -8,6 +8,7 @@ import rlbotexample.input.dynamic_data.DataPacket;
 import rlbotexample.input.dynamic_data.goal.StandardMapGoals;
 import rlbotexample.output.BotOutput;
 import util.game_situation.trainning_pack.TrainingPack;
+import util.math.vector.Vector3;
 
 public class WeakDribble6Test extends FlyveBot {
 
@@ -33,12 +34,12 @@ public class WeakDribble6Test extends FlyveBot {
                 //((Trajectory3D) t -> input.allCars.get(1-input.playerIndex).position));
                 input.statePrediction.ballAsTrajectory()
                         .modify(m -> StandardMapGoals.getOpponent(input.team)
-                            .closestPointOfBallOnSurface(m.physicsState.offset).orElseGet(null).scaled(0.5, 1, 1)));
-        double speed = 1500;
+                            .closestPointOfBallOnSurface(m.physicsState.offset).orElseGet(() -> new Vector3(Double.NaN, Double.NaN, Double.NaN)).scaled(0.5, 1, 1)));
+        double speed = 800;
 
         output().boost(false);
         if(input.car.velocity.magnitude() < speed) {
-            output().boost(true);
+            //output().boost(true);
         }
 
         dribbleController.setSpeed(speed);

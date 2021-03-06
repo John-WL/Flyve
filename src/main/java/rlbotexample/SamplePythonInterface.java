@@ -26,6 +26,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new AirDribble4Test());
+        return new SampleBot(index, new WeakDribble6Test());
     }
 }
