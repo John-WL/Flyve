@@ -3,6 +3,7 @@ package rlbotexample.input.dynamic_data.car.orientation;
 
 import rlbot.flat.PlayerInfo;
 import rlbot.gamestate.DesiredRotation;
+import util.math.vector.CarOrientedPosition;
 import util.math.vector.Vector3;
 
 /**
@@ -21,6 +22,12 @@ public class CarOrientation {
 
     /** The direction that the right side of the car is facing. */
     public final Vector3 rightVector;
+
+    public CarOrientation() {
+        this.noseVector = new Vector3(Vector3.X_VECTOR);
+        this.roofVector = new Vector3(Vector3.UP_VECTOR);
+        this.rightVector = noseVector.crossProduct(roofVector);
+    }
 
     public CarOrientation(Vector3 noseVector, Vector3 roofVector) {
 
@@ -52,13 +59,11 @@ public class CarOrientation {
         return new CarOrientation(new Vector3(noseX, noseY, noseZ), new Vector3(roofX, roofY, roofZ));
     }
 
-    public Vector3 findRotatorToRotateTo(Orientation orientation) {
-        final Orientation thisOrientation = new Orientation(noseVector, roofVector);
-
-        return thisOrientation.findRotatorToRotateToV2(orientation);
-    }
-
     public CarOrientation rotate(Vector3 orientationRotator) {
         return new CarOrientation(noseVector.rotate(orientationRotator), roofVector.rotate(orientationRotator));
+    }
+
+    public CarOrientation matrixRotation(CarOrientation orientation) {
+        return new CarOrientation(noseVector.matrixRotation(orientation), roofVector.matrixRotation(orientation));
     }
 }

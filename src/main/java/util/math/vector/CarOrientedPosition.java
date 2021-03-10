@@ -9,6 +9,11 @@ public class CarOrientedPosition implements Serializable {
     public Vector3 position;
     public CarOrientation orientation;
 
+    public CarOrientedPosition() {
+        this.position = new Vector3();
+        this.orientation = new CarOrientation();
+    }
+
     public CarOrientedPosition(Vector3 position, CarOrientation orientation) {
         this.position = position;
         this.orientation = orientation;
@@ -28,5 +33,13 @@ public class CarOrientedPosition implements Serializable {
         double angleX = rotatorX.dotProduct(Vector3.X_VECTOR);
 
         return new ZyxOrientedPosition(position, new Vector3(-angleX, -angleY, -angleZ));
+    }
+
+    public CarOrientedPosition applyTransformation(CarOrientedPosition orientedPosition) {
+        CarOrientation rotatedOrientation = orientation.matrixRotation(orientedPosition.orientation);
+        Vector3 localRotatedPosition = position.matrixRotation(orientedPosition.orientation);
+        Vector3 rotatedTranslatedPosition = localRotatedPosition.plus(orientedPosition.position);
+
+        return new CarOrientedPosition(rotatedTranslatedPosition, rotatedOrientation);
     }
 }
