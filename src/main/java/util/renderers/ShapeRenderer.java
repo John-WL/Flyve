@@ -4,13 +4,12 @@ import rlbot.render.Renderer;
 import rlbotexample.input.dynamic_data.car.hit_box.HitBox;
 import rlbotexample.input.dynamic_data.RlUtils;
 import rlbotexample.input.dynamic_data.car.hit_box.wheels.WheelBox;
+import rlbotexample.input.dynamic_data.car.orientation.CarOrientation;
 import rlbotexample.input.prediction.Trajectory3D;
-import util.math.vector.Ray3;
-import util.math.vector.Vector2;
+import util.math.vector.*;
 import util.shapes.Circle;
 import util.shapes.Circle3D;
 import util.shapes.Triangle3D;
-import util.math.vector.Vector3;
 
 import java.awt.*;
 import java.util.function.Function;
@@ -32,6 +31,49 @@ public class ShapeRenderer {
 
     public void renderRay3(Ray3 ray, Color color) {
         renderer.drawLine3d(color, ray.offset.toFlatVector(), ray.offset.plus(ray.direction).toFlatVector());
+    }
+
+    public void renderOrientedPosition(Color color, CarOrientedPosition orientedPosition) {
+        renderer.drawLine3d(
+                color,
+                orientedPosition.position.toFlatVector(),
+                orientedPosition.position.plus(orientedPosition.orientation.noseVector.scaledToMagnitude(300))
+                        .toFlatVector());
+        renderer.drawLine3d(
+                color,
+                orientedPosition.position.toFlatVector(),
+                orientedPosition.position.plus(orientedPosition.orientation.roofVector.scaledToMagnitude(300))
+                        .toFlatVector());
+    }
+
+    /*public void renderOrientedPosition(Color color, ZyxOrientedPosition orientedPosition) {
+        Vector3 rotatorZ = Vector3.UP_VECTOR.scaled(orientedPosition.eulerZYX.z);
+        Vector3 rotatorY = Vector3.Y_VECTOR.rotate(rotatorZ).scaled(orientedPosition.eulerZYX.y);
+        Vector3 rotatorX = Vector3.X_VECTOR.rotate(rotatorZ).rotate(rotatorY).scaled(orientedPosition.eulerZYX.x);
+
+        Vector3 nose = Vector3.X_VECTOR
+                .rotate(rotatorZ)
+                .rotate(rotatorY)
+                .rotate(rotatorX);
+        Vector3 roof = Vector3.UP_VECTOR
+                .rotate(rotatorZ)
+                .rotate(rotatorY)
+                .rotate(rotatorX);
+
+        renderer.drawLine3d(
+                color,
+                orientedPosition.position.toFlatVector(),
+                orientedPosition.position.plus(nose.scaledToMagnitude(300))
+                        .toFlatVector());
+        renderer.drawLine3d(
+                color,
+                orientedPosition.position.toFlatVector(),
+                orientedPosition.position.plus(roof.scaledToMagnitude(300))
+                        .toFlatVector());
+    }*/
+
+    public void renderOrientedPosition(Color color, ZyxOrientedPosition orientedPosition) {
+        renderOrientedPosition(color, orientedPosition.toCarOrientedPosition());
     }
 
     public void renderTriangle(Triangle3D triangle, Color color) {

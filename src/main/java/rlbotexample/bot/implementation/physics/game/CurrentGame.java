@@ -13,7 +13,7 @@ public class CurrentGame {
 
     public static void step(DataPacket input) {
         // testing if we can now animate the main bone of the animation in java:
-        boss_basic_rotation.orientedPosition = new CarOrientedPosition(new Vector3(), input.humanCar.orientation);
+        boss_basic_rotation.orientedPosition = new CarOrientedPosition(input.humanCar.position, input.humanCar.orientation);
         boss_basic_rotation.step(input);
     }
 }

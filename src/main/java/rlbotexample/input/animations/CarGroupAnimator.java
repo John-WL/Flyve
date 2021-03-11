@@ -30,9 +30,9 @@ public class CarGroupAnimator {
                     ZyxOrientedPosition localZyxOrientedPosition = meshAnimation.get(frameCount)
                             .orientedPositions.get(safeBotIndex.get());
                     CarOrientedPosition localCarOrientedPosition = localZyxOrientedPosition.toCarOrientedPosition();
-                    CarOrientedPosition carOrientedPosition = localCarOrientedPosition.applyTransformation(orientedPosition);
+                    CarOrientedPosition carOrientedPosition = localCarOrientedPosition.toGlobalPosition(orientedPosition);
 
-                            PhysicsOfBossBattle.setOrientedPosition(carOrientedPosition.toZyxOrientedPosition(), carData);
+                    PhysicsOfBossBattle.setOrientedPosition(carOrientedPosition.toZyxOrientedPosition(), carData);
                     safeBotIndex.incrementAndGet();
                 }
                 catch (Exception ignored) {}

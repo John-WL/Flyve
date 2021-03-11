@@ -15,18 +15,19 @@ public class ZyxOrientedPosition implements Serializable {
     }
 
     public CarOrientedPosition toCarOrientedPosition() {
-        CarOrientation orientation = new CarOrientation(Vector3.X_VECTOR, Vector3.UP_VECTOR);
-        Vector3 xAxisRotator = Vector3.X_VECTOR.scaled(eulerZYX.x);
-        Vector3 yAxisRotator = Vector3.Y_VECTOR.scaled(eulerZYX.y);
-        Vector3 zAxisRotator = Vector3.UP_VECTOR.scaled(eulerZYX.z);
+        Vector3 rotatorZ = Vector3.UP_VECTOR.scaled(eulerZYX.z);
+        Vector3 rotatorY = Vector3.Y_VECTOR.rotate(rotatorZ).scaled(eulerZYX.y);
+        Vector3 rotatorX = Vector3.X_VECTOR.rotate(rotatorZ).rotate(rotatorY).scaled(eulerZYX.x);
 
-        orientation = orientation.rotate(zAxisRotator);
-        xAxisRotator = xAxisRotator.rotate(zAxisRotator);
-        yAxisRotator = yAxisRotator.rotate(zAxisRotator);
+        Vector3 nose = Vector3.X_VECTOR
+                .rotate(rotatorZ)
+                .rotate(rotatorY)
+                .rotate(rotatorX);
+        Vector3 roof = Vector3.UP_VECTOR
+                .rotate(rotatorZ)
+                .rotate(rotatorY)
+                .rotate(rotatorX);
 
-        orientation = orientation.rotate(yAxisRotator);
-        xAxisRotator = xAxisRotator.rotate(yAxisRotator);
-
-        return new CarOrientedPosition(position, orientation.rotate(xAxisRotator));
+        return new CarOrientedPosition(position, new CarOrientation(nose, roof));
     }
 }

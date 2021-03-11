@@ -24,7 +24,7 @@ public class CarStateSetter {
                         .withLocation(new DesiredVector3((float)-position.x, (float)position.y, (float)position.z))
                         .withVelocity(new DesiredVector3((float)-generatedVelocity.x, (float)generatedVelocity.y, (float)generatedVelocity.z))
                         .withRotation(new DesiredRotation((float)orientation.y, (float)-orientation.z, (float)orientation.x))
-                        .withAngularVelocity(new DesiredVector3((float)generatedSpin.y, (float)-generatedSpin.z, (float)generatedSpin.x))
+                        //.withAngularVelocity(new DesiredVector3((float)generatedSpin.y, (float)-generatedSpin.z, (float)generatedSpin.x))
                 ));
         GameSituation.applyGameState(gameState);
     }
