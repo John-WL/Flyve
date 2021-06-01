@@ -8,9 +8,7 @@ import util.math.vector.Vector3;
 import util.parameter_configuration.IOFile;
 import util.parameter_configuration.ObjectSerializer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -45,6 +43,7 @@ public class CarAnimationImporter {
 
         AtomicReference<Integer> previousFrameIdRef = new AtomicReference<>(-1);
         AtomicReference<Integer> newFrameIdRef = new AtomicReference<>(0);
+        Map<Integer, Integer> idLinks = new HashMap<>();
 
         List<IndexedCarGroup> carMeshFrames = new ArrayList<>();
 
@@ -55,7 +54,7 @@ public class CarAnimationImporter {
             List<Float> valuesDouble = Arrays.stream(valuesStr).map(Float::valueOf).collect(Collectors.toList());
 
             // establish the data
-            int objectId = valuesDouble.get(0).intValue();
+            int objectBlenderId = valuesDouble.get(0).intValue();
             int frameId = valuesDouble.get(1).intValue();
             double positionX = valuesDouble.get(2).doubleValue();
             double positionY = valuesDouble.get(3).doubleValue();
@@ -67,16 +66,22 @@ public class CarAnimationImporter {
             // update current frame id reference
             newFrameIdRef.set(frameId);
 
+            Integer objectJavaIndex = idLinks.get(objectBlenderId);
+
+            if(objectJavaIndex == null) {
+                idLinks.put(objectBlenderId, carMeshFrames.size());
+                objectJavaIndex = carMeshFrames.size();
+            }
+
             // if this is a new frame
             if(!previousFrameIdRef.get().equals(newFrameIdRef.get())) {
                 previousFrameIdRef.set(frameId);
-                int safeFrameId = carMeshFrames.size();
-                carMeshFrames.add(new IndexedCarGroup(safeFrameId));
+                carMeshFrames.add(new IndexedCarGroup(objectJavaIndex));
             }
 
-            CarGroup mesh = carMeshFrames.get(carMeshFrames.size()-1).carGroup;
+            CarGroup carGroup = carMeshFrames.get(carMeshFrames.size()-1).carGroup;
 
-            mesh.orientedPositions.add(new ZyxOrientedPosition(
+            carGroup.orientedPositions.add(new ZyxOrientedPosition(
                     new Vector3(positionX, positionY, positionZ),
                     new Vector3(rotationX, rotationY, rotationZ)));
         });

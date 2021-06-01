@@ -46,32 +46,6 @@ public class ShapeRenderer {
                         .toFlatVector());
     }
 
-    /*public void renderOrientedPosition(Color color, ZyxOrientedPosition orientedPosition) {
-        Vector3 rotatorZ = Vector3.UP_VECTOR.scaled(orientedPosition.eulerZYX.z);
-        Vector3 rotatorY = Vector3.Y_VECTOR.rotate(rotatorZ).scaled(orientedPosition.eulerZYX.y);
-        Vector3 rotatorX = Vector3.X_VECTOR.rotate(rotatorZ).rotate(rotatorY).scaled(orientedPosition.eulerZYX.x);
-
-        Vector3 nose = Vector3.X_VECTOR
-                .rotate(rotatorZ)
-                .rotate(rotatorY)
-                .rotate(rotatorX);
-        Vector3 roof = Vector3.UP_VECTOR
-                .rotate(rotatorZ)
-                .rotate(rotatorY)
-                .rotate(rotatorX);
-
-        renderer.drawLine3d(
-                color,
-                orientedPosition.position.toFlatVector(),
-                orientedPosition.position.plus(nose.scaledToMagnitude(300))
-                        .toFlatVector());
-        renderer.drawLine3d(
-                color,
-                orientedPosition.position.toFlatVector(),
-                orientedPosition.position.plus(roof.scaledToMagnitude(300))
-                        .toFlatVector());
-    }*/
-
     public void renderOrientedPosition(Color color, ZyxOrientedPosition orientedPosition) {
         renderOrientedPosition(color, orientedPosition.toCarOrientedPosition());
     }

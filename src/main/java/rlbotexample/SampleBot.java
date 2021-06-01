@@ -23,7 +23,6 @@ public class SampleBot implements Bot {
     private long time2;
     private long deltaTime;
     public static double currentFps;
-    private ControlsOutput voidControls = new ControlsOutput();
 
     public SampleBot(int playerIndex, BotBehaviour botBehaviour) {
         this.playerIndex = playerIndex;
@@ -90,7 +89,7 @@ public class SampleBot implements Bot {
 
         if (packet.playersLength() <= playerIndex || packet.ball() == null || !packet.gameInfo().isRoundActive()) {
             // Just return immediately if something looks wrong with the data. This helps us avoid stack traces.
-            return voidControls;
+            return new ControlsOutput();
         }
 
         // Translate the raw packet data (which is in an unpleasant format) into our custom DataPacket class.
@@ -98,13 +97,13 @@ public class SampleBot implements Bot {
         DataPacket dataPacket = new DataPacket(packet, playerIndex);
 
         // if the bot running the thread does not correspond to THE bot
-        // that we want to use to run the thread, stop its execution as soon as possible.
+        // that we want to use, stop its execution as soon as possible.
+        if(DataPacket.indexOfBotThatLoadsData.get() != dataPacket.car.playerIndex) {
+            return new ControlsOutput();
+        }
 
         // Do the actual logic using our dataPacket.
-        ControlsOutput controlsOutput = voidControls;
-        if(DataPacket.indexOfBotThatLoadsData.get() == dataPacket.car.playerIndex){
-            controlsOutput = processInput(dataPacket, packet);
-        }
+        ControlsOutput controlsOutput = processInput(dataPacket, packet);
 
         // timestamp after executing the bot
         time2 = System.currentTimeMillis();
@@ -114,7 +113,7 @@ public class SampleBot implements Bot {
     }
 
     public void retire() {
-        System.out.println("Retiring pan bot " + playerIndex);
+        System.out.println("Retiring bot " + playerIndex);
         renderer.eraseFromScreen();
     }
 }

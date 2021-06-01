@@ -25,6 +25,7 @@ public class PhysicsOfBossBattle {
         CurrentGame.step(input);
 
         BallStateSetter.handleBallState(input);
+
         findAdditionalImpulses(input);
         applyImpulses(input);
     }

@@ -65,9 +65,6 @@ public class DataPacket {
             loadData(request);
             dataLoaded = true;
         }
-        // omg kill me
-        //noinspection StatementWithEmptyBody
-        while(!dataLoaded);
     }
 
     private void loadData(GameTickPacket request) {

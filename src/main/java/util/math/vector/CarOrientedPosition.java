@@ -37,8 +37,6 @@ public class CarOrientedPosition implements Serializable {
             angleX = Math.PI;
         }
 
-        System.out.println(angleX);
-
         return new ZyxOrientedPosition(position, new Vector3(angleX, angleY, angleZ));
     }
 
