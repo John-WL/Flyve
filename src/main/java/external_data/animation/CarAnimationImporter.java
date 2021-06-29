@@ -3,6 +3,7 @@ package external_data.animation;
 import rlbotexample.input.animations.CarGroup;
 import rlbotexample.input.animations.IndexedCarGroup;
 import rlbotexample.input.animations.CarGroupAnimation;
+import util.math.matrix.Matrix3By3;
 import util.math.vector.ZyxOrientedPosition;
 import util.math.vector.Vector3;
 import util.parameter_configuration.IOFile;
@@ -49,20 +50,25 @@ public class CarAnimationImporter {
         List<IndexedCarGroup> carMeshFrames = new ArrayList<>();
 
         // parse the damn file
+
+        // for each frame
         fileData.forEach(s -> {
             // just get the floats in an array
             String[] valuesStr = s.split(":");
-            List<Float> valuesDouble = Arrays.stream(valuesStr).map(Float::valueOf).collect(Collectors.toList());
+            List<Double> valuesDouble = Arrays.stream(valuesStr)
+                    .map(Double::valueOf)
+                    .collect(Collectors.toList());
 
-            // establish the data
+            // find the car state for this specific car and for this specific frame that we are currently parsing
             int objectId = valuesDouble.get(0).intValue();
             int frameId = valuesDouble.get(1).intValue();
-            double positionX = valuesDouble.get(2).doubleValue();
-            double positionY = valuesDouble.get(3).doubleValue();
-            double positionZ = valuesDouble.get(4).doubleValue();
-            double rotationX = valuesDouble.get(5).doubleValue();
-            double rotationY = valuesDouble.get(6).doubleValue();
-            double rotationZ = valuesDouble.get(7).doubleValue();
+
+            Vector3 objectPosition = new Vector3(valuesDouble.get(2), valuesDouble.get(3), valuesDouble.get(4));
+            Matrix3By3 objectRotationMatrix = new Matrix3By3(
+                    valuesDouble.get(5), valuesDouble.get(6), valuesDouble.get(7),
+                    valuesDouble.get(8), valuesDouble.get(9), valuesDouble.get(10),
+                    valuesDouble.get(11), valuesDouble.get(12), valuesDouble.get(13)
+            );
 
             // update current frame id reference
             newFrameIdRef.set(frameId);
@@ -77,11 +83,11 @@ public class CarAnimationImporter {
             CarGroup mesh = carMeshFrames.get(carMeshFrames.size()-1).carGroup;
 
             mesh.orientedPositions.add(new ZyxOrientedPosition(
-                    new Vector3(positionX, positionY, positionZ),
-                    new Vector3(rotationX, rotationY, rotationZ)));
+                    objectPosition,
+                    objectRotationMatrix.toEulerZyx())); // oh boy...
         });
 
-        // output the data in a file for ez loading
+        // serialize the data in a file for easy loading
         ObjectSerializer.save(new CarGroupAnimation(carMeshFrames), filePath.replaceAll("\\" + ANIMATIONS_EXTENSION_NAME, OBJECT_STREAMING_EXTENSION_NAME));
     }
 }

@@ -9,7 +9,7 @@ import util.math.vector.Vector3;
 
 public class CurrentGame {
 
-    private static CarGroupAnimator boss_basic_rotation = new CarGroupAnimator(GameAnimations.boss_basic_rotation);
+    private static CarGroupAnimator boss_basic_rotation = new CarGroupAnimator(GameAnimations.boss_attack);
 
     public static void step(DataPacket input) {
         if(input.humanCar.hasWheelContact) {
