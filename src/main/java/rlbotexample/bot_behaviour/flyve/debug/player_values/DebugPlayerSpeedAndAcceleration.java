@@ -25,5 +25,6 @@ public class DebugPlayerSpeedAndAcceleration extends FlyveBot {
     @Override
     public void updateGui(Renderer renderer, DataPacket input, double currentFps, double averageFps, long botExecutionTime) {
         super.updateGui(renderer, input, currentFps, averageFps, botExecutionTime);
+        skillController.debug(renderer, input);
     }
 }

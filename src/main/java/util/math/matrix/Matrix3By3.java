@@ -7,7 +7,7 @@ public class Matrix3By3 {
 
     public static final Matrix3By3 UNIT = new Matrix3By3(1, 0, 0,
                                                         0, 1, 0,
-                                                            0, 0, 1);
+                                                        0, 0, 1);
     public final Vector3 a1;
     public final Vector3 a2;
     public final Vector3 a3;
@@ -16,7 +16,7 @@ public class Matrix3By3 {
                       double a21, double a22, double a23,
                       double a31, double a32, double a33) {
         this.a1 = new Vector3(a11, a12, a13);
-        this.a2 = new Vector3(a21, a22, a33);
+        this.a2 = new Vector3(a21, a22, a23);
         this.a3 = new Vector3(a31, a32, a33);
     }
 

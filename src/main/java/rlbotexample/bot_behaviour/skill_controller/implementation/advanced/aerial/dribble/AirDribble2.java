@@ -33,9 +33,13 @@ public class AirDribble2 extends SkillController {
     //private double velocityFrontBackCoef = -0.105;
     //private double distanceLeftRightCoef = -0.88;
     //private double velocityLeftRightCoef = -0.2735;
-    private double distanceFrontBackCoef = -0.32;
+    //private double distanceFrontBackCoef = -0.32;
+    //private double velocityFrontBackCoef = -0.105;
+    //private double distanceLeftRightCoef = -0.88;
+    //private double velocityLeftRightCoef = -0.2735;
+    private double distanceFrontBackCoef = -0.35;
     private double velocityFrontBackCoef = -0.105;
-    private double distanceLeftRightCoef = -0.88;
+    private double distanceLeftRightCoef = -0.90;
     private double velocityLeftRightCoef = -0.2735;
 
     private AerialOrientationController5 aerialOrientationHandler;

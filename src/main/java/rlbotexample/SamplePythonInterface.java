@@ -4,20 +4,14 @@ import rlbot.Bot;
 import rlbot.manager.BotManager;
 import rlbot.pyinterop.SocketServer;
 import rlbotexample.bot_behaviour.flyve.debug.ball_prediction.DebugCustomBallPrediction;
-import rlbotexample.bot_behaviour.flyve.debug.player_values.AccelerationLogger;
 import rlbotexample.bot_behaviour.flyve.debug.player_values.DebugPlayerSpeedAndAcceleration;
-import rlbotexample.bot_behaviour.flyve.debug.player_values.MaxTurnRadiusPrinter;
-import rlbotexample.bot_behaviour.flyve.debug.rl_utils.GoalLogger;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.AerialControllerTest;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.directionnal_hit.AerialDirectionalHit5Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble4Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.directionnal_hit.GroundDirectionalHit4Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.directionnal_hit.GroundDirectionalHit5Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.directionnal_hit.GroundDirectionalHit6Test;
-import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.weak_dribble.WeakDribble6Test;
-import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.DrivingAccelerationControllerTest;
-import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.DrivingSpeedController2Test;
-import rlbotexample.bot_behaviour.skill_controller.test.elementary.general_driving.GroundSpinControllerTest;
+import rlbotexample.bot_behaviour.flyve.implementation.normal_1s.Normal1sV1;
+import rlbotexample.bot_behaviour.flyve.implementation.normal_1s.Normal1sV2;
+import rlbotexample.bot_behaviour.flyve.implementation.normal_1s.Normal1sV3;
+import rlbotexample.bot_behaviour.flyve.implementation.normal_1s.normal_1s_v4.Normal1sV4;
+import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.aerial.dribble.AirDribble2Test;
+import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.directionnal_hit.*;
+import rlbotexample.bot_behaviour.skill_controller.test.advanced_controller.ground.dribble.Dribble6Test;
 
 public class SamplePythonInterface extends SocketServer {
 
@@ -26,6 +20,6 @@ public class SamplePythonInterface extends SocketServer {
     }
 
     protected Bot initBot(int index, String botType, int team) {
-        return new SampleBot(index, new WeakDribble6Test());
+        return new SampleBot(index, new AirDribble2Test());
     }
 }

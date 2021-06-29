@@ -86,7 +86,6 @@ public class MeshSplitter3D {
             }
         }
 
-
         // finish the average
         if(numberOfCollidingTriangles > 0) {
             resultingRay.offset = resultingRay.offset.scaled(1.0/numberOfCollidingTriangles);

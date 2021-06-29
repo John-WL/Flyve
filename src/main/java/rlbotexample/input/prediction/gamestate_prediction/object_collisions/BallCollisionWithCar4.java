@@ -57,9 +57,9 @@ public class BallCollisionWithCar4 {
                 new Vector3(0.0, 0.0, 1836.0));
         Matrix3By3 Ib = Matrix3By3.UNIT.scaled(IbNoVec);
 
-        final Matrix3By3 M = Matrix3By3.UNIT.scaled((1/mb) + (1/mc))
-                .minus(Lc.multiply(Ic.inverse().multiply(Lc)))
-                .minus(Lb.multiply(Ib.inverse().multiply(Lb)))
+        final Matrix3By3 M = (Matrix3By3.UNIT.scaled((1/mb) + (1/mc))
+                .minus(Lc.multiply(Ic.inverse()).multiply(Lc))
+                .minus(Lb.multiply(Ib.inverse()).multiply(Lb)))
                 .inverse();
 
         // theoretical impulse J computation

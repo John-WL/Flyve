@@ -91,7 +91,7 @@ public class GiveItANudgeState implements State {
         double accelerationToReach = (desiredSpeed - input.car.velocity.magnitude())/destination.time;
         boolean isBoosting = accelerationToReach > MaxAccelerationFromThrottleFinder.compute(input.car.velocity.magnitude())
                 && input.car.velocity.magnitude() < 2290;
-        bot.output().boost(isBoosting);
+        bot.output().boost(false);
 
         drivingSpeedController.setSpeed(desiredSpeed);
         drivingSpeedController.updateOutput(input);

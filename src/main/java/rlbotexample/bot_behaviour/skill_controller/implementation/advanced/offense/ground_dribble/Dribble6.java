@@ -80,6 +80,10 @@ public class Dribble6 extends SkillController {
         steerAmount = -input.ball.velocity.flatten()
                 .correctionAngle(convergingDestination.minus(input.ball.position).flatten());
 
+        if(input.ball.velocity.magnitudeSquared() != 0) {
+            steerAmount *= (input.ball.velocity.magnitude()/2300);
+        }
+
         if(steerAmount > MAX_STEER_AMOUNT) {
             steerAmount = MAX_STEER_AMOUNT;
         }
