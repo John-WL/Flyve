@@ -4,3 +4,5 @@ build/
 .gradle
 __pycache__
 *.iml
+src/main/blender/badly scaled octane/files/
+src/main/blender/animations/boss/
