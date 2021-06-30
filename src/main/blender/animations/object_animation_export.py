@@ -1,58 +1,72 @@
 import bpy
 
+# I have no clue where I got the octane model in the blender file.
+# You can actually find a lot of these on the internet.
+# I removed a lot of triangles on the model I'm using because my pc was having trouble
+# to playback in real time animations of 50+ cars (that's blender 2.8 for ya blender devs plz fix this lol).
+
 def main():
-    #destination folder
+    # destination folder
     export_path = "D:\\Program Files\\GitHub\\RocketLeague-PanBot\\src\\main\\resources\\boss rig\\"
-    #file extension when exported
+    # file extension when exported
     export_extension = ".cop"
 
     every_scene = bpy.context.window.scene
 
+    # This part is a very bad way of handling strings, but as long as
+    # you don't touch the name of the objects in the scene,
+    # we should be fine.
+    # Feel free to find the file_name in a better way if you want!
     file_name = bpy.path.basename(bpy.context.blend_data.filepath)
     file_name_without_extension = file_name[0:len(file_name)-6]
 
-    #open a file at the export location
     file = open(export_path + file_name_without_extension + export_extension, 'w')
-    #frames
+
+    # frames
     for every_frame in range(every_scene.frame_start, every_scene.frame_end+1):
-        #frame set
+        # frame set
         every_scene.frame_set(every_frame)
 
-        #objects
+        # objects
         for every_object in every_scene.objects:
-            if every_object.type != 'MESH':
+            if every_object.name[16:19] == "":
                 continue
+            
+            # Get the state matrix of the object.
+            # By "state matrix", I mean the matrix that contains the
+            # position as well as the orientation matrix of the object.
+            state_matrix = every_object.matrix_world
 
-            #get the location of the car
-            location_x = every_object.location.x
-            location_y = every_object.location.y
-            location_z = every_object.location.z
+            # Get the scaling vector of the object to scale the orientation matrix back
+            # to something normal before writing it to the file.
+            local_object_scale = every_object.scale
 
-            #get the orientation of the car in euler XYZ
-            #the quaternions are used to prevent any accidental rotation
-            every_object.rotation_mode = 'QUATERNION'
-            every_object.rotation_mode = 'XYZ'
-            orientation = every_object.rotation_euler
-
-            #scene scale vs rocket league scale: 1:10
-            loc_scale = 10
-
-            #send the data!
+            # Send the data!
             file.write(
-                #car id in blender
+                # car id in blender
                 str(every_object.name)[16:19] + ':'
-                #frame id
+                # frame id
                 + str(every_scene.frame_current) + ':'
 
-                #location in x and y are reversed
-                + str(-location_x * loc_scale) + ':'
-                + str(-location_y * loc_scale) + ':'
-                + str( location_z * loc_scale) + ':'
+                # location of object
+                + str(state_matrix[0][3] / local_object_scale[0]) + ':'
+                + str(state_matrix[1][3] / local_object_scale[1]) + ':'
+                + str(state_matrix[2][3] / local_object_scale[2]) + ':'
 
-                #euler angles are funky in rocket league!
-                + str( orientation.x) + ':'
-                + str(-orientation.y) + ':'
-                + str( orientation.z) + '\n'
+                # 3x3 rotation matrix
+                + str(state_matrix[0][0] / local_object_scale[0]) + ':'
+                + str(state_matrix[0][1] / local_object_scale[1]) + ':'
+                + str(state_matrix[0][2] / local_object_scale[2]) + ':'
+                + str(state_matrix[1][0] / local_object_scale[0]) + ':'
+                + str(state_matrix[1][1] / local_object_scale[1]) + ':'
+                + str(state_matrix[1][2] / local_object_scale[2]) + ':'
+                + str(state_matrix[2][0] / local_object_scale[0]) + ':'
+                + str(state_matrix[2][1] / local_object_scale[1]) + ':'
+                + str(state_matrix[2][2] / local_object_scale[2]) + '\n'
+
+                # The last 4x4 matrix row (the state_matrix[3] row) is ignored
+                # because it seems to always equal (0, 0, 0, 1).
+                # It's useless to stream that.
             )
     file.close()
 

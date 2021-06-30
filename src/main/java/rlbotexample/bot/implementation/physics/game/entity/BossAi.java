@@ -13,7 +13,7 @@ public class BossAi implements PlayableEntity {
     public int health;
     public CarOrientedPosition orientedPosition;
 
-    public CarGroupAnimator animator = new CarGroupAnimator(GameAnimations.boss_attack);
+    public CarGroupAnimator animator = new CarGroupAnimator(GameAnimations.quadrupedal_boss_rigged_walk);
 
     public BossAi(ExtendedCarData mainCar) {
         this.mainCar = mainCar;

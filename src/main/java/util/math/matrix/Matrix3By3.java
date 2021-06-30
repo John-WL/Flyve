@@ -6,8 +6,8 @@ import util.math.vector.Vector3;
 public class Matrix3By3 {
 
     public static final Matrix3By3 UNIT = new Matrix3By3(1, 0, 0,
-                                                        0, 1, 0,
-                                                            0, 0, 1);
+            0, 1, 0,
+            0, 0, 1);
     public final Vector3 a1;
     public final Vector3 a2;
     public final Vector3 a3;
@@ -16,7 +16,7 @@ public class Matrix3By3 {
                       double a21, double a22, double a23,
                       double a31, double a32, double a33) {
         this.a1 = new Vector3(a11, a12, a13);
-        this.a2 = new Vector3(a21, a22, a33);
+        this.a2 = new Vector3(a21, a22, a23);
         this.a3 = new Vector3(a31, a32, a33);
     }
 
@@ -95,5 +95,30 @@ public class Matrix3By3 {
         return    a1.x*(a2.y*a3.z - a2.z*a3.y)
                 - a1.y*(a2.x*a3.z - a2.z*a3.x)
                 + a1.z*(a2.x*a3.y - a2.y*a3.x);
+    }
+
+    // Example code in cpp and python found here:
+    // https://learnopencv.com/rotation-matrix-to-euler-angles/
+    // Note: this is not a complete code transcription, but just the bear minimum.
+    public Vector3 toEulerZyx() {
+        Vector3 answer = new Vector3();
+
+        double sy = Math.sqrt(a1.x*a1.x + a2.x*a2.x);
+        boolean singular = sy < 1e-6;
+
+        if(!singular) {
+            answer.x = Math.atan2(a3.y , a3.z);
+            answer.y = Math.atan2(-a3.x, sy);
+            answer.z = Math.atan2(a2.x, a1.x);
+        }
+        else {
+            answer.x = Math.atan2(-a2.z, a2.y);
+            answer.y = Math.atan2(-a3.x, sy);
+        }
+
+        answer = answer.scaled(1, -1, -1);
+        answer.z = Math.PI - answer.z;
+
+        return answer;
     }
 }
